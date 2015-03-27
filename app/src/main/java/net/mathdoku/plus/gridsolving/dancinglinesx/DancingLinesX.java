@@ -17,8 +17,8 @@ public class DancingLinesX {
         ALL
     }
 
-    private final DancingLinesXColumn root = new DancingLinesXColumn();
-    private DancingLinesXColumn[] colHeaders;
+    private final ConstraintNode root = new ConstraintNode();
+    private ConstraintNode[] colHeaders;
     private DancingLinesXNode[] nodes;
     private int numberOfNodesAllocated;
     private DancingLinesXNode lastNodeAdded;
@@ -37,15 +37,15 @@ public class DancingLinesX {
     }
 
     public void init(int numCols, int numNodes) {
-        colHeaders = new DancingLinesXColumn[numCols + 1];
+        colHeaders = new ConstraintNode[numCols + 1];
         for (int c = 1; c <= numCols; c++) {
-            colHeaders[c] = new DancingLinesXColumn();
+            colHeaders[c] = new ConstraintNode();
         }
 
         nodes = new DancingLinesXNode[numNodes + 1];
         this.numberOfNodesAllocated = 0;
 
-        DancingLinesXColumn prev = root;
+        ConstraintNode prev = root;
         for (int i = 1; i <= numCols; i++) {
             prev.setRight(colHeaders[i]);
             colHeaders[i].setLeft(prev);
@@ -63,7 +63,7 @@ public class DancingLinesX {
         return foundSolution.get(row - 1);
     }
 
-    private void coverCol(DancingLinesXColumn coverCol) {
+    private void coverCol(ConstraintNode coverCol) {
         Node i, j;
         coverCol.getRight()
                 .setLeft(coverCol.getLeft());
@@ -79,14 +79,14 @@ public class DancingLinesX {
                 j.getUp()
                         .setDown(j.getDown());
                 ((DancingLinesXNode) j).getColumn()
-                        .decreaseSize();
+                        .decreaseNumberOfPermutations();
                 j = j.getRight();
             }
             i = i.getDown();
         }
     }
 
-    private void uncoverCol(DancingLinesXColumn uncoverCol) {
+    private void uncoverCol(ConstraintNode uncoverCol) {
         Node i, j;
 
         i = uncoverCol.getUp();
@@ -94,7 +94,7 @@ public class DancingLinesX {
             j = i.getLeft();
             while (j != i) {
                 ((DancingLinesXNode) j).getColumn()
-                        .increaseSize();
+                        .increaseNumberOfPermutations();
                 j.getDown()
                         .setUp(j);
                 j.getUp()
@@ -109,21 +109,21 @@ public class DancingLinesX {
                 .setRight(uncoverCol);
     }
 
-    private DancingLinesXColumn chooseMinCol() {
+    private ConstraintNode chooseMinCol() {
         int minSize = Integer.MAX_VALUE;
-        DancingLinesXColumn search, minColumn;
+        ConstraintNode search, minColumn;
 
-        minColumn = search = (DancingLinesXColumn) root.getRight();
+        minColumn = search = (ConstraintNode) root.getRight();
 
         while (search != root) {
-            if (search.getSize() < minSize) {
+            if (search.getNumberOfPermutations() < minSize) {
                 minColumn = search;
-                minSize = minColumn.getSize();
+                minSize = minColumn.getNumberOfPermutations();
                 if (minSize == 0) {
                     break;
                 }
             }
-            search = (DancingLinesXColumn) search.getRight();
+            search = (ConstraintNode) search.getRight();
         }
         if (minSize == 0) {
             return null;
@@ -169,7 +169,7 @@ public class DancingLinesX {
     }
 
     private void search(int k) {
-        DancingLinesXColumn chosenCol;
+        ConstraintNode chosenCol;
         Node r, j;
 
         // A solution is found in case all columns are covered

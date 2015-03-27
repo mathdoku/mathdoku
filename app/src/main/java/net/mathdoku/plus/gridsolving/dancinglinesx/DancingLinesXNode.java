@@ -1,7 +1,7 @@
 package net.mathdoku.plus.gridsolving.dancinglinesx;
 
 class DancingLinesXNode extends Node {
-    public DancingLinesXNode(DancingLinesXColumn col, int ri) {
+    public DancingLinesXNode(ConstraintNode col, int ri) {
         RowIdx = ri;
         C = col;
         col.getUp()
@@ -9,10 +9,10 @@ class DancingLinesXNode extends Node {
         setUp(col.getUp());
         setDown(col);
         col.setUp(this);
-        col.increaseSize();
+        col.increaseNumberOfPermutations();
     }
 
-    public DancingLinesXColumn getColumn() {
+    public ConstraintNode getColumn() {
         return C;
     }
 
@@ -20,6 +20,6 @@ class DancingLinesXNode extends Node {
         return RowIdx;
     }
 
-    private final DancingLinesXColumn C; // Pointer to Column Header
+    private final ConstraintNode C; // Pointer to Column Header
     private final int RowIdx; // Index to row
 }
