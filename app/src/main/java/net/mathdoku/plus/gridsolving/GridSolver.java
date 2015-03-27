@@ -62,8 +62,6 @@ public class GridSolver {
     }
 
     private void initialize(boolean uncoverSolution) {
-        int gridSizeSquare = mGridSize * mGridSize;
-        int totalCages = mCages.size();
 
         // Number of columns = number of constraints =
         // BOARD * BOARD (for columns) +
@@ -90,7 +88,7 @@ public class GridSolver {
             mTotalMoves += possibleMovesInCage;
             total_nodes += possibleMovesInCage * (2 * cage.getNumberOfCells() + 1);
         }
-        dancingLinesX.init(totalCages + 2 * gridSizeSquare, total_nodes);
+        dancingLinesX.init(mCages.size() + 2 * mGridSize * mGridSize, total_nodes);
 
         // Reorder cages based on the number of possible moves for the cage
         // because this has a major impact on the time it will take to find a
@@ -114,7 +112,6 @@ public class GridSolver {
             mMoves = null;
         }
 
-        int constraintNumber;
         int comboIndex = 0;
         int cageCount = 0;
         for (Cage cage : sortedCages) {
@@ -126,28 +123,14 @@ public class GridSolver {
                                   "cells");
                 }
 
-                // Is this permutation used for cage "cageCount"? The cage
-                // constraint is put upfront. As the cage have been sorted on
-                // the number of possible permutations this has a positive
-                // influence on the solving time.
-                constraintNumber = cageCount;
-                dancingLinesX.addNode(comboIndex, constraintNumber); // Cage constraint
+                dancingLinesX.addNode(comboIndex, getCageConstraintIndex(cageCount));
 
-                // Apply the permutation of "possibleCombo" to the cells in the
-                // cages
+                // Apply the permutation of "possibleCombo" to the cells in the cages
                 for (int i = 0; i < cage.getNumberOfCells(); i++) {
                     Cell cell = cage.getCell(i);
 
-                    // Fill data structure for DancingLinesX algorithm
-
-                    // Is digit "possibleCombo[i]" used in column getColumn()?
-                    constraintNumber = totalCages + mGridSize * (possibleCombo[i] - 1) + cell.getColumn();
-                    dancingLinesX.addNode(comboIndex, constraintNumber); // Column constraint
-
-                    // Is digit "possibleCombo[i]" used in row getRow()?
-                    constraintNumber = totalCages + gridSizeSquare + mGridSize * (possibleCombo[i] - 1) + cell.getRow
-                            ();
-                    dancingLinesX.addNode(comboIndex, constraintNumber); // Row constraint
+                    dancingLinesX.addNode(comboIndex, getRowConstraintIndex(cell.getRow(), possibleCombo[i]));
+                    dancingLinesX.addNode(comboIndex, getColumnConstraintIndex(cell.getColumn(), possibleCombo[i]));
 
                     // Fill data structure for uncovering solution if needed
                     if (uncoverSolution) {
@@ -168,6 +151,37 @@ public class GridSolver {
             // Proceed with the permutation(s) of the next cage
             cageCount++;
         }
+    }
+
+    private int getCageConstraintIndex(int index) {
+        // The dancing lines algorithm regularly searches for the constraint having the least number of permutations.
+        // The cage constraint are therefore stored at beginning of the list of the constraints. For further
+        // optimization, the cages also have been sorted (ascending) on the number of permutations.
+        return index;
+    }
+
+    private int getRowConstraintIndex(int rowIndex, int cellValue) {
+        return getOffsetToSkipAllCageConstraints() + getOffsetToSkipAllColumnConstraints() +
+                getOffsetToFirstConstraintForCellValue(
+                cellValue) + rowIndex;
+    }
+
+    private int getOffsetToSkipAllColumnConstraints() {
+        // A column constraint exists for each cell in the grid.
+        return mGridSize * mGridSize;
+    }
+
+    private int getOffsetToSkipAllCageConstraints() {
+        return mCages.size();
+    }
+
+    private int getOffsetToFirstConstraintForCellValue(int cellValue) {
+        return mGridSize * (cellValue - 1);
+    }
+
+    private int getColumnConstraintIndex(int columnIndex, int cellValue) {
+        return getOffsetToSkipAllCageConstraints() + getOffsetToFirstConstraintForCellValue(
+                cellValue) + columnIndex;
     }
 
     /**
@@ -394,7 +408,7 @@ public class GridSolver {
             }
             if (DEBUG) {
                 Log.i(TAG, "Total complexity of puzzle " + puzzleComplexity + " (or " + dancingLinesX.getComplexity() +
-                              "??)");
+                        "??)");
             }
 
             return puzzleComplexity;
