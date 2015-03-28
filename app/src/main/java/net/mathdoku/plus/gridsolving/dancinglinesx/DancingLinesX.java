@@ -25,7 +25,6 @@ public class DancingLinesX {
     private List<Integer> selectedPermutationNodeIndexes;
     private List<Integer> lastSolutionFound;
     private int countSolutionsFound;
-    private boolean isValid;
     private int previousPermutationIndex = -1;
     private SolveType solveType;
 
@@ -34,7 +33,6 @@ public class DancingLinesX {
     public DancingLinesX(int numberOfPermutations, int numberOfConstraints) {
         rootConstraintNode = new ConstraintNode();
         selectedPermutationNodeIndexes = new ArrayList<Integer>();
-        isValid = true;
         initPermutationNodes(numberOfPermutations);
         initConstraintNodes(numberOfConstraints);
     }
@@ -162,10 +160,6 @@ public class DancingLinesX {
      */
     @SuppressWarnings("SameParameterValue")
     public int solve(SolveType solveType) {
-        if (!isValid) {
-            return -1;
-        }
-
         this.solveType = solveType;
         countSolutionsFound = 0;
         complexity = 0;
