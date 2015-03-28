@@ -112,37 +112,23 @@ public class DancingLinesX {
 
         ConstraintNode constraintNode = getConstraintWithSmallestNumberOfPermutations();
         if (constraintNode != null) {
-            cover(constraintNode);
-            Node r = constraintNode.getDown();
-            Node j;
-            while (r != constraintNode) {
+            coverConstraintNode(constraintNode);
+            Node node = constraintNode.getDown();
+            while (node != constraintNode) {
                 if (step >= selectedPermutationNodeIndexes.size()) {
-                    selectedPermutationNodeIndexes.add(((PermutationNode) r).getPermutationIndex());
+                    selectedPermutationNodeIndexes.add(((PermutationNode) node).getPermutationIndex());
                 } else {
-                    selectedPermutationNodeIndexes.set(step, ((PermutationNode) r).getPermutationIndex());
+                    selectedPermutationNodeIndexes.set(step, ((PermutationNode) node).getPermutationIndex());
                 }
-                j = r.getRight();
-                while (j != r) {
-                    cover(((PermutationNode) j).getConstraintNode());
-                    j = j.getRight();
-                }
+                coverConstraintsForPermutationNode(node);
                 searchForSolution(step + 1);
-                if (solveType == SolveType.ONE && countSolutionsFound > 0) {
-                    // Stop as soon as we find the first solution
+                if (stopSearchingForSolution()) {
                     return;
                 }
-                if (solveType == SolveType.MULTIPLE && countSolutionsFound > 1) {
-                    // Stop as soon as we find multiple solutions
-                    return;
-                }
-                j = r.getLeft();
-                while (j != r) {
-                    uncover(((PermutationNode) j).getConstraintNode());
-                    j = j.getLeft();
-                }
-                r = r.getDown();
+                uncoverConstraintsForPermutationNode(node);
+                node = node.getDown();
             }
-            uncover(constraintNode);
+            uncoverConstraintNode(constraintNode);
         }
     }
 
@@ -179,7 +165,15 @@ public class DancingLinesX {
         return constraintWithSmallestNumberOfPermutations;
     }
 
-    private void cover(ConstraintNode constraintNode) {
+    private void coverConstraintsForPermutationNode(Node firstNode) {
+        Node node = firstNode.getRight();
+        while (node != firstNode) {
+            coverConstraintNode(((PermutationNode) node).getConstraintNode());
+            node = node.getRight();
+        }
+    }
+
+    private void coverConstraintNode(ConstraintNode constraintNode) {
         constraintNode.getRight()
                 .setLeft(constraintNode.getLeft());
         constraintNode.getLeft()
@@ -202,7 +196,27 @@ public class DancingLinesX {
         }
     }
 
-    private void uncover(ConstraintNode constraintNode) {
+    private boolean stopSearchingForSolution() {
+        if (solveType == SolveType.ONE && countSolutionsFound > 0) {
+            // Stop as soon as we find the first solution
+            return true;
+        }
+        if (solveType == SolveType.MULTIPLE && countSolutionsFound > 1) {
+            // Stop as soon as we find multiple solutions
+            return true;
+        }
+        return false;
+    }
+
+    private void uncoverConstraintsForPermutationNode(Node firstNode) {
+        Node node = firstNode.getLeft();
+        while (node != firstNode) {
+            uncoverConstraintNode(((PermutationNode) node).getConstraintNode());
+            node = node.getLeft();
+        }
+    }
+
+    private void uncoverConstraintNode(ConstraintNode constraintNode) {
         Node i = constraintNode.getUp();
         Node j;
         while (i != constraintNode) {
