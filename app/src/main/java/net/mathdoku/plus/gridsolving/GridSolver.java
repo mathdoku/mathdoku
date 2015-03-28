@@ -56,8 +56,7 @@ public class GridSolver {
         mGridSize = gridSize;
         mCages = cages;
 
-        dancingLinesX = new DancingLinesX();
-        dancingLinesX.init(getTotalNumberOfPermutations(), getTotalNumberOfConstraints());
+        dancingLinesX = new DancingLinesX(getTotalNumberOfPermutations(), getTotalNumberOfConstraints());
     }
 
     private int getTotalNumberOfPermutations() {
@@ -70,8 +69,11 @@ public class GridSolver {
                 }
                 cage.setPossibleCombos(comboGenerator.getPossibleCombos(cage, cage.getListOfCells()));
             }
-            totalNumberOfPermutations += 1 + (cage.getPossibleCombos()
-                    .size() * cage.getNumberOfCells() * 2);
+            // For each possible permutation the following constraint will be created:
+            // - One cage constraint
+            // - One row constraint per cell in the cage
+            // - One column constraint per cell in the cage
+            totalNumberOfPermutations += cage.getPossibleCombos().size() * (1 + cage.getNumberOfCells() * 2);
         }
         return totalNumberOfPermutations;
     }

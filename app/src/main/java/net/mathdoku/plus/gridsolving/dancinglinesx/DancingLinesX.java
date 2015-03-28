@@ -31,13 +31,10 @@ public class DancingLinesX {
 
     private int complexity;
 
-    public DancingLinesX() {
+    public DancingLinesX(int numberOfPermutations, int numberOfConstraints) {
         rootConstraintNode = new ConstraintNode();
         selectedPermutationNodeIndexes = new ArrayList<Integer>();
         isValid = true;
-    }
-
-    public void init(int numberOfPermutations, int numberOfConstraints) {
         initPermutationNodes(numberOfPermutations);
         initConstraintNodes(numberOfConstraints);
     }
