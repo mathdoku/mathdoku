@@ -17,50 +17,51 @@ public class DancingLinesX {
         ALL
     }
 
-    private final ConstraintNode root = new ConstraintNode();
+    private final ConstraintNode rootConstraintNode;
     private ConstraintNode[] constraintNodes;
-    private PermutationNode[] nodes;
-    private int numberOfNodesAllocated;
-    private PermutationNode lastNodeAdded;
-    private List<Integer> trySolution;
-    private List<Integer> foundSolution;
-    private int countSolutions;
+    private PermutationNode[] permutationNodes;
+    private int numberOfPermutationNodesAllocated;
+    private PermutationNode lastPermutationNodeAdded;
+    private List<Integer> selectedPermutationNodeIndexes;
+    private List<Integer> lastSolutionFound;
+    private int countSolutionsFound;
     private boolean isValid;
-    private int previousRowIndex = -1;
+    private int previousPermutationIndex = -1;
     private SolveType solveType;
 
     private int complexity;
 
     public DancingLinesX() {
-        trySolution = new ArrayList<Integer>();
+        rootConstraintNode = new ConstraintNode();
+        selectedPermutationNodeIndexes = new ArrayList<Integer>();
         isValid = true;
     }
 
     public void init(int numCols, int numNodes) {
         constraintNodes = new ConstraintNode[numCols];
-        for (int c = 0; c < constraintNodes.length; c++) {
-            constraintNodes[c] = new ConstraintNode();
+        for (int i = 0; i < constraintNodes.length; i++) {
+            constraintNodes[i] = new ConstraintNode();
         }
 
-        nodes = new PermutationNode[numNodes + 1];
-        this.numberOfNodesAllocated = 0;
+        permutationNodes = new PermutationNode[numNodes + 1];
+        this.numberOfPermutationNodesAllocated = 0;
 
-        ConstraintNode prev = root;
+        ConstraintNode prev = rootConstraintNode;
         for (int i = 0; i < constraintNodes.length; i++) {
             prev.setRight(constraintNodes[i]);
             constraintNodes[i].setLeft(prev);
             prev = constraintNodes[i];
         }
-        root.setLeft(constraintNodes[constraintNodes.length - 1]);
-        constraintNodes[constraintNodes.length - 1].setRight(root);
+        rootConstraintNode.setLeft(constraintNodes[constraintNodes.length - 1]);
+        constraintNodes[constraintNodes.length - 1].setRight(rootConstraintNode);
     }
 
     public int getRowsInSolution() {
-        return foundSolution.size();
+        return lastSolutionFound.size();
     }
 
     public int getSolutionRow(int row) {
-        return foundSolution.get(row - 1);
+        return lastSolutionFound.get(row - 1);
     }
 
     private void coverCol(ConstraintNode coverCol) {
@@ -113,9 +114,9 @@ public class DancingLinesX {
         int minSize = Integer.MAX_VALUE;
         ConstraintNode search, minColumn;
 
-        minColumn = search = (ConstraintNode) root.getRight();
+        minColumn = search = (ConstraintNode) rootConstraintNode.getRight();
 
-        while (search != root) {
+        while (search != rootConstraintNode) {
             if (search.getNumberOfPermutations() < minSize) {
                 minColumn = search;
                 minSize = minColumn.getNumberOfPermutations();
@@ -133,19 +134,19 @@ public class DancingLinesX {
     }
 
     public void addPermutation(int permutationIndex, int constraintIndex) {
-        nodes[++numberOfNodesAllocated] = new PermutationNode(constraintNodes[constraintIndex], permutationIndex);
-        if (previousRowIndex == permutationIndex) {
-            nodes[numberOfNodesAllocated].setLeft(lastNodeAdded);
-            nodes[numberOfNodesAllocated].setRight(lastNodeAdded.getRight());
-            lastNodeAdded.setRight(nodes[numberOfNodesAllocated]);
-            nodes[numberOfNodesAllocated].getRight()
-                    .setLeft(nodes[numberOfNodesAllocated]);
+        permutationNodes[++numberOfPermutationNodesAllocated] = new PermutationNode(constraintNodes[constraintIndex], permutationIndex);
+        if (previousPermutationIndex == permutationIndex) {
+            permutationNodes[numberOfPermutationNodesAllocated].setLeft(lastPermutationNodeAdded);
+            permutationNodes[numberOfPermutationNodesAllocated].setRight(lastPermutationNodeAdded.getRight());
+            lastPermutationNodeAdded.setRight(permutationNodes[numberOfPermutationNodesAllocated]);
+            permutationNodes[numberOfPermutationNodesAllocated].getRight()
+                    .setLeft(permutationNodes[numberOfPermutationNodesAllocated]);
         } else {
-            previousRowIndex = permutationIndex;
-            nodes[numberOfNodesAllocated].setLeft(nodes[numberOfNodesAllocated]);
-            nodes[numberOfNodesAllocated].setRight(nodes[numberOfNodesAllocated]);
+            previousPermutationIndex = permutationIndex;
+            permutationNodes[numberOfPermutationNodesAllocated].setLeft(permutationNodes[numberOfPermutationNodesAllocated]);
+            permutationNodes[numberOfPermutationNodesAllocated].setRight(permutationNodes[numberOfPermutationNodesAllocated]);
         }
-        lastNodeAdded = nodes[numberOfNodesAllocated];
+        lastPermutationNodeAdded = permutationNodes[numberOfPermutationNodesAllocated];
     }
 
     /**
@@ -162,10 +163,10 @@ public class DancingLinesX {
         }
 
         this.solveType = solveType;
-        countSolutions = 0;
+        countSolutionsFound = 0;
         complexity = 0;
-        search(trySolution.size());
-        return countSolutions;
+        search(selectedPermutationNodeIndexes.size());
+        return countSolutionsFound;
     }
 
     private void search(int k) {
@@ -173,12 +174,12 @@ public class DancingLinesX {
         Node r, j;
 
         // A solution is found in case all columns are covered
-        if (root.getRight() == root) {
-            countSolutions++;
-            foundSolution = new ArrayList<Integer>(trySolution);
+        if (rootConstraintNode.getRight() == rootConstraintNode) {
+            countSolutionsFound++;
+            lastSolutionFound = new ArrayList<Integer>(selectedPermutationNodeIndexes);
             if (GridSolver.DEBUG) {
                 Log.i(TAG,
-                      "Solution " + countSolutions + " found which consists of following moves: " + trySolution
+                      "Solution " + countSolutionsFound + " found which consists of following moves: " + selectedPermutationNodeIndexes
                               .toString());
             }
             return;
@@ -198,10 +199,10 @@ public class DancingLinesX {
             r = chosenCol.getDown();
 
             while (r != chosenCol) {
-                if (k >= trySolution.size()) {
-                    trySolution.add(((PermutationNode) r).getPermutationIndex());
+                if (k >= selectedPermutationNodeIndexes.size()) {
+                    selectedPermutationNodeIndexes.add(((PermutationNode) r).getPermutationIndex());
                 } else {
-                    trySolution.set(k, ((PermutationNode) r).getPermutationIndex());
+                    selectedPermutationNodeIndexes.set(k, ((PermutationNode) r).getPermutationIndex());
                 }
                 j = r.getRight();
                 while (j != r) {
@@ -209,11 +210,11 @@ public class DancingLinesX {
                     j = j.getRight();
                 }
                 search(k + 1);
-                if (solveType == SolveType.ONE && countSolutions > 0) {
+                if (solveType == SolveType.ONE && countSolutionsFound > 0) {
                     // Stop as soon as we find 1 solution
                     return;
                 }
-                if (solveType == SolveType.MULTIPLE && countSolutions > 1) {
+                if (solveType == SolveType.MULTIPLE && countSolutionsFound > 1) {
                     // Stop as soon as we find multiple solutions
                     return;
                 }
