@@ -21,12 +21,9 @@ public class GridSolver {
     // to show debug information when running in development mode.
     public static final boolean DEBUG = Config.disabledAlways();
 
-    private final DancingLinesX dancingLinesX;
     private final int mGridSize;
-    private int mTotalMoves;
-
-    // The list of cages for which the solution has to be checked
     private final List<Cage> mCages;
+    private final DancingLinesX dancingLinesX;
 
     // Additional data structure in case the solution has to be uncovered.
     private class Move {
@@ -58,23 +55,13 @@ public class GridSolver {
     public GridSolver(int gridSize, List<Cage> cages) {
         mGridSize = gridSize;
         mCages = cages;
+
         dancingLinesX = new DancingLinesX();
+        dancingLinesX.init(getTotalNumberOfPermutations(), getTotalNumberOfConstraints());
     }
 
-    private void initialize(boolean uncoverSolution) {
-
-        // Number of columns = number of constraints =
-        // BOARD * BOARD (for columns) +
-        // BOARD * BOARD (for rows) +
-        // Num cages (each cage has to be filled once and only once)
-        // Number of rows = number of "moves" =
-        // Sum of all the possible cage combinations
-        // Number of nodes = sum of each move:
-        // num_cells column constraints +
-        // num_cells row constraints +
-        // 1 (cage constraint)
-        mTotalMoves = 0;
-        int total_nodes = 0;
+    private int getTotalNumberOfPermutations() {
+        int totalNumberOfPermutations = 0;
         ComboGenerator comboGenerator = null;
         for (Cage cage : mCages) {
             if (cage.getPossibleCombos() == null) {
@@ -83,13 +70,25 @@ public class GridSolver {
                 }
                 cage.setPossibleCombos(comboGenerator.getPossibleCombos(cage, cage.getListOfCells()));
             }
-            int possibleMovesInCage = cage.getPossibleCombos()
-                    .size();
-            mTotalMoves += possibleMovesInCage;
-            total_nodes += possibleMovesInCage * (2 * cage.getNumberOfCells() + 1);
+            totalNumberOfPermutations += 1 + (cage.getPossibleCombos()
+                    .size() * cage.getNumberOfCells() * 2);
         }
-        dancingLinesX.init(total_nodes, mCages.size() + 2 * mGridSize * mGridSize);
+        return totalNumberOfPermutations;
+    }
 
+    private int getTotalNumberOfConstraints() {
+        // Constraints for MathDoku consists of:
+        // - cage constraints (the calculation of the cage). A cage constraint should be interpreted as: "is digit
+        //   <d> used in column <c> of the cage?" or "is digit <d> used in row <r> of the cage?". For each cage one
+        //   constraint is to be defined.
+        //  - column constraints (each digit is used once in each column). A column constraint should be interpreted
+        //    as: "is digit <d> used in column <c>?". For each cell in the grid a column constraint has to be defined.
+        // - row constraints (each digit is used once in each row). A row constraint should be interpreted as: "is
+        //   digit <d> used in row <r>?". For each cell in the grid a row constraint has to be defined.
+        return mCages.size() + (2 * mGridSize * mGridSize);
+    }
+
+    private void initialize(boolean uncoverSolution) {
         // Reorder cages based on the number of possible moves for the cage
         // because this has a major impact on the time it will take to find a
         // solution. Cage should be ordered on increasing number of possible
@@ -163,8 +162,7 @@ public class GridSolver {
 
     private int getRowConstraintIndex(int rowIndex, int cellValue) {
         return getOffsetToSkipAllCageConstraints() + getOffsetToSkipAllColumnConstraints() +
-                getOffsetToFirstConstraintForCellValue(
-                cellValue) + rowIndex;
+                getOffsetToFirstConstraintForCellValue(cellValue) + rowIndex;
     }
 
     private int getOffsetToSkipAllColumnConstraints() {
@@ -181,8 +179,7 @@ public class GridSolver {
     }
 
     private int getColumnConstraintIndex(int columnIndex, int cellValue) {
-        return getOffsetToSkipAllCageConstraints() + getOffsetToFirstConstraintForCellValue(
-                cellValue) + columnIndex;
+        return getOffsetToSkipAllCageConstraints() + getOffsetToFirstConstraintForCellValue(cellValue) + columnIndex;
     }
 
     /**
@@ -250,8 +247,8 @@ public class GridSolver {
         }
 
         // Determine which rows are included in the solution.
-        boolean[] rowInSolution = new boolean[mTotalMoves];
-        for (int i = 0; i < mTotalMoves; i++) {
+        boolean[] rowInSolution = new boolean[getTotalNumberOfMoves()];
+        for (int i = 0; i < rowInSolution.length; i++) {
             rowInSolution[i] = false;
         }
         for (int i = 1; i <= dancingLinesX.getRowsInSolution(); i++) {
@@ -277,6 +274,15 @@ public class GridSolver {
         }
 
         return solutionGrid;
+    }
+
+    private int getTotalNumberOfMoves() {
+        int totalMoves = 0;
+        for (Cage cage : mCages) {
+            totalMoves += cage.getPossibleCombos()
+                    .size();
+        }
+        return totalMoves;
     }
 
     /**
