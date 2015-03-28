@@ -66,75 +66,6 @@ public class DancingLinesX {
         return lastSolutionFound.get(row - 1);
     }
 
-    private void coverCol(ConstraintNode coverCol) {
-        Node i, j;
-        coverCol.getRight()
-                .setLeft(coverCol.getLeft());
-        coverCol.getLeft()
-                .setRight(coverCol.getRight());
-
-        i = coverCol.getDown();
-        while (i != coverCol) {
-            j = i.getRight();
-            while (j != i) {
-                j.getDown()
-                        .setUp(j.getUp());
-                j.getUp()
-                        .setDown(j.getDown());
-                ((PermutationNode) j).getConstraintNode()
-                        .decreaseNumberOfPermutations();
-                j = j.getRight();
-            }
-            i = i.getDown();
-        }
-    }
-
-    private void uncoverCol(ConstraintNode uncoverCol) {
-        Node i, j;
-
-        i = uncoverCol.getUp();
-        while (i != uncoverCol) {
-            j = i.getLeft();
-            while (j != i) {
-                ((PermutationNode) j).getConstraintNode()
-                        .increaseNumberOfPermutations();
-                j.getDown()
-                        .setUp(j);
-                j.getUp()
-                        .setDown(j);
-                j = j.getLeft();
-            }
-            i = i.getUp();
-        }
-        uncoverCol.getRight()
-                .setLeft(uncoverCol);
-        uncoverCol.getLeft()
-                .setRight(uncoverCol);
-    }
-
-    private ConstraintNode chooseMinCol() {
-        int minSize = Integer.MAX_VALUE;
-        ConstraintNode search, minColumn;
-
-        minColumn = search = (ConstraintNode) rootConstraintNode.getRight();
-
-        while (search != rootConstraintNode) {
-            if (search.getNumberOfPermutations() < minSize) {
-                minColumn = search;
-                minSize = minColumn.getNumberOfPermutations();
-                if (minSize == 0) {
-                    break;
-                }
-            }
-            search = (ConstraintNode) search.getRight();
-        }
-        if (minSize == 0) {
-            return null;
-        } else {
-            return minColumn;
-        }
-    }
-
     public void addPermutation(int permutationIndex, int constraintIndex) {
         permutationNodes[++numberOfPermutationNodesAllocated] = new PermutationNode(constraintNodes[constraintIndex], permutationIndex);
         if (previousPermutationIndex == permutationIndex) {
@@ -163,53 +94,41 @@ public class DancingLinesX {
         this.solveType = solveType;
         countSolutionsFound = 0;
         complexity = 0;
-        search(selectedPermutationNodeIndexes.size());
+        searchForSolution(selectedPermutationNodeIndexes.size());
         return countSolutionsFound;
     }
 
-    private void search(int k) {
-        ConstraintNode chosenCol;
-        Node r, j;
-
-        // A solution is found in case all columns are covered
-        if (rootConstraintNode.getRight() == rootConstraintNode) {
-            countSolutionsFound++;
-            lastSolutionFound = new ArrayList<Integer>(selectedPermutationNodeIndexes);
-            if (GridSolver.DEBUG) {
-                Log.i(TAG,
-                      "Solution " + countSolutionsFound + " found which consists of following moves: " + selectedPermutationNodeIndexes
-                              .toString());
-            }
+    private void searchForSolution(int step) {
+        if (isSolutionFound()) {
+            storeSolution();
             return;
         }
 
-        // In case no solution is yet found, select the next column to be
-        // covered. Now two things can happen. Either such a column can be
-        // found, and the puzzle solving will be taken one level deeper. Or such
-        // a column can not be found in which case a backtrack will be done. The
-        // more often a permutation is tried, the harder to solve the puzzle is.
+        // In case no solution is yet found, select the next column to be covered. Now two things can happen. Either
+        // such a column can be found, and the puzzle solving will be taken one level deeper. Or such a column can
+        // not be found in which case a backtrack will be done. The more often a permutation is tried,
+        // the harder to solve the puzzle is.
         complexity++;
 
-        chosenCol = chooseMinCol();
-        if (chosenCol != null) {
-
-            coverCol(chosenCol);
-            r = chosenCol.getDown();
-
-            while (r != chosenCol) {
-                if (k >= selectedPermutationNodeIndexes.size()) {
+        ConstraintNode constraintNode = getConstraintWithSmallestNumberOfPermutations();
+        if (constraintNode != null) {
+            cover(constraintNode);
+            Node r = constraintNode.getDown();
+            Node j;
+            while (r != constraintNode) {
+                if (step >= selectedPermutationNodeIndexes.size()) {
                     selectedPermutationNodeIndexes.add(((PermutationNode) r).getPermutationIndex());
                 } else {
-                    selectedPermutationNodeIndexes.set(k, ((PermutationNode) r).getPermutationIndex());
+                    selectedPermutationNodeIndexes.set(step, ((PermutationNode) r).getPermutationIndex());
                 }
                 j = r.getRight();
                 while (j != r) {
-                    coverCol(((PermutationNode) j).getConstraintNode());
+                    cover(((PermutationNode) j).getConstraintNode());
                     j = j.getRight();
                 }
-                search(k + 1);
+                searchForSolution(step + 1);
                 if (solveType == SolveType.ONE && countSolutionsFound > 0) {
-                    // Stop as soon as we find 1 solution
+                    // Stop as soon as we find the first solution
                     return;
                 }
                 if (solveType == SolveType.MULTIPLE && countSolutionsFound > 1) {
@@ -218,13 +137,91 @@ public class DancingLinesX {
                 }
                 j = r.getLeft();
                 while (j != r) {
-                    uncoverCol(((PermutationNode) j).getConstraintNode());
+                    uncover(((PermutationNode) j).getConstraintNode());
                     j = j.getLeft();
                 }
                 r = r.getDown();
             }
-            uncoverCol(chosenCol);
+            uncover(constraintNode);
         }
+    }
+
+    private boolean isSolutionFound() {
+        // A solution is found in case all constraints are covered.
+        return rootConstraintNode.getRight() == rootConstraintNode;
+    }
+
+    private void storeSolution() {
+        countSolutionsFound++;
+        lastSolutionFound = new ArrayList<Integer>(selectedPermutationNodeIndexes);
+        if (GridSolver.DEBUG) {
+            Log.i(TAG,
+                  "Solution " + countSolutionsFound + " found which consists of following moves: " +
+                          selectedPermutationNodeIndexes.toString());
+        }
+    }
+
+    private ConstraintNode getConstraintWithSmallestNumberOfPermutations() {
+        ConstraintNode constraintWithSmallestNumberOfPermutations = null;
+        int smallestNumberOfPermutations = Integer.MAX_VALUE;
+
+        ConstraintNode constraintNode = (ConstraintNode) rootConstraintNode.getRight();
+        while (constraintNode != rootConstraintNode) {
+            if (constraintNode.getNumberOfPermutations() < smallestNumberOfPermutations) {
+                constraintWithSmallestNumberOfPermutations = constraintNode;
+                smallestNumberOfPermutations = constraintWithSmallestNumberOfPermutations.getNumberOfPermutations();
+                if (smallestNumberOfPermutations == 0) {
+                    return null;
+                }
+            }
+            constraintNode = (ConstraintNode) constraintNode.getRight();
+        }
+        return constraintWithSmallestNumberOfPermutations;
+    }
+
+    private void cover(ConstraintNode constraintNode) {
+        constraintNode.getRight()
+                .setLeft(constraintNode.getLeft());
+        constraintNode.getLeft()
+                .setRight(constraintNode.getRight());
+
+        Node i = constraintNode.getDown();
+        Node j;
+        while (i != constraintNode) {
+            j = i.getRight();
+            while (j != i) {
+                j.getDown()
+                        .setUp(j.getUp());
+                j.getUp()
+                        .setDown(j.getDown());
+                ((PermutationNode) j).getConstraintNode()
+                        .decreaseNumberOfPermutations();
+                j = j.getRight();
+            }
+            i = i.getDown();
+        }
+    }
+
+    private void uncover(ConstraintNode constraintNode) {
+        Node i = constraintNode.getUp();
+        Node j;
+        while (i != constraintNode) {
+            j = i.getLeft();
+            while (j != i) {
+                ((PermutationNode) j).getConstraintNode()
+                        .increaseNumberOfPermutations();
+                j.getDown()
+                        .setUp(j);
+                j.getUp()
+                        .setDown(j);
+                j = j.getLeft();
+            }
+            i = i.getUp();
+        }
+        constraintNode.getRight()
+                .setLeft(constraintNode);
+        constraintNode.getLeft()
+                .setRight(constraintNode);
     }
 
     public int getComplexity() {
