@@ -37,20 +37,27 @@ public class DancingLinesX {
         isValid = true;
     }
 
-    public void init(int numCols, int numNodes) {
+    public void init(int numberOfPermutations, int numberOfConstraints) {
+        initPermutationNodes(numberOfPermutations);
+        initConstraintNodes(numberOfConstraints);
+    }
+
+    private void initPermutationNodes(int numNodes) {
+        permutationNodes = new PermutationNode[numNodes + 1];
+        this.numberOfPermutationNodesAllocated = 0;
+    }
+
+    private void initConstraintNodes(int numCols) {
         constraintNodes = new ConstraintNode[numCols];
         for (int i = 0; i < constraintNodes.length; i++) {
             constraintNodes[i] = new ConstraintNode();
         }
 
-        permutationNodes = new PermutationNode[numNodes + 1];
-        this.numberOfPermutationNodesAllocated = 0;
-
         ConstraintNode prev = rootConstraintNode;
-        for (int i = 0; i < constraintNodes.length; i++) {
-            prev.setRight(constraintNodes[i]);
-            constraintNodes[i].setLeft(prev);
-            prev = constraintNodes[i];
+        for (ConstraintNode constraintNode : constraintNodes) {
+            prev.setRight(constraintNode);
+            constraintNode.setLeft(prev);
+            prev = constraintNode;
         }
         rootConstraintNode.setLeft(constraintNodes[constraintNodes.length - 1]);
         constraintNodes[constraintNodes.length - 1].setRight(rootConstraintNode);

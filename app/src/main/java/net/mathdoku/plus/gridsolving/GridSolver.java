@@ -88,7 +88,7 @@ public class GridSolver {
             mTotalMoves += possibleMovesInCage;
             total_nodes += possibleMovesInCage * (2 * cage.getNumberOfCells() + 1);
         }
-        dancingLinesX.init(mCages.size() + 2 * mGridSize * mGridSize, total_nodes);
+        dancingLinesX.init(total_nodes, mCages.size() + 2 * mGridSize * mGridSize);
 
         // Reorder cages based on the number of possible moves for the cage
         // because this has a major impact on the time it will take to find a
