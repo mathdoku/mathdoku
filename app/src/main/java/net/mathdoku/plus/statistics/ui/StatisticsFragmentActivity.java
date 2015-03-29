@@ -134,6 +134,8 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements A
             case R.id.action_help:
                 openHelpDialog();
                 return true;
+            default:
+                throw new IllegalStateException("Unimplemented menu item");
         }
         return super.onOptionsItemSelected(item);
     }
