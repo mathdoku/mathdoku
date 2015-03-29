@@ -109,7 +109,6 @@ public class Painter {
         mGridPainter.setBorderSizes(thin);
         mCagePainter.setBorderSizes(thin);
         mCellPainter.setBorderSizes(thin);
-        mInputModeBorderPainter.setBorderSizes(thin);
     }
 
     /**

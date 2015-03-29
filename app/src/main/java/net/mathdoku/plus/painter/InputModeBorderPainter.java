@@ -75,6 +75,7 @@ public class InputModeBorderPainter extends BorderPainter {
 
     @Override
     protected void setBorderSizes(boolean thin) {
+        throw new IllegalStateException("Method not implemented for class" + InputModeBorderPainter.class.getName());
     }
 
     @Override

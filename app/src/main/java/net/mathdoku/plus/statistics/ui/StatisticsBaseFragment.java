@@ -132,7 +132,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
         }
 
         // Add body text for explaining the chart
-        if (explanation != null && !explanation.isEmpty() && mDisplayStatisticDescription) {
+        if (!Util.isNullOrEmpty(explanation) && mDisplayStatisticDescription) {
             TextView textView = (TextView) sectionView.findViewById(R.id.statistics_section_explanation);
             if (textView != null) {
                 textView.setText(explanation);
