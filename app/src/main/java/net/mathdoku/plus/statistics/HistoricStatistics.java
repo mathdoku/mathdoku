@@ -209,26 +209,19 @@ public class HistoricStatistics {
      *         The title to be used in the XYSeries.
      * @param scale
      *         The scaling factor which has to be applied when converting values.
-     * @param includeElapsedTime
-     *         True in case the elapsed time should be included in the values of the return series.
-     * @param includeCheatTime
-     *         True in case the cheat time should be included in the values of the return series.
      * @return A XYSeries object which can be processed by AChartEngine
      */
     @SuppressWarnings("SameParameterValue")
-    public XYSeries getXYSeries(SolvingAttemptStatus solvingAttemptStatus, String title, Scale scale,
-                                boolean includeElapsedTime, boolean includeCheatTime) {
+    public XYSeries getTotalPlayingTimeXYSeries(SolvingAttemptStatus solvingAttemptStatus, String title, Scale scale) {
         if (solvingAttemptStatus == SolvingAttemptStatus.REVEALED_SOLUTION) {
             throw new IllegalArgumentException(
-                    "Method getXYSeries should not be used for the solution " + "revealed series." +
-                            " Use getXYSeriesSolutionsRevealed " + "instead.");
+                    "This method should not be used for the revealed solution series. Use getXYSeriesSolutionsRevealed instead.");
         }
         XYSeries xySeries = new XYSeries(title);
 
         double scaleFactor = getScaleFactor(scale);
 
-        // In case a limit is specified, only the last <limit> number of
-        // data points are converted to the series.
+        // In case a limit is specified, only the last <limit> number of data points are converted to the series.
         int start = getIndexFirstEntry();
         int index = 1;
 
@@ -236,12 +229,35 @@ public class HistoricStatistics {
             if (index >= start) {
                 double value = 0;
                 if (dataPoint.getSolvingAttemptStatus() == solvingAttemptStatus) {
-                    // Get unscaled value
-                    value = (includeElapsedTime ? dataPoint.getElapsedTimeExcludingCheatPenalty() : 0) +
-                            (includeCheatTime ? dataPoint.getCheatPenalty() : 0);
-
-                    // Scale value
+                    value = dataPoint.getElapsedTimeExcludingCheatPenalty() + dataPoint.getCheatPenalty();
                     value /= scaleFactor;
+                }
+                xySeries.add(index, value);
+            }
+            index++;
+        }
+
+        return xySeries;
+    }
+
+    public XYSeries getCheatTimeXYSeries(SolvingAttemptStatus solvingAttemptStatus, String title, Scale scale) {
+        if (solvingAttemptStatus == SolvingAttemptStatus.REVEALED_SOLUTION) {
+            throw new IllegalArgumentException(
+                    "This method should not be used for the revealed solution series. Use getXYSeriesSolutionsRevealed instead.");
+        }
+        XYSeries xySeries = new XYSeries(title);
+
+        double scaleFactor = getScaleFactor(scale);
+
+        // In case a limit is specified, only the last <limit> number of data points are converted to the series.
+        int start = getIndexFirstEntry();
+        int index = 1;
+
+        for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
+            if (index >= start) {
+                double value = 0;
+                if (dataPoint.getSolvingAttemptStatus() == solvingAttemptStatus) {
+                    value = dataPoint.getCheatPenalty() / scaleFactor;
                 }
                 xySeries.add(index, value);
             }

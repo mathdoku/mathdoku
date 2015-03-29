@@ -80,20 +80,20 @@ class ElapsedTimeSeries {
         // Add series for elapsed time (including cheat time) of solved games
         if (historicStatistics.containsTotalPlayingTimeDataPointForXYSeries(SolvingAttemptStatus.FINISHED_SOLVED)) {
             typesList.add(BarChart.TYPE);
-            xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.FINISHED_SOLVED,
-                                                                             resources.getString(
-                                                                                     R.string.statistics_elapsed_time_historic_elapsed_time_solved),
-                                                                             yScale, true, true));
+            xyMultipleSeriesDataset.addSeries(
+                    historicStatistics.getTotalPlayingTimeXYSeries(SolvingAttemptStatus.FINISHED_SOLVED,
+                                                                   resources.getString(
+                                                                           R.string.statistics_elapsed_time_historic_elapsed_time_solved),
+                                                                   yScale));
             xyMultipleSeriesRenderer.addSeriesRenderer(createDefaultRenderer(StatisticsBaseFragment.chartGreen1));
         }
 
         // Add series for cheat time of solved games
         if (historicStatistics.containsCheatPenaltyTimeDataPointForXYSeries(SolvingAttemptStatus.FINISHED_SOLVED)) {
             typesList.add(BarChart.TYPE);
-            xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.FINISHED_SOLVED,
-                                                                             resources.getString(
-                                                                                     R.string.statistics_elapsed_time_historic_cheat_time),
-                                                                             yScale, false, true));
+            xyMultipleSeriesDataset.addSeries(
+                    historicStatistics.getCheatTimeXYSeries(SolvingAttemptStatus.FINISHED_SOLVED, resources.getString(
+                            R.string.statistics_elapsed_time_historic_cheat_time), yScale));
             xyMultipleSeriesRenderer.addSeriesRenderer(createCheatRenderer());
         }
     }
@@ -130,20 +130,19 @@ class ElapsedTimeSeries {
         if (historicStatistics.containsTotalPlayingTimeDataPointForXYSeries(SolvingAttemptStatus.UNFINISHED)) {
             // Elapsed time so far including cheats
             typesList.add(BarChart.TYPE);
-            xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.UNFINISHED,
-                                                                             resources.getString(
-                                                                                     R.string.statistics_elapsed_time_historic_elapsed_time_unfinished),
-                                                                             yScale, true, true));
+            xyMultipleSeriesDataset.addSeries(
+                    historicStatistics.getTotalPlayingTimeXYSeries(SolvingAttemptStatus.UNFINISHED, resources.getString(
+                            R.string.statistics_elapsed_time_historic_elapsed_time_unfinished), yScale));
             xyMultipleSeriesRenderer.addSeriesRenderer(createDefaultRenderer(StatisticsBaseFragment.chartGrey1));
         }
 
         // Add series for cheat time of solved games
         if (historicStatistics.containsCheatPenaltyTimeDataPointForXYSeries(SolvingAttemptStatus.UNFINISHED)) {
             typesList.add(BarChart.TYPE);
-            xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.UNFINISHED,
-                                                                             resources.getString(
-                                                                                     R.string.statistics_elapsed_time_historic_cheat_time),
-                                                                             yScale, false, true));
+            xyMultipleSeriesDataset.addSeries(historicStatistics.getCheatTimeXYSeries(SolvingAttemptStatus.UNFINISHED,
+                                                                                      resources.getString(
+                                                                                              R.string.statistics_elapsed_time_historic_cheat_time),
+                                                                                      yScale));
             xyMultipleSeriesRenderer.addSeriesRenderer(createCheatRenderer());
         }
     }
@@ -160,15 +159,14 @@ class ElapsedTimeSeries {
     }
 
     private void addHistoricAverageSolvedGamesXYSeriesAndRenderer() {
-        // Add series for the historic average of solved games. As this series
-        // is displayed as a line chart, it can only be shown if at least two
-        // data points in the series are available.
         if (historicStatistics.containsTotalPlayingTimeDataPointForXYSeries(SolvingAttemptStatus.FINISHED_SOLVED)) {
             XYSeries xySeries = historicStatistics.getXYSeriesHistoricAverage(SolvingAttemptStatus.FINISHED_SOLVED,
                                                                               resources.getString(
                                                                                       R.string.statistics_elapsed_time_historic_solved_average_serie),
                                                                               yScale);
             if (xySeries.getItemCount() > 1) {
+                // Add series for the historic average of solved games. As this series is displayed as a line chart,
+                // it can only be shown if at least two data points in the series are available.
                 typesList.add(LineChart.TYPE);
                 xyMultipleSeriesDataset.addSeries(xySeries);
                 XYSeriesRenderer xySeriesRenderer = new XYSeriesRenderer();
