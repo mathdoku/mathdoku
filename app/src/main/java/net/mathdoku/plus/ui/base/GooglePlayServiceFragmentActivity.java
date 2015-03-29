@@ -19,56 +19,23 @@ package net.mathdoku.plus.ui.base;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.gms.appstate.AppStateClient;
 import com.google.android.gms.games.GamesClient;
-import com.google.android.gms.plus.PlusClient;
 
 /**
- * Example base class for games. This implementation takes care of setting up the GamesClient object and managing its
- * lifecycle. Subclasses only need to override the @link{#onSignInSucceeded} and
- *
- * @author Bruno Oliveira (Google)
- * @link{#onSignInFailed} abstract methods. To initiate the sign-in flow when the user clicks the sign-in button,
- * subclasses should call @link{#beginUserInitiatedSignIn}. By default, this class only instantiates the GamesClient
- * object. If the PlusClient or AppStateClient objects are also wanted, call the GooglePlayServiceFragmentActivity(int)
- * constructor and specify the requested clients. For example, to request PlusClient and GamesClient, use
- * GooglePlayServiceFragmentActivity(CLIENT_GAMES | CLIENT_PLUS). To request all available clients, use
- * GooglePlayServiceFragmentActivity (CLIENT_ALL). Alternatively, you can also specify the requested clients via {@link
- * #setRequestedClients}, but you must do so before {@link #onCreate} gets called, otherwise the call will have no
- * effect.
+ * Based on an example base class for games written by Bruno Oliveira (Google). The class is simplied to support the
+ * GAMES_CLIENT ONLY
  */
 @SuppressWarnings("WeakerAccess")
 public abstract class GooglePlayServiceFragmentActivity extends AppFragmentActivity implements GameHelper
         .GameHelperListener {
 
-    // The game helper object. This class is mainly a wrapper around this
-    // object.
+    // The game helper object. This class is mainly a wrapper around this object.
     private GameHelper mGameHelper;
 
-    // Request code to be used when invoking other Activities to complete the
-    // sign-in flow.
-    public static final int RC_RESOLVE = GameHelper.RC_RESOLVE;
-
-    // Request code to be used when invoking Activities whose result is not
-    // cared about.
+    // Request code to be used when invoking Activities whose result is not cared about.
     public static final int RC_UNUSED = GameHelper.RC_UNUSED;
 
-    // We expose these constants here because we don't want users of this class
-    // to have to know about GameHelper at all.
-    @SuppressWarnings("WeakerAccess")
-    private static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
-    public static final int CLIENT_APPSTATE = GameHelper.CLIENT_APPSTATE;
-    public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
-    public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
-
-    // Requested clients. By default, that's just the games client.
-    @SuppressWarnings("WeakerAccess")
-    private int mRequestedClients = CLIENT_GAMES;
-
-    // stores any additional scopes.
-    private String[] mAdditionalScopes;
-
-    private String mDebugTag = "GooglePlayServiceFragmentActivity";
+    private String mDebugTag = GooglePlayServiceFragmentActivity.class.getName();
     private boolean mDebugLog = false;
 
     /**
@@ -79,33 +46,6 @@ public abstract class GooglePlayServiceFragmentActivity extends AppFragmentActiv
         mGameHelper = new GameHelper(this);
     }
 
-    /**
-     * Constructs a GooglePlayServiceFragmentActivity with the requested clients.
-     *
-     * @param requestedClients
-     *         The requested clients (a combination of CLIENT_GAMES, CLIENT_PLUS and CLIENT_APPSTATE).
-     */
-    protected GooglePlayServiceFragmentActivity(int requestedClients) {
-        super();
-        setRequestedClients(requestedClients);
-    }
-
-    /**
-     * Sets the requested clients. The preferred way to set the requested clients is via the constructor, but this
-     * method is available if for some reason your code cannot do this in the constructor. This must be called before
-     * onCreate in order to have any effect. If called after onCreate, this method is a no-op.
-     *
-     * @param requestedClients
-     *         A combination of the flags CLIENT_GAMES, CLIENT_PLUS and CLIENT_APPSTATE, or CLIENT_ALL to request all
-     *         available clients.
-     * @param additionalScopes
-     *         . Scopes that should also be requested when the auth request is made.
-     */
-    void setRequestedClients(int requestedClients, String... additionalScopes) {
-        mRequestedClients = requestedClients;
-        mAdditionalScopes = additionalScopes;
-    }
-
     @Override
     public void onCreate(Bundle b) {
         super.onCreate(b);
@@ -113,7 +53,7 @@ public abstract class GooglePlayServiceFragmentActivity extends AppFragmentActiv
         if (mDebugLog) {
             mGameHelper.enableDebugLog(mDebugTag);
         }
-        mGameHelper.setup(this, mRequestedClients, mAdditionalScopes);
+        mGameHelper.setup(this);
     }
 
     @Override
@@ -138,32 +78,12 @@ public abstract class GooglePlayServiceFragmentActivity extends AppFragmentActiv
         return mGameHelper.getGamesClient();
     }
 
-    protected AppStateClient getAppStateClient() {
-        return mGameHelper.getAppStateClient();
-    }
-
-    protected PlusClient getPlusClient() {
-        return mGameHelper.getPlusClient();
-    }
-
-    protected boolean isSignedIn() {
-        return mGameHelper.isSignedIn();
-    }
-
     protected void beginUserInitiatedSignIn() {
         mGameHelper.beginUserInitiatedSignIn();
     }
 
     protected void signOut() {
         mGameHelper.signOut();
-    }
-
-    protected void showAlert(String title, String message) {
-        mGameHelper.showAlert(title, message);
-    }
-
-    protected void showAlert(String message) {
-        mGameHelper.showAlert(message);
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -173,29 +93,5 @@ public abstract class GooglePlayServiceFragmentActivity extends AppFragmentActiv
         if (mGameHelper != null) {
             mGameHelper.enableDebugLog(tag);
         }
-    }
-
-    protected String getInvitationId() {
-        return mGameHelper.getInvitationId();
-    }
-
-    protected void reconnectClients(int whichClients) {
-        mGameHelper.reconnectClients(whichClients);
-    }
-
-    protected String getScopes() {
-        return mGameHelper.getScopes();
-    }
-
-    protected String[] getScopesArray() {
-        return mGameHelper.getScopesArray();
-    }
-
-    protected boolean hasSignInError() {
-        return mGameHelper.hasSignInError();
-    }
-
-    protected GameHelper.SignInFailureReason getSignInError() {
-        return mGameHelper.getSignInError();
     }
 }
