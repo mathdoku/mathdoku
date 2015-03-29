@@ -96,6 +96,8 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements A
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // The method is required because of implementing interface ActionBar.TabListener. No specific action however
+        // is needed when unselecting a tab.
     }
 
     @Override
@@ -107,6 +109,8 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements A
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // The method is required because of implementing interface ActionBar.TabListener. No specific action however
+        // is needed when reselecting a tab.
     }
 
     @Override
