@@ -270,7 +270,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
         List<String> typesList = new ArrayList<String>();
 
         // Add series for elapsed time (including cheat time) of solved games
-        if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.FINISHED_SOLVED, true, true)) {
+        if (historicStatistics.containsTotalPlayingTimeDataPointForXYSeries(SolvingAttemptStatus.FINISHED_SOLVED)) {
             typesList.add(BarChart.TYPE);
             xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.FINISHED_SOLVED,
                                                                              getResources().getString(
@@ -283,7 +283,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
         boolean cheatLegendDisplayed = false;
 
         // Add series for cheat time of solved games
-        if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.FINISHED_SOLVED, false, true)) {
+        if (historicStatistics.containsCheatPenaltyTimeDataPointForXYSeries(SolvingAttemptStatus.FINISHED_SOLVED)) {
             typesList.add(BarChart.TYPE);
             xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.FINISHED_SOLVED,
                                                                              getResources().getString(
@@ -304,7 +304,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 
         // Add series for elapsed time (including cheat time) of unfinished
         // games
-        if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.UNFINISHED, true, true)) {
+        if (historicStatistics.containsTotalPlayingTimeDataPointForXYSeries(SolvingAttemptStatus.UNFINISHED)) {
             // Elapsed time so far including cheats
             typesList.add(BarChart.TYPE);
             xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.UNFINISHED,
@@ -315,7 +315,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
         }
 
         // Add series for cheat time of solved games
-        if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.UNFINISHED, false, true)) {
+        if (historicStatistics.containsCheatPenaltyTimeDataPointForXYSeries(SolvingAttemptStatus.UNFINISHED)) {
             typesList.add(BarChart.TYPE);
             xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.UNFINISHED,
                                                                              getResources().getString(
@@ -333,7 +333,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
         }
 
         // Add series for games in which the solution was revealed
-        if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.REVEALED_SOLUTION, true, true)) {
+        if (historicStatistics.containsTotalPlayingTimeDataPointForXYSeries(SolvingAttemptStatus.REVEALED_SOLUTION)) {
             typesList.add(BarChart.TYPE);
 
             xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeriesSolutionRevealed(
@@ -354,7 +354,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
         // Add series for the historic average of solved games. As this series
         // is displayed as a line chart, it can only be shown if at least two
         // data points in the series are available.
-        if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.FINISHED_SOLVED, true, true)) {
+        if (historicStatistics.containsTotalPlayingTimeDataPointForXYSeries(SolvingAttemptStatus.FINISHED_SOLVED)) {
             XYSeries xySeries = historicStatistics.getXYSeriesHistoricAverage(SolvingAttemptStatus.FINISHED_SOLVED,
                                                                               getResources().getString(
                                                                                       R.string.statistics_elapsed_time_historic_solved_average_serie),
@@ -371,7 +371,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 
         // Create a table with extra data for fastest, average and slowest time.
         TableLayout tableLayout = null;
-        if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.FINISHED_SOLVED, true, true)) {
+        if (historicStatistics.containsTotalPlayingTimeDataPointForXYSeries(SolvingAttemptStatus.FINISHED_SOLVED)) {
             tableLayout = new TableLayout(getActivity());
             TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                                                                                       LayoutParams.WRAP_CONTENT);

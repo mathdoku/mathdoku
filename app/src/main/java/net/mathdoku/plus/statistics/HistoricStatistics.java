@@ -159,25 +159,36 @@ public class HistoricStatistics {
      * @param solvingAttemptStatus
      *         The required status of the data points to be selected. Use null in case no selection on status has to be
      *         made.
-     * @param includeElapsedTime
-     *         True in case the elapsed time should be included in the values of the return series.
-     * @param includeCheatTime
-     *         True in case the cheat time should be included in the values of the return series.
      * @return True in case the series contain at least one data point.
      */
-    @SuppressWarnings("SameParameterValue")
-    public boolean isXYSeriesUsed(SolvingAttemptStatus solvingAttemptStatus, boolean includeElapsedTime,
-                                  boolean includeCheatTime) {
-        // In case a limit is specified, only the last <limit> number of
-        // data points are converted to the series.
+    public boolean containsTotalPlayingTimeDataPointForXYSeries(SolvingAttemptStatus solvingAttemptStatus) {
+        // In case a limit is specified, only the last <limit> number of data points are converted to the series.
         int start = getIndexFirstEntry();
         int index = 1;
 
         for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
             if (index >= start) {
-                if (dataPoint.getSolvingAttemptStatus() == solvingAttemptStatus || solvingAttemptStatus == null) {
-                    if (includeElapsedTime && dataPoint.getElapsedTimeExcludingCheatPenalty() > 0 || includeCheatTime
-                            && dataPoint.getCheatPenalty() > 0) {
+                if (dataPoint.getSolvingAttemptStatus() == solvingAttemptStatus) {
+                    if (dataPoint.getElapsedTimeExcludingCheatPenalty() > 0 || dataPoint.getCheatPenalty() > 0) {
+                        return true;
+                    }
+                }
+            }
+            index++;
+        }
+
+        return false;
+    }
+
+    public boolean containsCheatPenaltyTimeDataPointForXYSeries(SolvingAttemptStatus solvingAttemptStatus) {
+        // In case a limit is specified, only the last <limit> number of data points are converted to the series.
+        int start = getIndexFirstEntry();
+        int index = 1;
+
+        for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
+            if (index >= start) {
+                if (dataPoint.getSolvingAttemptStatus() == solvingAttemptStatus) {
+                    if (dataPoint.getCheatPenalty() > 0) {
                         return true;
                     }
                 }
