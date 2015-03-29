@@ -262,7 +262,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
 
         if (pieChartSeries.getCategorySeries()
                 .getItemCount() > 1 || mGridStatistics.mCellsRevealed > 0) {
-            addChartToStatisticsSection(null, getResources().getString(R.string.progress_chart_title),
+            addChartToStatisticsSection(getResources().getString(R.string.progress_chart_title),
                                         ChartFactory.getPieChartView(getActivity(), pieChartSeries.getCategorySeries(),
                                                                      pieChartSeries.getRenderer()), null,
                                         getResources().getString(R.string.progress_chart_body));
@@ -288,11 +288,11 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
             barChartSeries.setTextSize(mDefaultTextSize);
             barChartSeries.setBarWidth(getBarWidth());
             // Add new statistics section to the activity
-            addChartToStatisticsSection(AVOIDABLE_MOVES_CHART_TAG_ID,
-                                        getResources().getString(R.string.avoidable_moves_chart_title),
+            View view = addChartToStatisticsSection(getResources().getString(R.string.avoidable_moves_chart_title),
                                         ChartFactory.getBarChartView(getActivity(), barChartSeries.getDataset(),
                                                                      barChartSeries.getRenderer(), Type.DEFAULT), null,
                                         getResources().getString(R.string.avoidable_moves_chart_body));
+            view.setTag(AVOIDABLE_MOVES_CHART_TAG_ID);
         }
     }
 
@@ -316,11 +316,11 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
             barChartSeries.setYTitle(getResources().getString(R.string.statistics_cheats_yaxis_description));
             barChartSeries.setTextSize(mDefaultTextSize);
             barChartSeries.setBarWidth(getBarWidth());
-            addChartToStatisticsSection(CHEATS_CHART_TAG_ID,
-                                        getResources().getString(R.string.statistics_cheats_used_title),
+            View view = addChartToStatisticsSection(getResources().getString(R.string.statistics_cheats_used_title),
                                         ChartFactory.getBarChartView(getActivity(), barChartSeries.getDataset(),
                                                                      barChartSeries.getRenderer(), Type.DEFAULT), null,
                                         getResources().getString(R.string.statistics_cheats_used_body));
+            view.setTag(CHEATS_CHART_TAG_ID);
         }
     }
 

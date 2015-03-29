@@ -89,30 +89,20 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
     /**
      * Add a statistics section to the activity.
-     *
-     * @param tag
-     *         The tag which can be used to identify the view.
-     * @param title
+     *  @param title
      *         The title of this section. Null in case no title has to be displayed.
      * @param chart
      *         The chart view. Null in case no chart has to be displayed.
      * @param extraDataView
-     *         An additional view which has to be displayed between chart and explanation.
+ *         An additional view which has to be displayed between chart and explanation.
      * @param explanation
-     *         The explanatory text of this section which will be displayed with respect to settings. Null in case
-     *         explanation is never available.
+*         The explanatory text of this section which will be displayed with respect to settings. Null in case
      */
-    protected void addChartToStatisticsSection(String tag, String title, GraphicalView chart, View extraDataView,
-                                               String explanation) {
+    protected View addChartToStatisticsSection(String title, GraphicalView chart, View extraDataView, String explanation) {
         // Inflate a new view for this statistics section
         View sectionView = mLayoutInflater.inflate(R.layout.statistics_section, null);
         if (sectionView == null) {
-            return;
-        }
-
-        // Add the tag to the view.
-        if (tag != null) {
-            sectionView.setTag(tag);
+            return null;
         }
 
         // Set title. The chart title of achartengine is not used.
@@ -163,6 +153,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
         // Add the section to the general charts layout
         mChartsLayout.addView(sectionView);
+
+        return sectionView;
     }
 
     protected void addViewToStatisticsSection(View view) {

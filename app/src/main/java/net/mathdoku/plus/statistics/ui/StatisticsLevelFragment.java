@@ -167,7 +167,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
         }
 
         // Add section to activity
-        addChartToStatisticsSection(null, getResources().getString(R.string.solved_chart_title),
+        addChartToStatisticsSection(getResources().getString(R.string.solved_chart_title),
                                     ChartFactory.getPieChartView(getActivity(), categorySeries, renderer), null,
                                     getResources().getString(R.string.solved_chart_body));
         return true;
@@ -191,7 +191,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 
         ElapsedTimeSeries elapsedTimeSeries = new ElapsedTimeSeries(historicStatistics, getResources());
         elapsedTimeSeries.setTextSize(mDefaultTextSize);
-        addChartToStatisticsSection(null, getResources().getString(R.string.statistics_elapsed_time_historic_title),
+        addChartToStatisticsSection(getResources().getString(R.string.statistics_elapsed_time_historic_title),
                                     ChartFactory.getCombinedXYChartView(getActivity(),
                                                                         elapsedTimeSeries.getXyMultipleSeriesDataset(),
                                                                         elapsedTimeSeries.getXyMultipleSeriesRenderer(),
