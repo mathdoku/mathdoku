@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.util.Util;
 
 import org.achartengine.GraphicalView;
 import org.achartengine.renderer.SimpleSeriesRenderer;
@@ -89,16 +90,13 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
     /**
      * Add a statistics section to the activity.
-     *  @param title
+     * @param title
      *         The title of this section. Null in case no title has to be displayed.
      * @param chart
      *         The chart view. Null in case no chart has to be displayed.
-     * @param extraDataView
- *         An additional view which has to be displayed between chart and explanation.
      * @param explanation
-*         The explanatory text of this section which will be displayed with respect to settings. Null in case
      */
-    protected View addChartToStatisticsSection(String title, GraphicalView chart, View extraDataView, String explanation) {
+    protected View addChartToStatisticsSection(String title, GraphicalView chart, String explanation) {
         // Inflate a new view for this statistics section
         View sectionView = mLayoutInflater.inflate(R.layout.statistics_section, null);
         if (sectionView == null) {
@@ -107,7 +105,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
         // Set title. The chart title of achartengine is not used.
         int titleHeightDIP = 0;
-        if (title != null && !title.isEmpty()) {
+        if (!Util.isNullOrEmpty(title)) {
             TextView textView = (TextView) sectionView.findViewById(R.id.statistics_section_title);
             if (textView != null) {
                 titleHeightDIP = textView.getPaddingTop() + (int) textView.getTextSize() +
@@ -130,15 +128,6 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
                 linearLayout.addView(chart);
                 linearLayout.setVisibility(View.VISIBLE);
-            }
-        }
-
-        // Add extra data
-        if (extraDataView != null) {
-            LinearLayout linearLayout = (LinearLayout) sectionView.findViewById(R.id.statistics_section_extra_data);
-            if (linearLayout != null) {
-                linearLayout.setVisibility(View.VISIBLE);
-                linearLayout.addView(extraDataView);
             }
         }
 

@@ -264,8 +264,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
                 .getItemCount() > 1 || mGridStatistics.mCellsRevealed > 0) {
             addChartToStatisticsSection(getResources().getString(R.string.progress_chart_title),
                                         ChartFactory.getPieChartView(getActivity(), pieChartSeries.getCategorySeries(),
-                                                                     pieChartSeries.getRenderer()), null,
-                                        getResources().getString(R.string.progress_chart_body));
+                                                                     pieChartSeries.getRenderer()), getResources()
+                            .getString(R.string.progress_chart_body));
         }
     }
 
@@ -290,7 +290,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
             // Add new statistics section to the activity
             View view = addChartToStatisticsSection(getResources().getString(R.string.avoidable_moves_chart_title),
                                         ChartFactory.getBarChartView(getActivity(), barChartSeries.getDataset(),
-                                                                     barChartSeries.getRenderer(), Type.DEFAULT), null,
+                                                                     barChartSeries.getRenderer(), Type.DEFAULT),
                                         getResources().getString(R.string.avoidable_moves_chart_body));
             view.setTag(AVOIDABLE_MOVES_CHART_TAG_ID);
         }
@@ -318,7 +318,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
             barChartSeries.setBarWidth(getBarWidth());
             View view = addChartToStatisticsSection(getResources().getString(R.string.statistics_cheats_used_title),
                                         ChartFactory.getBarChartView(getActivity(), barChartSeries.getDataset(),
-                                                                     barChartSeries.getRenderer(), Type.DEFAULT), null,
+                                                                     barChartSeries.getRenderer(), Type.DEFAULT),
                                         getResources().getString(R.string.statistics_cheats_used_body));
             view.setTag(CHEATS_CHART_TAG_ID);
         }

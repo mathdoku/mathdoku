@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -168,7 +169,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 
         // Add section to activity
         addChartToStatisticsSection(getResources().getString(R.string.solved_chart_title),
-                                    ChartFactory.getPieChartView(getActivity(), categorySeries, renderer), null,
+                                    ChartFactory.getPieChartView(getActivity(), categorySeries, renderer),
                                     getResources().getString(R.string.solved_chart_body));
         return true;
     }
@@ -191,13 +192,17 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 
         ElapsedTimeSeries elapsedTimeSeries = new ElapsedTimeSeries(historicStatistics, getResources());
         elapsedTimeSeries.setTextSize(mDefaultTextSize);
-        addChartToStatisticsSection(getResources().getString(R.string.statistics_elapsed_time_historic_title),
-                                    ChartFactory.getCombinedXYChartView(getActivity(),
-                                                                        elapsedTimeSeries.getXyMultipleSeriesDataset(),
-                                                                        elapsedTimeSeries.getXyMultipleSeriesRenderer(),
-                                                                        elapsedTimeSeries.getTypes()),
-                                    getSummaryTableLayout(historicStatistics),
-                                    getResources().getString(R.string.statistics_elapsed_time_historic_body));
+        View view = addChartToStatisticsSection(
+                getResources().getString(R.string.statistics_elapsed_time_historic_title),
+                ChartFactory.getCombinedXYChartView(getActivity(), elapsedTimeSeries.getXyMultipleSeriesDataset(),
+                                                    elapsedTimeSeries.getXyMultipleSeriesRenderer(),
+                                                    elapsedTimeSeries.getTypes()),
+                getResources().getString(R.string.statistics_elapsed_time_historic_body));
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.statistics_section_extra_data);
+        if (linearLayout != null) {
+            linearLayout.setVisibility(View.VISIBLE);
+            linearLayout.addView(getSummaryTableLayout(historicStatistics));
+        }
 
         return true;
     }
@@ -217,13 +222,16 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
                                                       null));
             tableLayout.addView(createSummaryTableRow(tableLayoutParams, getResources().getString(
                                                               R.string.statistics_elapsed_time_historic_solved_fastest),
-                                                      Util.durationTimeToString(historicStatistics.getSolvedFastest())));
+                                                      Util.durationTimeToString(
+                                                              historicStatistics.getSolvedFastest())));
             tableLayout.addView(createSummaryTableRow(tableLayoutParams, getResources().getString(
                                                               R.string.statistics_elapsed_time_historic_solved_average),
-                                                      Util.durationTimeToString(historicStatistics.getSolvedAverage())));
+                                                      Util.durationTimeToString(
+                                                              historicStatistics.getSolvedAverage())));
             tableLayout.addView(createSummaryTableRow(tableLayoutParams, getResources().getString(
                                                               R.string.statistics_elapsed_time_historic_solved_slowest),
-                                                      Util.durationTimeToString(historicStatistics.getSolvedSlowest())));
+                                                      Util.durationTimeToString(
+                                                              historicStatistics.getSolvedSlowest())));
         }
         return tableLayout;
     }
