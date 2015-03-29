@@ -9,9 +9,11 @@ abstract class BasePainter {
         mPainter = painter;
     }
 
-    // Override this method in case the painter should respond to a change of the theme.
-    public void setTheme(GridTheme theme) {}
+    public void setTheme(GridTheme theme) {
+        // Override this method in case the painter should respond to a change of the theme.
+    }
 
-    // Override this method in case the painter should respond to a change of the size of the cell.
-    protected void setCellSize(float size) {}
+    protected void setCellSize(float size) {
+        // Override this method in case the painter should respond to a change of the size of the cell.
+    }
 }
