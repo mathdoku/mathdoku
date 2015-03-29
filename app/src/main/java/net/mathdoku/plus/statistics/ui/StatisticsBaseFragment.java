@@ -30,7 +30,6 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
     // Text size for body text
     protected int mDefaultTextSize;
-    int mDefaultTextSizeInDIP;
 
     // The inflater for this activity.
     private LayoutInflater mLayoutInflater;
@@ -63,8 +62,6 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
             "UnusedParameters") Bundle savedInstanceState) {
         // Get default sizes for text
         mDefaultTextSize = getResources().getDimensionPixelSize(R.dimen.text_size_default);
-        mDefaultTextSizeInDIP = (int) (getResources().getDimension(
-                net.mathdoku.plus.R.dimen.text_size_default) / getResources().getDisplayMetrics().density);
 
         // Chart description will be displayed by default.
         mDisplayStatisticDescription = true;
@@ -175,45 +172,6 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
         mChartsLayout.addView(view);
     }
 
-
-    /**
-     * Creates a new row in a data table consisting of two columns (label and value).
-     *
-     * @param tableLayoutParams
-     *         The layout parameters for the table.
-     * @param label
-     *         The label (required) for the row
-     * @param value
-     *         The value (optional) for the row
-     * @return The table row with fields for label and optionally the value.
-     */
-    TableRow createDataTableRow(TableLayout.LayoutParams tableLayoutParams, String label, String value) {
-        // Create new TableRow
-        TableRow tableRow = new TableRow(getActivity());
-        tableRow.setLayoutParams(tableLayoutParams);
-
-        // Set layout parameters for fields in the row
-        TableRow.LayoutParams tableRowLayoutParams = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT,
-                                                                               LayoutParams.WRAP_CONTENT);
-
-        // Add label to row
-        TextView textViewLabel = new TextView(getActivity());
-        textViewLabel.setLayoutParams(tableRowLayoutParams);
-        textViewLabel.setText(label);
-        textViewLabel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mDefaultTextSizeInDIP);
-        tableRow.addView(textViewLabel);
-
-        // Add value to row
-        if (value != null) {
-            TextView textViewValue = new TextView(getActivity());
-            textViewValue.setLayoutParams(tableRowLayoutParams);
-            textViewValue.setText(value);
-            textViewValue.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mDefaultTextSizeInDIP);
-            tableRow.addView(textViewValue);
-        }
-
-        return tableRow;
-    }
 
     /**
      * Sets whether the chart descriptions have to be displayed.

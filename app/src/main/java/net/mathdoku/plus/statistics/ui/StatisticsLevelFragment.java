@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import net.mathdoku.plus.Preferences;
@@ -30,6 +31,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 
     public static final String ARG_GRID_SIZE_MIN = "grid_size_min";
     public static final String ARG_GRID_SIZE_MAX = "grid_size_max";
+    private int mDefaultTextSizeInDIP;
 
     // Grid size for currently selected grid
     private int mMinGridSize;
@@ -52,6 +54,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
         mPreferences = Preferences.getInstance();
         setDisplayChartDescription(mPreferences.isStatisticsChartDescriptionVisible());
         mPreferences.registerOnSharedPreferenceChangeListener(this);
+
+        mDefaultTextSizeInDIP = (int) (getResources().getDimension(
+                net.mathdoku.plus.R.dimen.text_size_default) / getResources().getDisplayMetrics().density);
+
 
         mCumulativeStatistics = new CumulativeStatisticsSelector(mMinGridSize, mMaxGridSize).getCumulativeStatistics();
 
@@ -205,20 +211,44 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
                                                                                       LayoutParams.WRAP_CONTENT);
             tableLayout.setLayoutParams(tableLayoutParams);
 
-            tableLayout.addView(createDataTableRow(tableLayoutParams, getResources().getString(
-                                                           R.string.chart_serie_solved) + String.format(" (%d)",
-                                                                                                        mCumulativeStatistics.mCountSolvedManually),
-                                                   null));
-            tableLayout.addView(createDataTableRow(tableLayoutParams, getResources().getString(
-                                                           R.string.statistics_elapsed_time_historic_solved_fastest),
-                                                   Util.durationTimeToString(historicStatistics.getSolvedFastest())));
-            tableLayout.addView(createDataTableRow(tableLayoutParams, getResources().getString(
-                                                           R.string.statistics_elapsed_time_historic_solved_average),
-                                                   Util.durationTimeToString(historicStatistics.getSolvedAverage())));
-            tableLayout.addView(createDataTableRow(tableLayoutParams, getResources().getString(
-                                                           R.string.statistics_elapsed_time_historic_solved_slowest),
-                                                   Util.durationTimeToString(historicStatistics.getSolvedSlowest())));
+            tableLayout.addView(createSummaryTableRow(tableLayoutParams, getResources().getString(
+                                                              R.string.chart_serie_solved) + String.format(" (%d)",
+                                                                                                           mCumulativeStatistics.mCountSolvedManually),
+                                                      null));
+            tableLayout.addView(createSummaryTableRow(tableLayoutParams, getResources().getString(
+                                                              R.string.statistics_elapsed_time_historic_solved_fastest),
+                                                      Util.durationTimeToString(historicStatistics.getSolvedFastest())));
+            tableLayout.addView(createSummaryTableRow(tableLayoutParams, getResources().getString(
+                                                              R.string.statistics_elapsed_time_historic_solved_average),
+                                                      Util.durationTimeToString(historicStatistics.getSolvedAverage())));
+            tableLayout.addView(createSummaryTableRow(tableLayoutParams, getResources().getString(
+                                                              R.string.statistics_elapsed_time_historic_solved_slowest),
+                                                      Util.durationTimeToString(historicStatistics.getSolvedSlowest())));
         }
         return tableLayout;
+    }
+
+    private TableRow createSummaryTableRow(TableLayout.LayoutParams tableLayoutParams, String label, String value) {
+        TableRow tableRow = new TableRow(getActivity());
+
+        tableRow.setLayoutParams(tableLayoutParams);
+        TableRow.LayoutParams tableRowLayoutParams = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT,
+                                                                               LayoutParams.WRAP_CONTENT);
+        tableRow.addView(createSummaryTextView(tableRowLayoutParams, label));
+        if (value != null) {
+            tableRow.addView(createSummaryTextView(tableRowLayoutParams, value));
+        }
+
+        return tableRow;
+    }
+
+    private TextView createSummaryTextView(TableRow.LayoutParams tableRowLayoutParams, String label) {
+        TextView textViewLabel = new TextView(getActivity());
+
+        textViewLabel.setLayoutParams(tableRowLayoutParams);
+        textViewLabel.setText(label);
+        textViewLabel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mDefaultTextSizeInDIP);
+
+        return textViewLabel;
     }
 }
