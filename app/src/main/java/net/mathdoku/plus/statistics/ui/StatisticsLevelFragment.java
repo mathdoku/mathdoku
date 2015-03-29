@@ -337,7 +337,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
             typesList.add(BarChart.TYPE);
 
             xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeriesSolutionRevealed(
-                    getResources().getString(R.string.statistics_elapsed_time_historic_cheat_time), maxY, true, true));
+                    getResources().getString(R.string.statistics_elapsed_time_historic_cheat_time), maxY));
 
             SimpleSeriesRenderer simpleSeriesRenderer = createSimpleSeriesRenderer(chartRed1);
 

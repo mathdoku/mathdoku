@@ -260,33 +260,19 @@ public class HistoricStatistics {
      *         The maximum Y value to be used for each game in which the solution was revealed.
      * @return A XYSeries object which can be processed by AChartEngine
      */
-    @SuppressWarnings("SameParameterValue")
-    public XYSeries getXYSeriesSolutionRevealed(String title, double maxY, boolean includeElapsedTime,
-                                                boolean includeCheatTime) {
+    public XYSeries getXYSeriesSolutionRevealed(String title, double maxY) {
         XYSeries xySeries = new XYSeries(title);
-        if (!includeElapsedTime && !includeCheatTime) {
-            // No data points will be included in series.
-            return xySeries;
-        }
 
-        // In case a limit is specified, only the last <limit> number of
-        // data points are converted to the series.
+        // In case a limit is specified, only the last <limit> number of data points are converted to the series.
         int start = getIndexFirstEntry();
         int index = 1;
 
-        // For games in which the solution is revealed the Y-value of the
-        // games will always be equals to the maximum Y-value.
+        // For games in which the solution is revealed the Y-value of the games will always be equals to the maximum Y-value.
         for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
             if (index >= start) {
                 double value = 0;
                 if (dataPoint.getSolvingAttemptStatus() == SolvingAttemptStatus.REVEALED_SOLUTION) {
-                    if (includeElapsedTime) {
-                        value = includeCheatTime ? maxY : Math.min(dataPoint.getElapsedTimeExcludingCheatPenalty(),
-                                                                   maxY);
-                    } else {
-                        value = Math.max(Math.min(maxY - dataPoint.getElapsedTimeExcludingCheatPenalty(),
-                                                  dataPoint.getCheatPenalty()), 0);
-                    }
+                        value = maxY;
                 }
                 xySeries.add(index, value);
             }
