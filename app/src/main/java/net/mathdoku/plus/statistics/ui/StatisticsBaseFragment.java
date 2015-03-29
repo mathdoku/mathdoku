@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import net.mathdoku.plus.R;
@@ -37,21 +35,20 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
     private boolean mDisplayStatisticDescription;
 
     // Green colors will be used at things which are positive
-    protected static final int chartGreen1 = 0xFF80FF00;
-    static final int chartGreen2 = 0xFF59B200;
+    protected static final int COLOR_GREEN = 0xFF80FF00;
 
     // Grey colors will be used at things which are neutral
-    protected static final int chartGrey1 = 0xFFD4D4D4;
-    protected static final int chartSignal1 = 0xFFFF00FF;
-    protected static final int chartSignal2 = 0xFF8000FF;
-    protected static final int chartSignal3 = 0xFF0000FF;
+    protected static final int COLOR_GREY = 0xFFD4D4D4;
+
+    protected static final int COLOR_PINK = 0xFFFF00FF;
+    protected static final int COLOR_PURPLE = 0xFF8000FF;
+    protected static final int COLOR_BLUE = 0xFF0000FF;
 
     // Green colors will be used at things which are negative
-    protected static final int chartRed1 = 0xFFFF0000;
-    protected static final int chartRed2 = 0xFFFF3300;
-    protected static final int chartRed3 = 0xFFB22400;
-    protected static final int chartRed4 = 0xFFFECCBF;
-    static final int chartRed5 = 0xFFFE9980;
+    protected static final int COLOR_RED_1 = 0xFFFF0000;
+    protected static final int COLOR_RED_2 = 0xFFFF3300;
+    protected static final int COLOR_RED_3 = 0xFFB22400;
+    protected static final int COLOR_RED_4 = 0xFFFECCBF;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

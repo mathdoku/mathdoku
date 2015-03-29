@@ -252,13 +252,13 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
 
         PieChartSeries pieChartSeries = new PieChartSeries(mDefaultTextSize);
         pieChartSeries.addCategory(getResources().getString(R.string.progress_chart_cells_filled),
-                                   mGridStatistics.mCellsFilled, totalCells, chartGreen1);
+                                   mGridStatistics.mCellsFilled, totalCells, COLOR_GREEN);
         pieChartSeries.addCategory(getResources().getString(R.string.progress_chart_cells_revealed),
-                                   mGridStatistics.mCellsRevealed, totalCells, chartRed1);
+                                   mGridStatistics.mCellsRevealed, totalCells, COLOR_RED_1);
         pieChartSeries.addCategory(getResources().getString(R.string.progress_chart_cells_empty),
-                                   mGridStatistics.mCellsEmpty, totalCells, chartGrey1);
+                                   mGridStatistics.mCellsEmpty, totalCells, COLOR_GREY);
         pieChartSeries.addCategory(getResources().getString(R.string.progress_chart_cells_revealed),
-                                   mGridStatistics.mCellsRevealed, totalCells, chartRed3);
+                                   mGridStatistics.mCellsRevealed, totalCells, COLOR_RED_3);
 
         if (pieChartSeries.getCategorySeries()
                 .getItemCount() > 1 || mGridStatistics.mCellsRevealed > 0) {
@@ -275,13 +275,13 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
     private void createAvoidableMovesChart() {
         BarChartSeries barChartSeries = new BarChartSeries();
         barChartSeries.addSeries(getResources().getString(R.string.avoidable_moves_chart_entered_value_replaced),
-                                 mGridStatistics.mEnteredValueReplaced, chartGreen1);
+                                 mGridStatistics.mEnteredValueReplaced, COLOR_GREEN);
         barChartSeries.addSeries(getResources().getString(R.string.avoidable_moves_chart_maybe_value_used),
-                                 mGridStatistics.mMaybeValue, chartSignal1);
+                                 mGridStatistics.mMaybeValue, COLOR_PINK);
         barChartSeries.addSeries(getResources().getString(R.string.avoidable_moves_chart_undo_button_used),
-                                 mGridStatistics.mActionUndoMove, chartSignal2);
+                                 mGridStatistics.mActionUndoMove, COLOR_PURPLE);
         barChartSeries.addSeries(getResources().getString(R.string.avoidable_moves_chart_clear_used),
-                                 mGridStatistics.mActionClearCell + mGridStatistics.mActionClearGrid, chartSignal3);
+                                 mGridStatistics.mActionClearCell + mGridStatistics.mActionClearGrid, COLOR_BLUE);
 
         if (!barChartSeries.isEmpty()) {
             barChartSeries.setYTitle(getResources().getString(R.string.avoidable_moves_yaxis_description));
@@ -302,14 +302,14 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
     private void createUsedCheatsChart() {
         BarChartSeries barChartSeries = new BarChartSeries();
         barChartSeries.addSeries(getResources().getString(R.string.statistics_cheats_check_progress),
-                                 mGridStatistics.mActionCheckProgress, chartRed1);
+                                 mGridStatistics.mActionCheckProgress, COLOR_RED_1);
         barChartSeries.addSeries(getResources().getString(R.string.statistics_cheats_cells_revealed),
-                                 mGridStatistics.mActionRevealCell, chartRed2);
+                                 mGridStatistics.mActionRevealCell, COLOR_RED_2);
         barChartSeries.addSeries(getResources().getString(R.string.statistics_cheats_operators_revealed),
-                                 mGridStatistics.mActionRevealOperator, chartRed3);
+                                 mGridStatistics.mActionRevealOperator, COLOR_RED_3);
         if (mGridStatistics.isSolutionRevealed()) {
             barChartSeries.addSeries(getResources().getString(R.string.statistics_cheats_solution_revealed),
-                                     Y_VALUE_CHEAT_SOLUTION_REVEALED, chartRed4);
+                                     Y_VALUE_CHEAT_SOLUTION_REVEALED, COLOR_RED_4);
         }
 
         if (!barChartSeries.isEmpty()) {

@@ -85,7 +85,7 @@ class ElapsedTimeSeries {
                                                                    resources.getString(
                                                                            R.string.statistics_elapsed_time_historic_elapsed_time_solved),
                                                                    yScale));
-            xyMultipleSeriesRenderer.addSeriesRenderer(createDefaultRenderer(StatisticsBaseFragment.chartGreen1));
+            xyMultipleSeriesRenderer.addSeriesRenderer(createDefaultRenderer(StatisticsBaseFragment.COLOR_GREEN));
         }
 
         // Add series for cheat time of solved games
@@ -109,7 +109,7 @@ class ElapsedTimeSeries {
     private SimpleSeriesRenderer createCheatRenderer() {
         SimpleSeriesRenderer simpleSeriesRenderer = new SimpleSeriesRenderer();
 
-        simpleSeriesRenderer.setColor(StatisticsBaseFragment.chartRed1);
+        simpleSeriesRenderer.setColor(StatisticsBaseFragment.COLOR_RED_1);
 
         // The cheat legend should only be displayed once
         // noinspection ConstantConditions
@@ -133,7 +133,7 @@ class ElapsedTimeSeries {
             xyMultipleSeriesDataset.addSeries(
                     historicStatistics.getTotalPlayingTimeXYSeries(SolvingAttemptStatus.UNFINISHED, resources.getString(
                             R.string.statistics_elapsed_time_historic_elapsed_time_unfinished), yScale));
-            xyMultipleSeriesRenderer.addSeriesRenderer(createDefaultRenderer(StatisticsBaseFragment.chartGrey1));
+            xyMultipleSeriesRenderer.addSeriesRenderer(createDefaultRenderer(StatisticsBaseFragment.COLOR_GREY));
         }
 
         // Add series for cheat time of solved games
@@ -170,7 +170,7 @@ class ElapsedTimeSeries {
                 typesList.add(LineChart.TYPE);
                 xyMultipleSeriesDataset.addSeries(xySeries);
                 XYSeriesRenderer xySeriesRenderer = new XYSeriesRenderer();
-                xySeriesRenderer.setColor(StatisticsBaseFragment.chartSignal2);
+                xySeriesRenderer.setColor(StatisticsBaseFragment.COLOR_PURPLE);
                 xySeriesRenderer.setLineWidth(4);
                 xyMultipleSeriesRenderer.addSeriesRenderer(xySeriesRenderer);
             }

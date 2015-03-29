@@ -146,7 +146,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
                                        mCumulativeStatistics.mCountSolvedManually + ")",
                                (double) mCumulativeStatistics.mCountSolvedManually / mCumulativeStatistics
                                        .mCountStarted);
-            renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
+            renderer.addSeriesRenderer(createSimpleSeriesRenderer(COLOR_GREEN));
         }
 
         // Games for which the solution is revealed
@@ -155,7 +155,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
                                        mCumulativeStatistics.mCountSolutionRevealed + ")",
                                (double) mCumulativeStatistics.mCountSolutionRevealed / mCumulativeStatistics
                                        .mCountStarted);
-            renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
+            renderer.addSeriesRenderer(createSimpleSeriesRenderer(COLOR_RED_1));
         }
 
         // Games which have not yet been finished
@@ -163,7 +163,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
         if (countUnfinished > 0) {
             categorySeries.add(getResources().getString(R.string.chart_serie_unfinished) + " (" + countUnfinished + ")",
                                (double) countUnfinished / mCumulativeStatistics.mCountStarted);
-            renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
+            renderer.addSeriesRenderer(createSimpleSeriesRenderer(COLOR_GREY));
         }
 
         // Add section to activity
