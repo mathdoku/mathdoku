@@ -135,6 +135,23 @@ public class HistoricStatistics {
         mLimit = XY_SERIES_NOT_LIMITED;
     }
 
+    public boolean isEmpty() {
+        // In case a limit is specified, only the last <limit> number of data points are converted to the series.
+        int start = getIndexFirstEntry();
+        int index = 1;
+
+        for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
+            if (index >= start) {
+                if (dataPoint.getElapsedTimeExcludingCheatPenalty() > 0 || dataPoint.getCheatPenalty() > 0) {
+                    return false;
+                }
+            }
+            index++;
+        }
+
+        return true;
+    }
+
     /**
      * Checks whether at least one data point for the given status exists. If so, the corresponding series can be
      * plotted.

@@ -188,13 +188,11 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
     private boolean createElapsedTimeHistoryChart() {
         HistoricStatistics historicStatistics = new HistoricStatistics(mMinGridSize, mMaxGridSize);
 
-        // The number of entries to be displayed is restricted to the maximum
-        // set in the preferences.
+        // The number of entries to be displayed is restricted to the maximum set in the preferences.
         historicStatistics.setLimit(Preferences.getInstance()
                                             .getStatisticsSettingElapsedTimeChartMaximumGames());
 
-        // Check if at least one series will contain data in the limited range.
-        if (!historicStatistics.isXYSeriesUsed(null, true, true)) {
+        if (historicStatistics.isEmpty()) {
             return false;
         }
 
