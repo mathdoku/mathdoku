@@ -21,7 +21,7 @@ public class TickerTape extends HorizontalScrollView {
     private static final int SCROLL_STEP_SIZE = 100;
 
     // Private package access for unit testing.
-    static final int ID_VIEW_TICKER_TAPE_LINEAR_LAYOUT = 1012;
+    static final String TAG_VIEW_TICKER_TAPE_LINEAR_LAYOUT = "TICKER TAPE LINEAR LAYOUT";
 
     private final Context context;
     private final LinearLayout tickerTapeLinearLayout;
@@ -63,7 +63,7 @@ public class TickerTape extends HorizontalScrollView {
         // Add a linear layout to the scroll view which will hold all the text
         // view for all items.
         tickerTapeLinearLayout = new LinearLayout(this.context);
-        tickerTapeLinearLayout.setId(ID_VIEW_TICKER_TAPE_LINEAR_LAYOUT);
+        tickerTapeLinearLayout.setTag(TAG_VIEW_TICKER_TAPE_LINEAR_LAYOUT);
         tickerTapeLinearLayout.setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                                                                 textSizeInPixels + mTextVerticalMargin));
         addView(tickerTapeLinearLayout);

@@ -60,7 +60,7 @@ public class TickerTapeTest {
     }
 
     private void assertThatTickerTapeContainsItem(String item) {
-        View view = tickerTape.findViewById(TickerTape.ID_VIEW_TICKER_TAPE_LINEAR_LAYOUT);
+        View view = tickerTape.findViewWithTag(TickerTape.TAG_VIEW_TICKER_TAPE_LINEAR_LAYOUT);
         assertThat(view, is(notNullValue()));
 
         ArrayList<View> views = new ArrayList<View>();
