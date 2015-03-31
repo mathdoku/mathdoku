@@ -4,6 +4,9 @@ import android.graphics.DashPathEffect;
 import android.graphics.PathEffect;
 import android.graphics.Typeface;
 
+import net.mathdoku.plus.puzzle.ui.theme.LightTheme;
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
+
 public class Painter {
     // Singleton reference to the GridPainter object.
     private static Painter mPainterSingletonInstance = null;
@@ -31,7 +34,7 @@ public class Painter {
     }
 
     // Theme installed in painter
-    private GridTheme mTheme;
+    private Theme theme;
 
     // Reference to all sub painters
     private final GridPainter mGridPainter;
@@ -81,8 +84,7 @@ public class Painter {
         // Set the size of the borders.
         setBorderSizes(false);
 
-        // Apply default theme to the painters.
-        setTheme(GridTheme.LIGHT);
+        setTheme(LightTheme.getInstance());
     }
 
     /**
@@ -112,22 +114,20 @@ public class Painter {
     }
 
     /**
-     * Apply settings for the given theme on the painter objects.
+     * Apply settings for the given gridTheme on the painter objects.
      *
      * @param theme
      *         The theme to be set.
      */
-    public void setTheme(GridTheme theme) {
-        if (theme == mTheme) {
+    public void setTheme(Theme theme) {
+        if (this.theme == theme) {
             // Theme has not changed.
             return;
         }
-        mTheme = theme;
 
-        // Change default typeface and path effects
         setInputModeColors(theme);
 
-        // Propagate theme settings to children
+        // Propagate gridTheme settings to children
         mGridPainter.setTheme(theme);
         mCagePainter.setTheme(theme);
         mCellPainter.setTheme(theme);
@@ -177,25 +177,13 @@ public class Painter {
     /**
      * Set the text colors to be used in all painters.
      *
-     * @param gridTheme
+     * @param theme
      *         The theme for which the path effect has to be set.
      */
-    private void setInputModeColors(GridTheme gridTheme) {
-        // Colors of highlighted digits (also use as base for the swipe border
-        // colors) should be equal for all themes as the input_mode-images are
-        // currently only available in this color set.
-        mHighlightedTextColorNormalInputMode = 0xFF0C97FA;
-        mHighlightedTextColorMaybeInputMode = 0xFFFF8A00;
-
-        // The default color will of course be set relevant to the theme.
-        switch (gridTheme) {
-            case LIGHT:
-                mDefaultTextColor = 0xFF212121;
-                break;
-            case DARK:
-                mDefaultTextColor = 0xFFFFFFFF;
-                break;
-        }
+    private void setInputModeColors(Theme theme) {
+        mHighlightedTextColorNormalInputMode = theme.getHighlightedTextColorNormalInputMode();
+        mHighlightedTextColorMaybeInputMode = theme.getHighlightedTextColorMaybeInputMode();
+        mDefaultTextColor = theme.getDefaultTextColor();
     }
 
     /**

@@ -5,8 +5,8 @@ import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardOverviewActivity;
-import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
+import net.mathdoku.plus.puzzle.ui.theme.LightTheme;
 import net.mathdoku.plus.util.Util;
 
 import org.junit.After;
@@ -271,8 +271,7 @@ public class PreferencesDefaultValuesTest {
 
     @Test
     public void getTheme() throws Exception {
-        assertThat(preferences.getTheme(), is(Painter.GridTheme.LIGHT));
-        // Class preferences does not contain a setter method for this preference.
+        assertThat(preferences.getTheme() instanceof LightTheme, is(true));
     }
 
     @Test

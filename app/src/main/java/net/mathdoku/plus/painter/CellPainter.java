@@ -4,7 +4,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
-import net.mathdoku.plus.painter.Painter.GridTheme;
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
 
 public class CellPainter extends BorderPainter {
 
@@ -76,28 +76,10 @@ public class CellPainter extends BorderPainter {
     }
 
     @Override
-    public void setTheme(GridTheme theme) {
-        // Set the unused border paint
-        switch (theme) {
-            case LIGHT:
-                mUnusedBorderPaint.setColor(0x79000000);
-                break;
-            case DARK:
-                mUnusedBorderPaint.setColor(0xff7f7f7f);
-                break;
-        }
-
-        // Set the selected cell painter
-        switch (theme) {
-            case LIGHT:
-                mSelectedBorderPaint.setColor(0xFFE6E6E6);
-                mSelectedBackgroundPaint.setColor(mSelectedBorderPaint.getColor());
-                break;
-            case DARK:
-                mSelectedBorderPaint.setColor(0xFF545353);
-                mSelectedBackgroundPaint.setColor(mSelectedBorderPaint.getColor());
-                break;
-        }
+    public void setTheme(Theme theme) {
+        mUnusedBorderPaint.setColor(theme.getInnerCageCellBorderColor());
+        mSelectedBorderPaint.setColor(theme.getSelectedCellBorderColor());
+        mSelectedBackgroundPaint.setColor(theme.getSelectedCellBackgroundColor());
     }
 
     @Override

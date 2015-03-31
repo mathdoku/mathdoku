@@ -8,7 +8,6 @@ import android.preference.Preference;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.GridType;
-import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.ui.base.AppPreferenceFragment;
 
 import java.util.ArrayList;
@@ -71,8 +70,7 @@ public class PuzzlePreferenceFragment extends AppPreferenceFragment {
         Preference preference = findPreference(Preferences.PUZZLE_SETTING_THEME);
         if (preference != null) {
             preference.setSummary(getResources().getString(Preferences.getInstance()
-                                                                   .getTheme() == Painter.GridTheme.LIGHT ? R.string
-                    .theme_light : R.string.theme_dark));
+                                                                   .getTheme().getNameResId()));
         }
     }
 

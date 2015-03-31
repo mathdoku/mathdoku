@@ -3,8 +3,8 @@ package net.mathdoku.plus.painter;
 import android.graphics.Paint;
 
 import net.mathdoku.plus.painter.Painter.DigitPainterMode;
-import net.mathdoku.plus.painter.Painter.GridTheme;
 import net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid;
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
 
 public class MaybeValuePainter extends DigitPainter {
 
@@ -39,7 +39,7 @@ public class MaybeValuePainter extends DigitPainter {
     }
 
     @Override
-    public void setTheme(GridTheme theme) {
+    public void setTheme(Theme theme) {
         mTextPaintNormalInputMode.setColor(mPainter.getDefaultTextColor());
         mTextPaintMaybeInputMode.setColor(mPainter.getHighlightedTextColorMaybeInputMode());
     }

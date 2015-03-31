@@ -2,12 +2,16 @@ package net.mathdoku.plus.painter;
 
 import android.graphics.Paint;
 
-import net.mathdoku.plus.painter.Painter.GridTheme;
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
 
 public class CagePainter extends BorderPainter {
-
+    // Border for a cage which is selected
     private final Paint mBorderSelectedPaint;
+
+    // Border for a cage which is not selected but which is having bad maths
     private final Paint mBorderBadMathPaint;
+
+    // Border for a cage which is selected and is having bad maths
     private final Paint mBorderSelectedBadMathPaint;
 
     private final Paint mTextPaint;
@@ -23,6 +27,7 @@ public class CagePainter extends BorderPainter {
     public CagePainter(Painter painter) {
         super(painter);
 
+        // Set border for a cage which is not selected and which does not have bad maths
         mBorderPaint = new Paint();
         mBorderSelectedPaint = new Paint();
         mBorderBadMathPaint = new Paint();
@@ -32,68 +37,21 @@ public class CagePainter extends BorderPainter {
     }
 
     @Override
-    public void setTheme(GridTheme theme) {
-        // Set text paint
-        switch (theme) {
-            case LIGHT:
-                mTextPaint.setColor(0xFF212121);
-                mTextPaint.setTypeface(mPainter.getTypeface());
-                break;
-            case DARK:
-                mTextPaint.setColor(0xFFFFFFC0);
-                mTextPaint.setTypeface(mPainter.getTypeface());
-                break;
-        }
+    public void setTheme(Theme theme) {
+        mTextPaint.setColor(theme.getDefaultTextColor());
+        mTextPaint.setTypeface(mPainter.getTypeface());
 
-        // Set border for a cage which is not selected and which does not have
-        // bad maths
-        switch (theme) {
-            case LIGHT:
-                mBorderPaint.setColor(0xFF000000);
-                mBorderPaint.setAntiAlias(false);
-                break;
-            case DARK:
-                mBorderPaint.setColor(0xFFFFFFFF);
-                mBorderPaint.setAntiAlias(true);
-                break;
-        }
+        mBorderPaint.setColor(theme.getDefaultCageBorderColor());
+        mBorderPaint.setAntiAlias(theme.getBorderAntiAlias());
 
-        // Set border for a cage which is not selected but which is having bad
-        // maths
-        switch (theme) {
-            case LIGHT:
-                mBorderBadMathPaint.setColor(0xffff4444);
-                mBorderBadMathPaint.setAntiAlias(true);
-                break;
-            case DARK:
-                mBorderBadMathPaint.setColor(0xFFBB0000);
-                mBorderBadMathPaint.setAntiAlias(true);
-                break;
-        }
+        mBorderBadMathPaint.setColor(theme.getBadMathCageBorderColor());
+        mBorderBadMathPaint.setAntiAlias(theme.getBorderAntiAlias());
 
-        // Set border for a cage which is selected
-        switch (theme) {
-            case LIGHT:
-                mBorderSelectedPaint.setColor(0xFF000000);
-                mBorderSelectedPaint.setAntiAlias(false);
-                break;
-            case DARK:
-                mBorderSelectedPaint.setColor(0xFFA0A030);
-                mBorderSelectedPaint.setAntiAlias(true);
-                break;
-        }
+        mBorderSelectedPaint.setColor(theme.getSelectedCageBorderColor());
+        mBorderSelectedPaint.setAntiAlias(theme.getBorderAntiAlias());
 
-        // Set border for a cages which is selected and is having bad maths
-        switch (theme) {
-            case LIGHT:
-                mBorderSelectedBadMathPaint.setColor(0xFFff4444);
-                mBorderSelectedBadMathPaint.setAntiAlias(true);
-                break;
-            case DARK:
-                mBorderSelectedBadMathPaint.setColor(0xFFBB0000);
-                mBorderSelectedBadMathPaint.setAntiAlias(true);
-                break;
-        }
+        mBorderSelectedBadMathPaint.setColor(theme.getSelectedBadMathCageBorderColor());
+        mBorderSelectedBadMathPaint.setAntiAlias(theme.getBorderAntiAlias());
     }
 
     @Override

@@ -11,9 +11,10 @@ import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardOverviewActivity.LeaderboardFilter;
-import net.mathdoku.plus.painter.Painter;
-import net.mathdoku.plus.painter.Painter.GridTheme;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
+import net.mathdoku.plus.puzzle.ui.theme.DarkTheme;
+import net.mathdoku.plus.puzzle.ui.theme.LightTheme;
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
 import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
 
@@ -468,14 +469,10 @@ public class Preferences {
      *
      * @return The current theme.
      */
-    public Painter.GridTheme getTheme() {
-        String theme = mSharedPreferences.getString(PUZZLE_SETTING_THEME, PUZZLE_SETTING_THEME_DEFAULT);
+    public Theme getTheme() {
+        String themeName = mSharedPreferences.getString(PUZZLE_SETTING_THEME, PUZZLE_SETTING_THEME_DEFAULT);
 
-        if (theme.equals(PUZZLE_SETTING_THEME_DARK)) {
-            return GridTheme.DARK;
-        } else {
-            return GridTheme.LIGHT;
-        }
+        return PUZZLE_SETTING_THEME_DARK.equals(themeName) ? DarkTheme.getInstance() : LightTheme.getInstance();
     }
 
     /**

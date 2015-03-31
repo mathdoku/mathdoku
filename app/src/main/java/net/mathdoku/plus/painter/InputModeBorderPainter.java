@@ -3,7 +3,7 @@ package net.mathdoku.plus.painter;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
-import net.mathdoku.plus.painter.Painter.GridTheme;
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
 
 public class InputModeBorderPainter extends BorderPainter {
 
@@ -59,7 +59,7 @@ public class InputModeBorderPainter extends BorderPainter {
     }
 
     @Override
-    public void setTheme(GridTheme theme) {
+    public void setTheme(Theme theme) {
         mNormalInputModeBorderPaint.setColor(mPainter.getHighlightedTextColorNormalInputMode());
         mNormalInputModeBorderPaint.setAlpha(200);
 

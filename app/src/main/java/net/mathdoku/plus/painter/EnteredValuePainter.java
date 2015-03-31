@@ -3,7 +3,7 @@ package net.mathdoku.plus.painter;
 import android.graphics.Paint;
 
 import net.mathdoku.plus.painter.Painter.DigitPainterMode;
-import net.mathdoku.plus.painter.Painter.GridTheme;
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
 
 public class EnteredValuePainter extends DigitPainter {
 
@@ -20,14 +20,12 @@ public class EnteredValuePainter extends DigitPainter {
     }
 
     @Override
-    public void setTheme(GridTheme theme) {
+    public void setTheme(Theme theme) {
         mTextPaintNormalInputMode.setColor(mPainter.getHighlightedTextColorNormalInputMode());
-        mTextPaintMaybeInputMode.setColor(mPainter.getDefaultTextColor());
-
         mTextPaintNormalInputMode.setTypeface(mPainter.getTypeface());
 
+        mTextPaintMaybeInputMode.setColor(mPainter.getDefaultTextColor());
         mTextPaintMaybeInputMode.setTypeface(mPainter.getTypeface());
-
     }
 
     @Override

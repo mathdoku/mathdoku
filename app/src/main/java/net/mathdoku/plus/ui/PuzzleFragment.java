@@ -1073,29 +1073,18 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
             return R.drawable.normal_input_mode_colored;
         }
 
-        // Determine which button should be displayed.
-        int index = (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? 0 : 4) + (mMathDokuPreferences
-                .isColoredDigitsVisible() ? 0 : 2) + (mMathDokuPreferences.getTheme() == Painter.GridTheme.LIGHT ? 0
-                : 1);
-        switch (index) {
-            case 0:
-            case 1:
-                return R.drawable.normal_input_mode_colored;
-            case 2:
-                return R.drawable.normal_input_mode_monochrome_light;
-            case 3:
-                return R.drawable.normal_input_mode_monochrome_dark;
-            case 4:
-            case 5:
-                return R.drawable.maybe_input_mode_colored;
-            case 6:
-                return R.drawable.maybe_input_mode_monochrome_light;
-            case 7:
-                return R.drawable.maybe_input_mode_monochrome_dark;
+        if (mMathDokuPreferences.isColoredDigitsVisible()) {
+            return mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? R.drawable.normal_input_mode_colored
+                    : R.drawable.maybe_input_mode_colored;
         }
 
-        // Impossible
-        return -1;
+        if (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL) {
+            return mMathDokuPreferences.getTheme()
+                    .getNormalInputModeMonochromeResId();
+        } else {
+            return mMathDokuPreferences.getTheme()
+                    .getMaybeInputModeMonochromeResId();
+        }
     }
 
     /**

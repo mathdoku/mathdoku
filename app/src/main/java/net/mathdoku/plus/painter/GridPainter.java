@@ -2,7 +2,7 @@ package net.mathdoku.plus.painter;
 
 import android.graphics.Paint;
 
-import net.mathdoku.plus.painter.Painter.GridTheme;
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
 
 public class GridPainter extends BorderPainter {
 
@@ -26,16 +26,8 @@ public class GridPainter extends BorderPainter {
     }
 
     @Override
-    public void setTheme(GridTheme theme) {
-        // Set background color
-        switch (theme) {
-            case LIGHT:
-                mBackgroundPaint.setColor(0xFFFFFFFF);
-                break;
-            case DARK:
-                mBackgroundPaint.setColor(0x00000000);
-                break;
-        }
+    public void setTheme(Theme theme) {
+        mBackgroundPaint.setColor(theme.getGridBackgroundColor());
     }
 
     @Override
