@@ -30,15 +30,7 @@ public class CellPainter extends BorderPainter {
     private final Paint mSelectedBorderPaint;
     private final Paint mSelectedBackgroundPaint;
 
-    /**
-     * Creates a new instance of {@link CellPainter}.
-     *
-     * @param painter
-     *         The global container for all painters.
-     */
-    public CellPainter(Painter painter) {
-        super(painter);
-
+    public CellPainter() {
         // Border between two cell which belong to same cage.
         mUnusedBorderPaint = new Paint();
         mUnusedBorderPaint.setStyle(Style.STROKE);

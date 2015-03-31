@@ -1,15 +1,15 @@
 package net.mathdoku.plus.painter;
 
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
+
 public class PagerTabStripPainter extends BasePainter {
+    private int mTextColor;
+    private int mBackgroundColor;
 
-    private final int mTextColor;
-    private final int mBackgroundColor;
-
-    public PagerTabStripPainter(Painter painter) {
-        super(painter);
-
-        mTextColor = 0xFFFFFFFF;
-        mBackgroundColor = mPainter.getButtonBackgroundColor();
+    @Override
+    public void setTheme(Theme theme) {
+        mTextColor = theme.getActionBarTextColor();
+        mBackgroundColor = theme.getActionBarBackgroundColor();
     }
 
     /**

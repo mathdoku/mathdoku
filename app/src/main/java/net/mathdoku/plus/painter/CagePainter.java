@@ -18,15 +18,7 @@ public class CagePainter extends BorderPainter {
     private float mTextLeftOffset;
     private float mTextBottomOffset;
 
-    /**
-     * Creates a new instance of {@link CagePainter}.
-     *
-     * @param painter
-     *         The global container for all painters.
-     */
-    public CagePainter(Painter painter) {
-        super(painter);
-
+    public CagePainter() {
         // Set border for a cage which is not selected and which does not have bad maths
         mBorderPaint = new Paint();
         mBorderSelectedPaint = new Paint();
@@ -39,7 +31,7 @@ public class CagePainter extends BorderPainter {
     @Override
     public void setTheme(Theme theme) {
         mTextPaint.setColor(theme.getDefaultTextColor());
-        mTextPaint.setTypeface(mPainter.getTypeface());
+        mTextPaint.setTypeface(theme.getTypeface());
 
         mBorderPaint.setColor(theme.getDefaultCageBorderColor());
         mBorderPaint.setAntiAlias(theme.getBorderAntiAlias());

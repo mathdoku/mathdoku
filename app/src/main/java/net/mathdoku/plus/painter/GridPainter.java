@@ -5,19 +5,10 @@ import android.graphics.Paint;
 import net.mathdoku.plus.puzzle.ui.theme.Theme;
 
 public class GridPainter extends BorderPainter {
-
     // The background for the grid.
     private final Paint mBackgroundPaint;
 
-    /**
-     * Creates a new instance of {@link GridPainter}.
-     *
-     * @param painter
-     *         The global container for all painters.
-     */
-    public GridPainter(Painter painter) {
-        super(painter);
-
+    public GridPainter() {
         mBorderPaint = new Paint();
         mBorderPaint.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
 

@@ -1,6 +1,13 @@
 package net.mathdoku.plus.puzzle.ui.theme;
 
+import android.graphics.DashPathEffect;
+import android.graphics.PathEffect;
+import android.graphics.Typeface;
+
 public abstract class Theme {
+    private final static Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
+    private final PathEffect pathEffect = new DashPathEffect(new float[]{2, 2}, 0);
+
     public abstract int getNameResId();
 
     public final int getHighlightedTextColorNormalInputMode() {
@@ -29,4 +36,23 @@ public abstract class Theme {
     public abstract int getNormalInputModeMonochromeResId();
     public abstract int getMaybeInputModeMonochromeResId();
 
+    public Typeface getTypeface() {
+        return typeface;
+    }
+
+    public PathEffect getPathEffect() {
+        return pathEffect;
+    }
+
+    public int getActionBarTextColor() {
+        return 0xFFFFFFFF;
+    }
+
+    public int getActionBarBackgroundColor() {
+        return 0xFF33B5E5;
+    }
+
+    public int getNavigationDrawerBackgroundColor() {
+        return 0xFF222222;
+    }
 }

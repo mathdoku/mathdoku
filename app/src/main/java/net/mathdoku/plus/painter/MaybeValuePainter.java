@@ -18,30 +18,22 @@ public class MaybeValuePainter extends DigitPainter {
     private float mMaybeDigitWidth;
     private float mMaybeDigitHeight;
 
-    /**
-     * Creates a new instance of {@link GridPainter}.
-     *
-     * @param painter
-     *         The global container for all painters.
-     */
-    public MaybeValuePainter(Painter painter) {
-        super(painter);
-
+    public MaybeValuePainter() {
         mTextPaintNormalInputMode = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTextPaintNormalInputMode.setTextSize(10);
-        mTextPaintNormalInputMode.setTypeface(mPainter.getTypeface());
         mTextPaintNormalInputMode.setFakeBoldText(true);
 
         mTextPaintMaybeInputMode = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTextPaintMaybeInputMode.setTextSize(10);
-        mTextPaintMaybeInputMode.setTypeface(mPainter.getTypeface());
         mTextPaintMaybeInputMode.setFakeBoldText(true);
     }
 
     @Override
     public void setTheme(Theme theme) {
-        mTextPaintNormalInputMode.setColor(mPainter.getDefaultTextColor());
-        mTextPaintMaybeInputMode.setColor(mPainter.getHighlightedTextColorMaybeInputMode());
+        mTextPaintNormalInputMode.setColor(theme.getDefaultTextColor());
+        mTextPaintNormalInputMode.setTypeface(theme.getTypeface());
+        mTextPaintMaybeInputMode.setColor(theme.getHighlightedTextColorMaybeInputMode());
+        mTextPaintMaybeInputMode.setTypeface(theme.getTypeface());
     }
 
     @Override

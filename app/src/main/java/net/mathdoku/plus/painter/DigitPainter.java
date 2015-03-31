@@ -16,14 +16,7 @@ abstract class DigitPainter extends BasePainter {
     float mLeftOffset;
     float mBottomOffset;
 
-    /**
-     * Creates a new instance of {@link DigitPainter}.
-     *
-     * @param painter
-     *         The global container for all painters.
-     */
-    DigitPainter(Painter painter) {
-        super(painter);
+    DigitPainter() {
         setColorMode(DigitPainterMode.INPUT_MODE_BASED);
     }
 

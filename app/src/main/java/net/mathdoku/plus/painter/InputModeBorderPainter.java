@@ -6,7 +6,6 @@ import android.graphics.Paint.Style;
 import net.mathdoku.plus.puzzle.ui.theme.Theme;
 
 public class InputModeBorderPainter extends BorderPainter {
-
     // Background of border
     private final Paint mNormalInputModeBorderPaint;
     private final Paint mMaybeInputModeBorderPaint;
@@ -21,15 +20,7 @@ public class InputModeBorderPainter extends BorderPainter {
     // Painter for the swipe line
     private final Paint mSwipeLinePaint;
 
-    /**
-     * Creates a new instance of {@link CellPainter}.
-     *
-     * @param painter
-     *         The global container for all painters.
-     */
-    public InputModeBorderPainter(Painter painter) {
-        super(painter);
-
+    public InputModeBorderPainter() {
         // Background painters for the border.
         mNormalInputModeBorderPaint = new Paint();
         mNormalInputModeBorderPaint.setStyle(Paint.Style.STROKE);
@@ -60,17 +51,17 @@ public class InputModeBorderPainter extends BorderPainter {
 
     @Override
     public void setTheme(Theme theme) {
-        mNormalInputModeBorderPaint.setColor(mPainter.getHighlightedTextColorNormalInputMode());
+        mNormalInputModeBorderPaint.setColor(theme.getHighlightedTextColorNormalInputMode());
         mNormalInputModeBorderPaint.setAlpha(200);
 
-        mMaybeInputModeBorderPaint.setColor(mPainter.getHighlightedTextColorMaybeInputMode());
+        mMaybeInputModeBorderPaint.setColor(theme.getHighlightedTextColorMaybeInputMode());
         mMaybeInputModeBorderPaint.setAlpha(200);
 
-        mNormalTextPaint.setTypeface(mPainter.getTypeface());
+        mNormalTextPaint.setTypeface(theme.getTypeface());
 
-        mHighlightedTextPaint.setTypeface(mPainter.getTypeface());
+        mHighlightedTextPaint.setTypeface(theme.getTypeface());
 
-        mSwipeLinePaint.setPathEffect(mPainter.getPathEffect());
+        mSwipeLinePaint.setPathEffect(theme.getPathEffect());
     }
 
     @Override

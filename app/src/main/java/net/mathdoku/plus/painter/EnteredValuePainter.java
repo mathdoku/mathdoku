@@ -6,26 +6,19 @@ import net.mathdoku.plus.painter.Painter.DigitPainterMode;
 import net.mathdoku.plus.puzzle.ui.theme.Theme;
 
 public class EnteredValuePainter extends DigitPainter {
-
-    /**
-     * Creates a new instance of {@link EnteredValuePainter}.
-     *
-     * @param painter
-     *         The global container for all painters.
-     */
-    public EnteredValuePainter(Painter painter) {
-        super(painter);
+    public EnteredValuePainter() {
+        super();
         mTextPaintNormalInputMode = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTextPaintMaybeInputMode = new Paint(Paint.ANTI_ALIAS_FLAG);
     }
 
     @Override
     public void setTheme(Theme theme) {
-        mTextPaintNormalInputMode.setColor(mPainter.getHighlightedTextColorNormalInputMode());
-        mTextPaintNormalInputMode.setTypeface(mPainter.getTypeface());
+        mTextPaintNormalInputMode.setColor(theme.getHighlightedTextColorNormalInputMode());
+        mTextPaintNormalInputMode.setTypeface(theme.getTypeface());
 
-        mTextPaintMaybeInputMode.setColor(mPainter.getDefaultTextColor());
-        mTextPaintMaybeInputMode.setTypeface(mPainter.getTypeface());
+        mTextPaintMaybeInputMode.setColor(theme.getDefaultTextColor());
+        mTextPaintMaybeInputMode.setTypeface(theme.getTypeface());
     }
 
     @Override

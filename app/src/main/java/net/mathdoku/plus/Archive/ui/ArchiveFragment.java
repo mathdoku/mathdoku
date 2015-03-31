@@ -161,7 +161,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
     private void setArchiveActionButton(View rootView) {
         Button archiveActionButton = (Button) rootView.findViewById(R.id.archiveActionButton);
         archiveActionButton.setBackgroundColor(Painter.getInstance()
-                                                       .getButtonBackgroundColor());
+                                                       .getPagerTabStripPainter()
+                                                       .getBackgroundColor());
         if (getActivity() instanceof PuzzleFragmentActivity) {
             final PuzzleFragmentActivity puzzleFragmentActivity = (PuzzleFragmentActivity) getActivity();
 
@@ -264,8 +265,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
                 .getItemCount() > 1 || mGridStatistics.mCellsRevealed > 0) {
             addChartToStatisticsSection(getResources().getString(R.string.progress_chart_title),
                                         ChartFactory.getPieChartView(getActivity(), pieChartSeries.getCategorySeries(),
-                                                                     pieChartSeries.getRenderer()), getResources()
-                            .getString(R.string.progress_chart_body));
+                                                                     pieChartSeries.getRenderer()),
+                                        getResources().getString(R.string.progress_chart_body));
         }
     }
 
@@ -289,9 +290,11 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
             barChartSeries.setBarWidth(getBarWidth());
             // Add new statistics section to the activity
             View view = addChartToStatisticsSection(getResources().getString(R.string.avoidable_moves_chart_title),
-                                        ChartFactory.getBarChartView(getActivity(), barChartSeries.getDataset(),
-                                                                     barChartSeries.getRenderer(), Type.DEFAULT),
-                                        getResources().getString(R.string.avoidable_moves_chart_body));
+                                                    ChartFactory.getBarChartView(getActivity(),
+                                                                                 barChartSeries.getDataset(),
+                                                                                 barChartSeries.getRenderer(),
+                                                                                 Type.DEFAULT),
+                                                    getResources().getString(R.string.avoidable_moves_chart_body));
             view.setTag(AVOIDABLE_MOVES_CHART_TAG_ID);
         }
     }
@@ -317,9 +320,11 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
             barChartSeries.setTextSize(mDefaultTextSize);
             barChartSeries.setBarWidth(getBarWidth());
             View view = addChartToStatisticsSection(getResources().getString(R.string.statistics_cheats_used_title),
-                                        ChartFactory.getBarChartView(getActivity(), barChartSeries.getDataset(),
-                                                                     barChartSeries.getRenderer(), Type.DEFAULT),
-                                        getResources().getString(R.string.statistics_cheats_used_body));
+                                                    ChartFactory.getBarChartView(getActivity(),
+                                                                                 barChartSeries.getDataset(),
+                                                                                 barChartSeries.getRenderer(),
+                                                                                 Type.DEFAULT),
+                                                    getResources().getString(R.string.statistics_cheats_used_body));
             view.setTag(CHEATS_CHART_TAG_ID);
         }
     }

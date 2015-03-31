@@ -1,15 +1,16 @@
 package net.mathdoku.plus.painter;
 
-public class SolvedTextPainter extends BasePainter {
+import android.graphics.Typeface;
 
+public class SolvedTextPainter extends BasePainter {
     private final int mTextColor;
     private final int mBackgroundColor;
+    private final Typeface typeface;
 
-    public SolvedTextPainter(Painter painter) {
-        super(painter);
-
+    public SolvedTextPainter() {
         mTextColor = 0xFF002F00;
         mBackgroundColor = 0xD0DECA1E;
+        typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
     }
 
     /**
@@ -28,5 +29,9 @@ public class SolvedTextPainter extends BasePainter {
      */
     public int getBackgroundColor() {
         return mBackgroundColor;
+    }
+
+    public Typeface getTypeface() {
+        return typeface;
     }
 }

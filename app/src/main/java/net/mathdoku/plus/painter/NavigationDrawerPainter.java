@@ -1,13 +1,13 @@
 package net.mathdoku.plus.painter;
 
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
+
 public class NavigationDrawerPainter extends BasePainter {
+    private int mBackgroundColor;
 
-    private final int mBackgroundColor;
-
-    public NavigationDrawerPainter(Painter painter) {
-        super(painter);
-
-        mBackgroundColor = 0xFF222222;
+    @Override
+    public void setTheme(Theme theme) {
+        mBackgroundColor = theme.getNavigationDrawerBackgroundColor();
     }
 
     /**

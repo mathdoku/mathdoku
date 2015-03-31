@@ -14,16 +14,6 @@ abstract class BorderPainter extends BasePainter {
     Paint mBorderPaint;
 
     /**
-     * Creates a new instance of {@link BorderPainter}.
-     *
-     * @param painter
-     *         The global container for all painters.
-     */
-    BorderPainter(Painter painter) {
-        super(painter);
-    }
-
-    /**
      * Change the width of the border of the grid.
      *
      * @param thin
