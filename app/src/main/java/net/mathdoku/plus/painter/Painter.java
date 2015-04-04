@@ -27,7 +27,6 @@ public class Painter {
     private final MaybeValuePainter mMaybeGridPainter;
     private final MaybeValuePainter mMaybeLinePainter;
     private final InputModeBorderPainter mInputModeBorderPainter;
-    private final NavigationDrawerPainter mNavigationDrawerPainter;
 
     /**
      * Creates a new instance of {@link net.mathdoku.plus.painter.Painter}.
@@ -44,7 +43,6 @@ public class Painter {
         mMaybeGridPainter = new MaybeValuePainter();
         mMaybeLinePainter = new MaybeValuePainter();
         mInputModeBorderPainter = new InputModeBorderPainter();
-        mNavigationDrawerPainter = new NavigationDrawerPainter();
 
         // Set the size of the borders.
         setBorderSizes(false);
@@ -99,7 +97,6 @@ public class Painter {
         mMaybeGridPainter.setTheme(theme);
         mMaybeLinePainter.setTheme(theme);
         mInputModeBorderPainter.setTheme(theme);
-        mNavigationDrawerPainter.setTheme(theme);
     }
 
     /**
@@ -166,10 +163,6 @@ public class Painter {
 
     public InputModeBorderPainter getInputModeBorderPainter() {
         return mInputModeBorderPainter;
-    }
-
-    public NavigationDrawerPainter getNavigationDrawerPainter() {
-        return mNavigationDrawerPainter;
     }
 
     /**

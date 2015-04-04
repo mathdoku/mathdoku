@@ -50,7 +50,6 @@ import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardOverviewActivity;
-import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
@@ -1327,9 +1326,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         // Get list view for drawer
         mDrawerListView = (ListView) findViewById(R.id.left_drawer);
 
-        mDrawerListView.setBackgroundColor(Painter.getInstance()
-                                                   .getNavigationDrawerPainter()
-                                                   .getBackgroundColor());
+        mDrawerListView.setBackgroundColor(mMathDokuPreferences.getTheme().getNavigationDrawerBackgroundColor());
 
         // Set the adapter for the list view containing the navigation items
         mDrawerListView.setAdapter(
