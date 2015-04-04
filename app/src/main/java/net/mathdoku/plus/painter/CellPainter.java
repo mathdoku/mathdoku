@@ -91,7 +91,6 @@ public class CellPainter extends BorderPainter {
         }
     }
 
-    @Override
     protected void setCellSize(float size) {
         mCellSize = size;
     }

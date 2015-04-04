@@ -26,11 +26,6 @@ public class GridPainter extends BorderPainter {
         // Nothing to do for a grid.
     }
 
-    @Override
-    protected void setCellSize(float size) {
-        // Nothing to do for a grid.
-    }
-
     /**
      * Gets the paint for the background of the grid.
      *

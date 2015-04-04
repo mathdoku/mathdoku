@@ -21,7 +21,6 @@ public class EnteredValuePainter extends DigitPainter {
         mTextPaintMaybeInputMode.setTypeface(theme.getTypeface());
     }
 
-    @Override
     protected void setCellSize(float size) {
         // 1/3 of cell is used for the cage results. Remaining space can be sued
         // to display the user value.

@@ -69,7 +69,6 @@ public class InputModeBorderPainter extends BorderPainter {
         throw new IllegalStateException("Method not implemented for class" + InputModeBorderPainter.class.getName());
     }
 
-    @Override
     protected void setCellSize(float cellSize) {
         float mBorderWidth = cellSize / 2;
 

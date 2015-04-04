@@ -61,7 +61,6 @@ public class CagePainter extends BorderPainter {
         }
     }
 
-    @Override
     protected void setCellSize(float size) {
         // Text size of cage text is 1/3 of cell size
         int cageTextSize = (int) (size / 3);

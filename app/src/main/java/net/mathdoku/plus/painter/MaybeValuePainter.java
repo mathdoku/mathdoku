@@ -36,7 +36,6 @@ public class MaybeValuePainter extends DigitPainter {
         mTextPaintMaybeInputMode.setTypeface(theme.getTypeface());
     }
 
-    @Override
     protected void setCellSize(float size) {
         mCellSize = size;
         if (mDigitPositionGrid == null) {
