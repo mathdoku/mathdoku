@@ -69,6 +69,7 @@ import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;
 import net.mathdoku.plus.util.Util;
+import net.mathdoku.plus.util.VersionInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -565,8 +566,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
             tv.setVisibility(cleanInstall ? View.VISIBLE : View.GONE);
         }
 
+        VersionInfo versionInfo = new VersionInfo(this);
         if ((tv = (TextView) view.findViewById(R.id.dialog_help_version_body)) != null) {
-            tv.setText(Util.getPackageVersionName() + " (revision " + Util.getPackageVersionNumber() + ")");
+            tv.setText(versionInfo.getName() + " (revision " + versionInfo.getVersionNumber() + ")");
         }
 
         if ((tv = (TextView) view.findViewById(R.id.help_project_home_link)) != null) {
@@ -576,9 +578,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         final PuzzleFragmentActivity puzzleFragmentActivity = this;
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(puzzleFragmentActivity);
         alertDialogBuilder.setTitle(getResources().getString(
-                R.string.application_name) + (Config.APP_MODE == AppMode.DEVELOPMENT ? " r" + Util
-                .getPackageVersionNumber() + " " : " ") +
-                                            getResources().getString(R.string.action_help))
+                R.string.application_name) + (Config.APP_MODE == AppMode.DEVELOPMENT ? " r" + versionInfo
+                .getVersionNumber() + " " : " ") + getResources().getString(R.string.action_help))
                 .setIcon(R.drawable.icon)
                 .setView(view)
                 .setNegativeButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
@@ -601,7 +602,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         }
 
         // Get current version number from the package.
-        int packageVersionNumber = Util.getPackageVersionNumber();
+        int packageVersionNumber = new VersionInfo(this).getVersionNumber();
 
         // Get the previous installed version from the preferences.
         int previousInstalledVersion = mMathDokuPreferences.getCurrentInstalledVersion();

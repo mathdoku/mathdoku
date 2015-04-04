@@ -6,7 +6,6 @@ import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.util.Util;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +33,6 @@ public class GridDefinitionCreatorTest {
     public void setup() {
         // Instantiate the singleton classes
         Activity activity = new Activity();
-        new Util(activity);
     }
 
     @Test(expected = InvalidParameterException.class)

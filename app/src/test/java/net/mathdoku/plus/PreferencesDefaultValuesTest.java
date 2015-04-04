@@ -1,5 +1,7 @@
 package net.mathdoku.plus;
 
+import android.app.Activity;
+
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
@@ -7,7 +9,7 @@ import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardOverviewActivity;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.puzzle.ui.theme.LightTheme;
-import net.mathdoku.plus.util.Util;
+import net.mathdoku.plus.util.VersionInfo;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,20 +27,22 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(RobolectricGradleTestRunner.class)
 public class PreferencesDefaultValuesTest {
+    private Activity activity;
     private Preferences preferences;
 
     @Before
     public void setUp() throws Exception {
         TestRunnerHelper.setup(this.getClass()
                                        .getCanonicalName());
-        preferences = Preferences.getInstance(TestRunnerHelper.getActivity());
+        activity = TestRunnerHelper.getActivity();
+        preferences = Preferences.getInstance(activity);
         setDefaultPreferences();
     }
 
     protected void setDefaultPreferences() {
         // todo: Preference class should determine current version id instead of
         // using a passed value.
-        preferences.upgrade(-1, Util.getPackageVersionNumber());
+        preferences.upgrade(-1, new VersionInfo(activity).getVersionNumber());
     }
 
     @After

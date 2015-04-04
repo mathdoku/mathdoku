@@ -4,7 +4,6 @@ import android.app.Activity;
 
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.util.Util;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +36,6 @@ public class GridGeneratingParametersBuilderTest {
     public void setup() {
         // Instantiate the singleton classes
         Activity activity = new Activity();
-        new Util(activity);
 
         gridGeneratingParametersBuilder = createGridGeneratingParametersBuilderWithRequiredParametersOnly()
                 .setGeneratorVersionNumber(

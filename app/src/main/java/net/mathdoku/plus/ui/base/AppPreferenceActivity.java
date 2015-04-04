@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
-import net.mathdoku.plus.util.Util;
 
 @SuppressLint("Registered")
 public class AppPreferenceActivity extends Activity {
@@ -18,7 +17,6 @@ public class AppPreferenceActivity extends Activity {
 
         // Initialize global objects (singleton instances)
         DatabaseHelper.getInstance(this);
-        new Util(this);
 
         windowPreference = new WindowPreference(this);
 

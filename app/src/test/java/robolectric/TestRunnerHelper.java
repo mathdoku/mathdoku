@@ -3,7 +3,6 @@ package robolectric;
 import android.app.Activity;
 
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
-import net.mathdoku.plus.util.Util;
 
 public class TestRunnerHelper {
     private static TestRunnerHelper singletonTestRunnerHelper;
@@ -21,7 +20,6 @@ public class TestRunnerHelper {
         singletonTestRunnerHelper = this;
         lastInstantiatedByClassName = className;
         activity = new Activity();
-        new Util(activity);
     }
 
     public static void setup(String className) {

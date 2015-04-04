@@ -1,9 +1,6 @@
 package net.mathdoku.plus.util;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.pm.PackageInfo;
-import android.util.Log;
 
 import java.util.List;
 
@@ -14,54 +11,6 @@ public class Util {
     // Home directory url of promotion website. Most url's used in this app will
     // be forwarded from the promotion website to code.google.com/p/mathdoku.
     public static final String PROJECT_HOME = "http://mathdoku.net/";
-
-    private static boolean mInitialized = false;
-
-    private static int mPackageVersionNumber;
-    private static String mPackageVersionName;
-
-    public Util(Activity activity) {
-        // Get package name and version
-        mPackageVersionNumber = -1;
-        mPackageVersionName = "";
-        try {
-            // noinspection ConstantConditions
-            PackageInfo packageInfo = activity.getPackageManager()
-                    .getPackageInfo(activity.getPackageName(), 0);
-            mPackageVersionNumber = packageInfo.versionCode;
-            mPackageVersionName = packageInfo.versionName;
-        } catch (Exception e) {
-            Log.e(TAG, "Package not found", e);
-        }
-
-        // Set flag to indicate that it is now save to call the static
-        // functions.
-        mInitialized = true;
-    }
-
-    /**
-     * Get the package version number.
-     *
-     * @return The package version number.
-     */
-    public static int getPackageVersionNumber() {
-        if (!mInitialized) {
-            throw new SingletonInstanceNotInstantiated();
-        }
-        return mPackageVersionNumber;
-    }
-
-    /**
-     * Get the package version name.
-     *
-     * @return The package version name.
-     */
-    public static String getPackageVersionName() {
-        if (!mInitialized) {
-            throw new SingletonInstanceNotInstantiated();
-        }
-        return mPackageVersionName;
-    }
 
     /**
      * Converts a duration value from long to a string.
