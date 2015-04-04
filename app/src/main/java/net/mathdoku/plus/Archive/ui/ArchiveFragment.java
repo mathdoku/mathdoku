@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.puzzle.ui.GridViewerView;
@@ -160,9 +159,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
 
     private void setArchiveActionButton(View rootView) {
         Button archiveActionButton = (Button) rootView.findViewById(R.id.archiveActionButton);
-        archiveActionButton.setBackgroundColor(Painter.getInstance()
-                                                       .getPagerTabStripPainter()
-                                                       .getBackgroundColor());
+        archiveActionButton.setBackgroundColor(mPreferences.getTheme().getActionBarBackgroundColor());
         if (getActivity() instanceof PuzzleFragmentActivity) {
             final PuzzleFragmentActivity puzzleFragmentActivity = (PuzzleFragmentActivity) getActivity();
 
