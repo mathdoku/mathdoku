@@ -74,7 +74,6 @@ public class CellPainter extends BorderPainter {
         mSelectedBackgroundPaint.setColor(theme.getSelectedCellBackgroundColor());
     }
 
-    @Override
     protected void setBorderSizes(boolean thin) {
         if (thin) {
             mUnusedBorderPaint.setStrokeWidth(BorderPainter.BORDER_STROKE_HAIR_LINE);

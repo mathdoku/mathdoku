@@ -64,11 +64,6 @@ public class InputModeBorderPainter extends BorderPainter {
         mSwipeLinePaint.setPathEffect(theme.getPathEffect());
     }
 
-    @Override
-    protected void setBorderSizes(boolean thin) {
-        throw new IllegalStateException("Method not implemented for class" + InputModeBorderPainter.class.getName());
-    }
-
     protected void setCellSize(float cellSize) {
         float mBorderWidth = cellSize / 2;
 

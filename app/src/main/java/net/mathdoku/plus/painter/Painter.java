@@ -71,7 +71,6 @@ public class Painter {
      *         True in case a small border needs to be set. False in case a normal border should be used.
      */
     private void setBorderSizes(boolean thin) {
-        mGridPainter.setBorderSizes(thin);
         mCagePainter.setBorderSizes(thin);
         mCellPainter.setBorderSizes(thin);
     }

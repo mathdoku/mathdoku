@@ -21,11 +21,6 @@ public class GridPainter extends BorderPainter {
         mBackgroundPaint.setColor(theme.getGridBackgroundColor());
     }
 
-    @Override
-    protected void setBorderSizes(boolean thin) {
-        // Nothing to do for a grid.
-    }
-
     /**
      * Gets the paint for the background of the grid.
      *

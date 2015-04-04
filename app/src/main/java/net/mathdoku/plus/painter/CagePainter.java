@@ -46,7 +46,6 @@ public class CagePainter extends BorderPainter {
         mBorderSelectedBadMathPaint.setAntiAlias(theme.getBorderAntiAlias());
     }
 
-    @Override
     protected void setBorderSizes(boolean thin) {
         if (thin) {
             mBorderPaint.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_NORMAL);
