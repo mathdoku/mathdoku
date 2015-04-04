@@ -8,8 +8,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.painter.Painter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,9 +69,7 @@ public class TickerTape extends HorizontalScrollView {
         addView(tickerTapeLinearLayout);
 
         setHorizontalScrollBarEnabled(false);
-        setBackgroundColor(Painter.getInstance()
-                                   .getTickerTapePainter()
-                                   .getBackgroundColor());
+        setBackgroundColor(Preferences.getInstance().getTheme().getTickerTapeBackgroundColor());
 
         setVisibility(View.INVISIBLE);
         isDisabled = false;
@@ -107,9 +105,7 @@ public class TickerTape extends HorizontalScrollView {
         textView.setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
                                                   android.view.ViewGroup.LayoutParams.MATCH_PARENT));
         textView.setPadding(0, 0, 4 * SCROLL_STEP_SIZE, 0);
-        textView.setTextColor(Painter.getInstance()
-                                      .getTickerTapePainter()
-                                      .getTextColor());
+        textView.setTextColor(Preferences.getInstance().getTheme().getTickerTaperTextColor());
 
         return textView;
     }
