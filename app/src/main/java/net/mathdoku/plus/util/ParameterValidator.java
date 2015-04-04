@@ -16,7 +16,7 @@ public class ParameterValidator {
     }
 
     public static <T> void validateNotNullOrEmpty(List<T> list) {
-        if (list == null || list.size() == 0) {
+        if (Util.isListNullOrEmpty(list)) {
             throwEmptyException();
         }
     }
