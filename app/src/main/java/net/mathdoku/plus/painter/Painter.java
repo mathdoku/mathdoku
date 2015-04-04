@@ -11,12 +11,6 @@ public class Painter {
     private int mHighlightedTextColorNormalInputMode;
     private int mHighlightedTextColorMaybeInputMode;
 
-    // Themes available
-    public enum GridTheme {
-        LIGHT,
-        DARK
-    }
-
     public enum DigitPainterMode {
         INPUT_MODE_BASED,
         MONOCHROME
