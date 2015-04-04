@@ -55,4 +55,20 @@ public abstract class Theme {
     public int getNavigationDrawerBackgroundColor() {
         return 0xFF222222;
     }
+
+    public int getTickerTaperTextColor() {
+        return 0xFFFFFFFF;
+    }
+
+    public int getTickerTapeBackgroundColor() {
+        return 0xFF33B5E5;
+    }
+
+    public int getSolvedAnimationTextColor() {
+        return 0xFF002F00;
+    }
+
+    public int getSolvedAnimationBackgroundColor() {
+        return 0xD0DECA1E;
+    }
 }
