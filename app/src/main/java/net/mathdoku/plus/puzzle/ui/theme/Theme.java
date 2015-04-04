@@ -5,7 +5,7 @@ import android.graphics.PathEffect;
 import android.graphics.Typeface;
 
 public abstract class Theme {
-    private final static Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
+    private static final Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
     private final PathEffect pathEffect = new DashPathEffect(new float[]{2, 2}, 0);
 
     public abstract int getNameResId();
