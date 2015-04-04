@@ -1,5 +1,6 @@
 package net.mathdoku.plus.puzzle.grid;
 
+import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.GridStorage;
@@ -9,7 +10,6 @@ import net.mathdoku.plus.storage.databaseadapter.GridRow;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptRow;
 import net.mathdoku.plus.storage.databaseadapter.StatisticsDatabaseAdapter;
-import net.mathdoku.plus.util.Util;
 
 import java.security.InvalidParameterException;
 
@@ -123,7 +123,7 @@ public class GridSaver {
                                                                                            grid.isSolutionRevealed(),
                                                                                            grid.isActive(),
                                                                                            grid.isEmpty()),
-                                                                                   Util.getPackageVersionNumber(),
+                                                                                   Preferences.getInstance().getCurrentInstalledVersion(),
                                                                                    mObjectsCreator.createGridStorage()
                                                                                            .toStorageString(grid));
 

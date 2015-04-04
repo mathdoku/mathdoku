@@ -1,8 +1,8 @@
 package net.mathdoku.plus.gridgenerating;
 
+import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.util.Util;
 
 import java.util.Random;
 
@@ -30,7 +30,7 @@ public class GridGeneratingParametersBuilder {
 
     public GridGeneratingParametersBuilder() {
         gameSeed = new Random().nextLong();
-        generatorVersionNumber = Util.getPackageVersionNumber();
+        generatorVersionNumber = Preferences.getInstance().getCurrentInstalledVersion();
     }
 
     public static GridGeneratingParametersBuilder createCopyOfGridGeneratingParameters(GridGeneratingParameters
