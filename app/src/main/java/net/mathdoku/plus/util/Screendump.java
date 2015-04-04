@@ -83,6 +83,7 @@ public class Screendump {
         try {
             file.createNewFile();
         } catch (IOException e) {
+            Log.d(TAG, "Error while creating file for screendump.", e);
             throw new FileCreationError("Can not create a new file.");
         }
         return file;
