@@ -92,7 +92,7 @@ public class Util {
     }
 
     public static <T> boolean isListNullOrEmpty(List<T> list) {
-        return list == null || list.size() == 0;
+        return list == null || list.isEmpty();
     }
 
     public static boolean isArrayNullOrEmpty(int[] array) {
