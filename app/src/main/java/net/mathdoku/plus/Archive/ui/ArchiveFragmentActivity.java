@@ -38,8 +38,7 @@ import android.widget.Spinner;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.StatusFilter;
-import net.mathdoku.plus.painter.PagerTabStripPainter;
-import net.mathdoku.plus.painter.Painter;
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
 import net.mathdoku.plus.storage.selector.AvailableStatusFiltersSelector;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
@@ -112,11 +111,10 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
         // This pager contains a maximum of 3 visible items. The selected tab
         // will always be displayed in the middle. Hide the tab indicator by
         // setting color identical to background color.
-        PagerTabStripPainter pagerTabStripPainter = Painter.getInstance()
-                .getPagerTabStripPainter();
-        pagerTabStrip.setTabIndicatorColor(pagerTabStripPainter.getBackgroundColor());
-        pagerTabStrip.setBackgroundColor(pagerTabStripPainter.getBackgroundColor());
-        pagerTabStrip.setTextColor(pagerTabStripPainter.getTextColor());
+        Theme theme = mMathDokuPreferences.getTheme();
+        pagerTabStrip.setTabIndicatorColor(theme.getActionBarBackgroundColor());
+        pagerTabStrip.setBackgroundColor(theme.getActionBarBackgroundColor());
+        pagerTabStrip.setTextColor(theme.getActionBarTextColor());
         pagerTabStrip.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getDimension(
                 net.mathdoku.plus.R.dimen.text_size_default) / getResources().getDisplayMetrics().density);
         pagerTabStrip.setGravity(Gravity.BOTTOM);

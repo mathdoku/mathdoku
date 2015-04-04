@@ -27,7 +27,6 @@ public class Painter {
     private final MaybeValuePainter mMaybeGridPainter;
     private final MaybeValuePainter mMaybeLinePainter;
     private final InputModeBorderPainter mInputModeBorderPainter;
-    private final PagerTabStripPainter mPagerTabStripPainter;
     private final NavigationDrawerPainter mNavigationDrawerPainter;
     private final SolvedTextPainter mSolvedTextPainter;
 
@@ -46,7 +45,6 @@ public class Painter {
         mMaybeGridPainter = new MaybeValuePainter();
         mMaybeLinePainter = new MaybeValuePainter();
         mInputModeBorderPainter = new InputModeBorderPainter();
-        mPagerTabStripPainter = new PagerTabStripPainter();
         mNavigationDrawerPainter = new NavigationDrawerPainter();
         mSolvedTextPainter = new SolvedTextPainter();
 
@@ -103,7 +101,6 @@ public class Painter {
         mMaybeGridPainter.setTheme(theme);
         mMaybeLinePainter.setTheme(theme);
         mInputModeBorderPainter.setTheme(theme);
-        mPagerTabStripPainter.setTheme(theme);
         mNavigationDrawerPainter.setTheme(theme);
     }
 
@@ -171,10 +168,6 @@ public class Painter {
 
     public InputModeBorderPainter getInputModeBorderPainter() {
         return mInputModeBorderPainter;
-    }
-
-    public PagerTabStripPainter getPagerTabStripPainter() {
-        return mPagerTabStripPainter;
     }
 
     public NavigationDrawerPainter getNavigationDrawerPainter() {
