@@ -28,7 +28,6 @@ public class Painter {
     private final MaybeValuePainter mMaybeLinePainter;
     private final InputModeBorderPainter mInputModeBorderPainter;
     private final NavigationDrawerPainter mNavigationDrawerPainter;
-    private final SolvedTextPainter mSolvedTextPainter;
 
     /**
      * Creates a new instance of {@link net.mathdoku.plus.painter.Painter}.
@@ -46,7 +45,6 @@ public class Painter {
         mMaybeLinePainter = new MaybeValuePainter();
         mInputModeBorderPainter = new InputModeBorderPainter();
         mNavigationDrawerPainter = new NavigationDrawerPainter();
-        mSolvedTextPainter = new SolvedTextPainter();
 
         // Set the size of the borders.
         setBorderSizes(false);
@@ -172,10 +170,6 @@ public class Painter {
 
     public NavigationDrawerPainter getNavigationDrawerPainter() {
         return mNavigationDrawerPainter;
-    }
-
-    public SolvedTextPainter getSolvedTextPainter() {
-        return mSolvedTextPainter;
     }
 
     /**

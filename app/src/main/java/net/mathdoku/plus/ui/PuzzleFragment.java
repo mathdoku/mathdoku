@@ -34,7 +34,6 @@ import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.painter.Painter;
-import net.mathdoku.plus.painter.SolvedTextPainter;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cheat.CellRevealedCheat;
@@ -46,6 +45,7 @@ import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.puzzle.ui.GridPlayerView;
+import net.mathdoku.plus.puzzle.ui.theme.Theme;
 import net.mathdoku.plus.tickertape.TickerTape;
 import net.mathdoku.plus.tip.TipCheat;
 import net.mathdoku.plus.tip.TipDialog;
@@ -441,11 +441,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
                     // Set the text view which will be animated
                     final TextView textView = (TextView) mRootView.findViewById(R.id.solvedText);
                     textView.setText(R.string.main_ui_solved_messsage);
-                    SolvedTextPainter solvedTextPainter = Painter.getInstance()
-                            .getSolvedTextPainter();
-                    textView.setTextColor(solvedTextPainter.getTextColor());
-                    textView.setBackgroundColor(solvedTextPainter.getBackgroundColor());
-                    textView.setTypeface(solvedTextPainter.getTypeface());
+                    Theme theme = mMathDokuPreferences.getTheme();
+                    textView.setTextColor(theme.getSolvedAnimationTextColor());
+                    textView.setBackgroundColor(theme.getSolvedAnimationBackgroundColor());
+                    textView.setTypeface(theme.getTypeface());
                     textView.setVisibility(View.VISIBLE);
 
                     // Build the animation
