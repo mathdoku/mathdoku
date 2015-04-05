@@ -68,7 +68,6 @@ import net.mathdoku.plus.tip.TipStatistics;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;
-import net.mathdoku.plus.util.Util;
 import net.mathdoku.plus.util.VersionInfo;
 
 import java.util.ArrayList;
@@ -79,6 +78,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         .PuzzleFragmentListener {
     @SuppressWarnings("unused")
     private static final String TAG = PuzzleFragmentActivity.class.getName();
+
+    // Home directory url of promotion website.
+    private static final String PROJECT_HOME = "http://mathdoku.net/";
 
     // Intent parameters for creating a new game of specified type
     private static final String NEW_PUZZLE_FOR_LEADERBOARD = "CreateNewGameForLeaderboard";
@@ -572,7 +574,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         }
 
         if ((tv = (TextView) view.findViewById(R.id.help_project_home_link)) != null) {
-            tv.setText(Util.PROJECT_HOME);
+            tv.setText(PROJECT_HOME);
         }
 
         final PuzzleFragmentActivity puzzleFragmentActivity = this;

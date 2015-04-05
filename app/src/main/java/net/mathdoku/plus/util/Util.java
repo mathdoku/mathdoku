@@ -8,10 +8,6 @@ public class Util {
     @SuppressWarnings("unused")
     private static final String TAG = Util.class.getName();
 
-    // Home directory url of promotion website. Most url's used in this app will
-    // be forwarded from the promotion website to code.google.com/p/mathdoku.
-    public static final String PROJECT_HOME = "http://mathdoku.net/";
-
     /**
      * Converts a duration value from long to a string.
      *
