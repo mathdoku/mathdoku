@@ -3,6 +3,9 @@ package net.mathdoku.plus.tickertape;
 import android.app.Activity;
 import android.view.View;
 
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.puzzle.ui.theme.LightTheme;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +14,7 @@ import org.robolectric.Robolectric;
 import java.util.ArrayList;
 
 import robolectric.RobolectricGradleTestRunner;
+import robolectric.TestRunnerHelper;
 
 import static matcher.MathdokuMatcher.notSameInstance;
 import static org.hamcrest.CoreMatchers.not;
@@ -20,6 +24,7 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class TickerTapeTest {
@@ -34,6 +39,8 @@ public class TickerTapeTest {
         activity = Robolectric.buildActivity(Activity.class)
                 .create()
                 .get();
+        Preferences.getInstance(activity);
+        when(Preferences.getInstance().getTheme()).thenReturn(LightTheme.getInstance());
 
         tickerTape = new TickerTape(activity, null) {
             @Override
@@ -44,6 +51,11 @@ public class TickerTapeTest {
         };
         tickerTape.addItem(ITEM_1);
         tickerTape.addItem(ITEM_2);
+    }
+
+    //@After
+    public void tearDown() throws Exception {
+        TestRunnerHelper.tearDown();
     }
 
     @Test
