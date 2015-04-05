@@ -52,7 +52,12 @@ public class FileProvider extends ContentProvider {
 
     @Override
     public int delete(Uri arg0, String arg1, String[] arg2) {
-        throw new UnsupportedOperationException(PROVIDER_NAME + " does not support delete.");
+        throwUnsupportedOperationException();
+        return 0;
+    }
+
+    private void throwUnsupportedOperationException() {
+        throw new UnsupportedOperationException(PROVIDER_NAME + " does not support this operation.");
     }
 
     @Override
@@ -61,8 +66,7 @@ public class FileProvider extends ContentProvider {
             throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
-        // For a URI which matched an allowed URI, the corresponding mime type
-        // is returned.
+        // For a URI which matched an allowed URI, the corresponding mime type is returned.
         switch (uriMatcher.match(uri)) {
             case FEEDBACK_LOG_ID:
                 return "text/plain";
@@ -79,7 +83,8 @@ public class FileProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri arg0, ContentValues arg1) {
-        throw new UnsupportedOperationException(PROVIDER_NAME + " does not support delete.");
+        throwUnsupportedOperationException();
+        return null;
     }
 
     @Override
@@ -115,7 +120,8 @@ public class FileProvider extends ContentProvider {
 
     @Override
     public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
-        throw new UnsupportedOperationException(PROVIDER_NAME + " does not support delete.");
+        throwUnsupportedOperationException();
+        return 0;
     }
 
     @Override
