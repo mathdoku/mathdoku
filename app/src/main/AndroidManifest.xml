@@ -81,8 +81,8 @@
         <activity android:name=".leaderboard.ui.LeaderboardOverviewActivity"/>
 
         <provider
-            android:name="net.mathdoku.plus.util.FileProvider"
-            android:authorities="net.mathdoku.plus.util.FileProvider"
+            android:name=".util.fileprovider.FileProvider"
+            android:authorities="net.mathdoku.plus.util.fileprovider.FileProvider"
             android:exported="true"
             tools:ignore="ExportedContentProvider"/>
     </application>

@@ -14,6 +14,9 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.archive.ui.ArchiveFragment;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
+import net.mathdoku.plus.util.fileprovider.AvoidableMovesChartFileType;
+import net.mathdoku.plus.util.fileprovider.CheatsChartFileType;
+import net.mathdoku.plus.util.fileprovider.FileProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,20 +173,20 @@ public class SharedPuzzle {
 
             // Check if avoidable moves chart can be found
             if (screendump.save(view.findViewWithTag(ArchiveFragment.AVOIDABLE_MOVES_CHART_TAG_ID),
-                                FileProvider.AVOIDABLE_MOVES_CHART_FILE_NAME)) {
+                                AvoidableMovesChartFileType.NAME)) {
                 if (mUris == null) {
                     mUris = new ArrayList<Uri>();
                 }
-                mUris.add(FileProvider.getUri(FileProvider.AVOIDABLE_MOVES_CHART_FILE_NAME));
+                mUris.add(FileProvider.getUri(AvoidableMovesChartFileType.NAME));
             }
 
             // Check if cheats chart can be found
             if (screendump.save(view.findViewWithTag(ArchiveFragment.CHEATS_CHART_TAG_ID),
-                                FileProvider.CHEATS_CHART_FILE_NAME)) {
+                                CheatsChartFileType.NAME)) {
                 if (mUris == null) {
                     mUris = new ArrayList<Uri>();
                 }
-                mUris.add(FileProvider.getUri(FileProvider.CHEATS_CHART_FILE_NAME));
+                mUris.add(FileProvider.getUri(CheatsChartFileType.NAME));
             }
         }
 

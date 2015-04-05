@@ -1,4 +1,4 @@
-package net.mathdoku.plus.util;
+package net.mathdoku.plus.util.fileprovider;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -13,6 +13,8 @@ import net.mathdoku.plus.config.Config;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The file provider can only be used to get access to files which have to be send as email attachment. Beware that
@@ -21,33 +23,33 @@ import java.io.FileNotFoundException;
 public class FileProvider extends ContentProvider {
     private static final String PROVIDER_NAME = FileProvider.class.getName();
 
-    // Supported files.
-    private static final int FEEDBACK_LOG_ID = 1;
-    public static final String FEEDBACK_LOG_FILE_NAME = "device_info_and_settings.txt";
+    private static final List<FileType> fileTypes = getSupportedFileTypes();
+    private static final UriMatcher uriMatcher = initUriMatcher(fileTypes);
 
-    private static final int SCREENDUMP_ID = 2;
-    public static final String SCREENDUMP_FILE_NAME = "screendump.png";
+    private static List<FileType> getSupportedFileTypes() {
+        List<FileType> fileTypeList = new ArrayList<FileType>();
 
-    private static final int AVOIDABLE_MOVES_CHART_ID = 3;
-    public static final String AVOIDABLE_MOVES_CHART_FILE_NAME = "avoidable_moves.png";
-
-    private static final int CHEATS_CHART_ID = 4;
-    public static final String CHEATS_CHART_FILE_NAME = "cheats.png";
-
-    private static final int DATABASE_ID = 5;
-    public static final String DATABASE_FILE_NAME = "MathDoku.sqlite";
-
-    private static final UriMatcher uriMatcher;
-
-    static {
-        uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(PROVIDER_NAME, FEEDBACK_LOG_FILE_NAME, FEEDBACK_LOG_ID);
-        uriMatcher.addURI(PROVIDER_NAME, SCREENDUMP_FILE_NAME, SCREENDUMP_ID);
-        uriMatcher.addURI(PROVIDER_NAME, AVOIDABLE_MOVES_CHART_FILE_NAME, AVOIDABLE_MOVES_CHART_ID);
-        uriMatcher.addURI(PROVIDER_NAME, CHEATS_CHART_FILE_NAME, CHEATS_CHART_ID);
+        fileTypeList.add(new LogFileType());
+        fileTypeList.add(new ScreendumpFileType());
+        fileTypeList.add(new AvoidableMovesChartFileType());
+        fileTypeList.add(new CheatsChartFileType());
         if (Config.APP_MODE == Config.AppMode.DEVELOPMENT) {
-            uriMatcher.addURI(PROVIDER_NAME, DATABASE_FILE_NAME, DATABASE_ID);
+            fileTypeList.add(new DatabaseFileType());
         }
+
+        return fileTypeList;
+    }
+
+    private static UriMatcher initUriMatcher(List<FileType> fileTypes) {
+        UriMatcher uriMatcherResult = new UriMatcher(UriMatcher.NO_MATCH);
+
+        int index = 0;
+        for (FileType fileType : fileTypes) {
+            uriMatcherResult.addURI(PROVIDER_NAME, fileType.getName(), index);
+            index++;
+        }
+
+        return uriMatcherResult;
     }
 
     @Override
@@ -63,22 +65,15 @@ public class FileProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         if (uriMatcher.match(uri) == UriMatcher.NO_MATCH) {
-            throw new IllegalArgumentException("Unsupported URI: " + uri);
+            return unsupportedUri(uri);
         }
 
         // For a URI which matched an allowed URI, the corresponding mime type is returned.
-        switch (uriMatcher.match(uri)) {
-            case FEEDBACK_LOG_ID:
-                return "text/plain";
-            case SCREENDUMP_ID:
-                return "image/png";
-            case AVOIDABLE_MOVES_CHART_ID:
-                return "image/png";
-            case CHEATS_CHART_ID:
-                return "image/png";
-            default:
-                return "*/*";
-        }
+        return fileTypes.get(uriMatcher.match(uri)).getMimeType();
+    }
+
+    private static String unsupportedUri(Uri uri) {
+        throw new IllegalArgumentException("Unsupported URI: " + uri);
     }
 
     @Override
@@ -95,7 +90,7 @@ public class FileProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] arg1, String arg2, String[] arg3, String arg4) {
         if (uri == null || uriMatcher.match(uri) == UriMatcher.NO_MATCH) {
-            throw new IllegalArgumentException("Unsupported URI: " + uri);
+            unsupportedUri(uri);
         }
 
         // For a URI which matched an allowed URI, a cursor containing the name
@@ -127,7 +122,7 @@ public class FileProvider extends ContentProvider {
     @Override
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
         if (uri == null || uriMatcher.match(uri) == UriMatcher.NO_MATCH) {
-            throw new IllegalArgumentException("Unsupported URI: " + uri);
+            unsupportedUri(uri);
         }
 
         // Check if dir exists
@@ -157,7 +152,7 @@ public class FileProvider extends ContentProvider {
         Uri uri = Uri.parse("content://" + PROVIDER_NAME + "/" + filename);
 
         if (uriMatcher.match(uri) == UriMatcher.NO_MATCH) {
-            throw new IllegalArgumentException("Unsupported URI: " + uri);
+            unsupportedUri(uri);
         }
 
         // For filename which matches an allowed URI, the uri is returned.

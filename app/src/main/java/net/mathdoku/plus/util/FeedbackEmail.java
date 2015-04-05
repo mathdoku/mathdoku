@@ -15,6 +15,10 @@ import android.util.Log;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.util.fileprovider.DatabaseFileType;
+import net.mathdoku.plus.util.fileprovider.FileProvider;
+import net.mathdoku.plus.util.fileprovider.LogFileType;
+import net.mathdoku.plus.util.fileprovider.ScreendumpFileType;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -225,7 +229,7 @@ public class FeedbackEmail {
         // Create a screen dump before showing the alert.
         final Screendump screendump = new Screendump(mActivity);
         screendump.save(mActivity.getWindow()
-                                .getDecorView(), FileProvider.SCREENDUMP_FILE_NAME);
+                                .getDecorView(), ScreendumpFileType.NAME);
 
         new AlertDialog.Builder(mActivity).setTitle(mActivity.getResources()
                                                             .getString(R.string.dialog_send_feedback_title))
@@ -251,13 +255,13 @@ public class FeedbackEmail {
                                                                    .getString(R.string.feedback_email_body));
 
                                            List<Uri> uris = new ArrayList<Uri>();
-                                           uris.add(FileProvider.getUri(FileProvider.SCREENDUMP_FILE_NAME));
-                                           if (createLogFile(FileProvider.FEEDBACK_LOG_FILE_NAME)) {
-                                               uris.add(FileProvider.getUri(FileProvider.FEEDBACK_LOG_FILE_NAME));
+                                           uris.add(FileProvider.getUri(ScreendumpFileType.NAME));
+                                           if (createLogFile(LogFileType.NAME)) {
+                                               uris.add(FileProvider.getUri(LogFileType.NAME));
                                            }
                                            if (Config.APP_MODE == Config.AppMode.DEVELOPMENT && copyDatabase(
-                                                   FileProvider.DATABASE_FILE_NAME)) {
-                                               uris.add(FileProvider.getUri(FileProvider.DATABASE_FILE_NAME));
+                                                   DatabaseFileType.NAME)) {
+                                               uris.add(FileProvider.getUri(DatabaseFileType.NAME));
                                            }
                                            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, (ArrayList<?
                                                                                       extends
