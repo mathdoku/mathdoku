@@ -8,6 +8,10 @@ public class Util {
     @SuppressWarnings("unused")
     private static final String TAG = Util.class.getName();
 
+    private Util() {
+        // Prevent accidental instantiation of utility class
+    }
+
     /**
      * Converts a duration value from long to a string.
      *
