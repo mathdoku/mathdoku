@@ -150,21 +150,26 @@ public class FeedbackEmail {
         Preferences preferences = Preferences.getInstance();
 
         if (preferences != null) {
-            SortedMap<String, String> sortedMap = new TreeMap<String, String>();
-
-            for (Map.Entry<String, ?> entry : preferences.getAllSharedPreferences()
-                    .entrySet()) {
-                if (entry != null) {
-                    String key = entry.getKey();
-                    if (key == null) {
-                        continue;
-                    }
-                    Object value = entry.getValue();
-                    sortedMap.put(key, value == null ? "" : value.toString());
-                }
-            }
-            logSortedMap("Settings", sortedMap);
+            logSortedMap("Settings", getSortedPreferencesMap(preferences));
         }
+    }
+
+    private SortedMap<String, String> getSortedPreferencesMap(Preferences preferences) {
+        SortedMap<String, String> sortedMap = new TreeMap<String, String>();
+
+        for (Map.Entry<String, ?> entry : preferences.getAllSharedPreferences()
+                .entrySet()) {
+            if (entry != null) {
+                String key = entry.getKey();
+                if (key == null) {
+                    continue;
+                }
+                Object value = entry.getValue();
+                sortedMap.put(key, value == null ? "" : value.toString());
+            }
+        }
+
+        return sortedMap;
     }
 
     /**
