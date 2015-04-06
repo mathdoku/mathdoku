@@ -201,10 +201,12 @@ public class FeedbackEmail {
      *         The line to be written.
      */
     private void writeLine(String line) throws IOException {
-        // Prefix line with current date time
-        line = mDateFormat.format(new Date()) + FIELD_DELIMITER_LEVEL1 + line;
-        mLogFile.write(line.getBytes());
+        mLogFile.write(getLinePrefixedWithCurrentDatetime(line).getBytes());
         mLogFile.flush();
+    }
+
+    private String getLinePrefixedWithCurrentDatetime(String line) {
+        return mDateFormat.format(new Date()) + FIELD_DELIMITER_LEVEL1 + line;
     }
 
     /**
