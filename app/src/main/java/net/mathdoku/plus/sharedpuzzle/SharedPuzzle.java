@@ -26,6 +26,8 @@ import java.util.List;
 public class SharedPuzzle {
     @SuppressWarnings("unused")
     private static final String TAG = SharedPuzzle.class.getName();
+    public static final String HTML_SINGLE_BREAK = "<br/>";
+    public static final String HTML_DOUBLE_BREAK = "<br/><br/>";
 
     private final Context mContext;
     private List<Uri> mUris;
@@ -71,15 +73,18 @@ public class SharedPuzzle {
             String bodyText;
             if (grid.isActive()) {
                 bodyText = mContext.getResources()
-                        .getString(R.string.share_unfinished_puzzle_body, toHtmlLink(shareURL, mathDokuPuzzle), "<br/>",
-                                   toHtmlLink(downloadUrl, "Google Play"), "<br/><br/>", "<br/><br/>",
-                                   shareURL + "<br/><br/>", downloadUrl);
+                        .getString(R.string.share_unfinished_puzzle_body, toHtmlLink(shareURL, mathDokuPuzzle),
+                                   HTML_SINGLE_BREAK,
+                                   toHtmlLink(downloadUrl, mContext.getResources()
+                                           .getString(R.string.google_play)), HTML_DOUBLE_BREAK, HTML_DOUBLE_BREAK,
+                                   shareURL + HTML_DOUBLE_BREAK, downloadUrl);
             } else {
                 bodyText = mContext.getResources()
                         .getString(R.string.share_finished_puzzle_body, toHtmlLink(shareURL, mathDokuPuzzle),
-                                   Util.durationTimeToString(grid.getElapsedTime()), "<br/>",
-                                   toHtmlLink(downloadUrl, "Google Play"), "<br/><br/>", "<br/><br/>",
-                                   shareURL + "<br/><br/>", downloadUrl);
+                                   Util.durationTimeToString(grid.getElapsedTime()), HTML_SINGLE_BREAK,
+                                   toHtmlLink(downloadUrl, mContext.getResources()
+                                           .getString(R.string.google_play)), HTML_DOUBLE_BREAK, HTML_DOUBLE_BREAK,
+                                   shareURL + HTML_DOUBLE_BREAK, downloadUrl);
             }
             intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(bodyText));
 
