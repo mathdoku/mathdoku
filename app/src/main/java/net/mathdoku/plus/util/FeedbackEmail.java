@@ -241,12 +241,7 @@ public class FeedbackEmail {
                                                             .getString(R.string.dialog_send_feedback_title))
                 .setMessage(mActivity.getResources()
                                     .getString(R.string.dialog_send_feedback_text))
-                .setNegativeButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Do nothing
-                    }
-                })
+                .setNegativeButton(R.string.dialog_general_button_close, null)
                 .setPositiveButton(R.string.dialog_send_feedback_positive_button,
                                    new DialogInterface.OnClickListener() {
                                        @Override
@@ -301,12 +296,7 @@ public class FeedbackEmail {
     private void showNoEmailAppInstalledDialog() {
         new AlertDialog.Builder(mActivity).setTitle(R.string.dialog_no_email_client_found_title)
                 .setMessage(R.string.dialog_sending_feedback_email_is_not_possible_body)
-                .setNeutralButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Do nothing
-                    }
-                })
+                .setNeutralButton(R.string.dialog_general_button_close, null)
                 .create()
                 .show();
     }
