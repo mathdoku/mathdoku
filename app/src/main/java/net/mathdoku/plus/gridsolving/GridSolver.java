@@ -3,7 +3,6 @@ package net.mathdoku.plus.gridsolving;
 import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.gridsolving.dancinglinesx.DancingLinesX;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
@@ -214,25 +213,8 @@ public class GridSolver {
      * @return True in case exactly one solution exists for this grid.
      */
     public boolean hasUniqueSolution() {
-        if (Config.APP_MODE == AppMode.DEVELOPMENT && DEBUG) {
-            initialize(true); // Needed to compute complexity in development
-            // mode
-
-            // Search for multiple solutions (but stop as soon as the second
-            // solution has been found).
-            if (dancingLinesX.solve(DancingLinesX.SolveType.MULTIPLE) == 1) {
-                // Only one solution has been found. The real complexity of the
-                // puzzle is computed based on this solution.
-
-                getPuzzleComplexity();
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            initialize(false);
-            return dancingLinesX.solve(DancingLinesX.SolveType.MULTIPLE) == 1;
-        }
+        initialize(false);
+        return dancingLinesX.solve(DancingLinesX.SolveType.MULTIPLE) == 1;
     }
 
     /**
@@ -285,144 +267,5 @@ public class GridSolver {
                     .size();
         }
         return totalMoves;
-    }
-
-    /**
-     * Determines the complexity of a grid by analysing its solution.
-     *
-     * @return The complexity of a grid.
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    private int getPuzzleComplexity() {
-        if (Config.APP_MODE == AppMode.DEVELOPMENT) {
-            // ///////////////////////////////////////////////////////////////////////
-            // NOT READY FOR PRODUCTION MODE YET.
-            //
-            // Be sure to call initialize(true) before calling this method
-            //
-            // The method computes a complexity and prints log messages. It is
-            // not yet clear whether the computed complexity match with
-            // subjective difficulty.
-            // ///////////////////////////////////////////////////////////////////////
-
-            if (DEBUG) {
-                Log.i(TAG, "Determine puzzle complexity");
-            }
-            int[][] solutionGrid = new int[mGridSize][mGridSize];
-            int moveCount = 1;
-            int previousCageId = -1;
-            int puzzleComplexity = 1;
-            for (int i = 1; i <= dancingLinesX.getRowsInSolution(); i++) {
-                // Each solution row corresponds with one cage in the grid. The
-                // order in which the cages are resolved is important. As soon a
-                // the
-                // next cage has to be resolved, it is determined which cage has
-                // the
-                // least possible number of permutations available at that
-                // moment.
-                int solutionRow = dancingLinesX.getSolutionRow(i);
-
-                for (Move move : mMoves) {
-                    if (move.mSolutionRow == solutionRow) {
-                        if (move.mCageId != previousCageId) {
-                            // This is the first cell of the next cage to be
-                            // filled.
-                            // Determine the number of move for this cage which
-                            // are
-                            // still possible with the partially filled grid.
-                            Cage cage = mCages.get(move.mCageId);
-                            List<int[]> cageMoves = cage.getPossibleCombos();
-                            int possiblePermutations = 0;
-                            for (int[] cageMove : cageMoves) {
-                                boolean validMove = true;
-                                // Test whether this cage move could be applied
-                                // to
-                                // the cells of the cage.
-                                for (int j = 0; j < cage.getNumberOfCells(); j++) {
-                                    // Check if value is already used in this
-                                    // row
-                                    int cellRow = cage.getCell(j)
-                                            .getRow();
-                                    for (int col = 0; col < mGridSize; col++) {
-                                        if (solutionGrid[cellRow][col] == cageMove[j]) {
-                                            // The value is already used on this
-                                            // row.
-                                            validMove = false;
-                                            break;
-                                        }
-                                    }
-                                    if (!validMove) {
-                                        break;
-                                    }
-
-                                    // Check if value is already used in this
-                                    // row
-                                    int cellColumn = cage.getCell(j)
-                                            .getColumn();
-                                    for (int row = 0; row < mGridSize; row++) {
-                                        if (solutionGrid[row][cellColumn] == cageMove[j]) {
-                                            // The value is already used in this
-                                            // column.
-                                            validMove = false;
-                                            break;
-                                        }
-                                    }
-                                    if (!validMove) {
-                                        break;
-                                    }
-                                }
-                                if (validMove) {
-                                    // All values of the cageMove could be
-                                    // placed in
-                                    // their respective cells. So this is really
-                                    // a
-                                    // permutation which still can be place into
-                                    // the
-                                    // cage.
-                                    possiblePermutations++;
-                                }
-                            }
-                            // The complexity of the puzzle has to be multiplied
-                            // with the number of possible permutations of this
-                            // cage
-                            // as their is not deductive way to reduce the
-                            // number of
-                            // possible combinations any further. At this moment
-                            // a
-                            // combination has to be chosen at random to check
-                            // to
-                            // see if it fails.
-                            if (DEBUG) {
-                                Log.i(TAG, "Select cage " + move.mCageId + " with complexity " + possiblePermutations);
-                            }
-                            puzzleComplexity *= possiblePermutations;
-                            previousCageId = move.mCageId;
-                        }
-
-                        // Fill the grid solution with the correct value.
-                        solutionGrid[move.mCellRow][move.mCellCol] = move.mCellValue;
-
-                    }
-                }
-                if (DEBUG) {
-                    Log.i(TAG, "*********** MOVE " + moveCount++ + " ***********");
-                    for (int row = 0; row < this.mGridSize; row++) {
-                        String line = "";
-                        for (int col = 0; col < this.mGridSize; col++) {
-                            line += " " + solutionGrid[row][col];
-                        }
-                        Log.i(TAG, line);
-                    }
-                }
-            }
-            if (DEBUG) {
-                Log.i(TAG, "Total complexity of puzzle " + puzzleComplexity + " (or " + dancingLinesX.getComplexity() +
-                        "??)");
-            }
-
-            return puzzleComplexity;
-        }
-
-        return 0;
     }
 }
