@@ -323,21 +323,19 @@ public class FeedbackEmail {
 
     private boolean copyDatabase(String filename) {
         File file = new File(mActivity.getFilesDir(), filename);
-        if (file.exists()) {
-            if (!file.delete()) {
-                return false;
-            }
+        if (file.exists() && !file.delete()) {
+            return false;
         }
         try {
-            FileInputStream fin = new FileInputStream(mActivity.getDatabasePath(filename));
-            FileOutputStream fos = new FileOutputStream(file);
+            FileInputStream fileInputStream = new FileInputStream(mActivity.getDatabasePath(filename));
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
             byte[] buffer = new byte[1024];
             int len1 = 0;
-            while ((len1 = fin.read(buffer)) != -1) {
-                fos.write(buffer, 0, len1);
+            while ((len1 = fileInputStream.read(buffer)) != -1) {
+                fileOutputStream.write(buffer, 0, len1);
             }
-            fin.close();
-            fos.close();
+            fileInputStream.close();
+            fileOutputStream.close();
         } catch (IOException e) {
             Log.d(TAG, "Error while copying database for feedback email.", e);
             return false;
