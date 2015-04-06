@@ -270,14 +270,14 @@ public class FeedbackEmail {
                 .getString(R.string.feedback_email_subject));
         intent.putExtra(Intent.EXTRA_TEXT, mActivity.getResources()
                 .getString(R.string.feedback_email_body));
-        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, getAttachmentUris());
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, (ArrayList<?
+                extends
+                Parcelable>) getAttachmentUris());
 
         return intent;
     }
 
-    private ArrayList<?
-            extends
-            Parcelable> getAttachmentUris() {
+    private List<Uri> getAttachmentUris() {
         List<Uri> uris = new ArrayList<Uri>();
 
         uris.add(FileProvider.getUri(ScreendumpFileType.NAME));
@@ -287,9 +287,8 @@ public class FeedbackEmail {
         if (Config.APP_MODE == Config.AppMode.DEVELOPMENT && copyDatabase(DatabaseFileType.NAME)) {
             uris.add(FileProvider.getUri(DatabaseFileType.NAME));
         }
-        return (ArrayList<?
-                extends
-                Parcelable>) uris;
+
+        return uris;
     }
 
     private void showNoEmailAppInstalledDialog() {
