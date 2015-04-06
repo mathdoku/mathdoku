@@ -1,11 +1,8 @@
 package net.mathdoku.plus.sharedpuzzle;
 
 import android.content.res.Resources;
-import android.net.Uri;
 
 import net.mathdoku.plus.R;
-
-import java.util.List;
 
 public class MathdokuPlusShareUri extends ShareUri {
     private static final int VERSION = 2;
