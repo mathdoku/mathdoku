@@ -67,7 +67,7 @@ import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.tip.TipStatistics;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
-import net.mathdoku.plus.util.SharedPuzzle;
+import net.mathdoku.plus.sharedpuzzle.SharedPuzzle;
 import net.mathdoku.plus.util.VersionInfo;
 
 import java.util.ArrayList;

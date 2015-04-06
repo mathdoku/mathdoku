@@ -44,7 +44,7 @@ import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.ui.base.AppNavUtils;
 import net.mathdoku.plus.util.FeedbackEmail;
-import net.mathdoku.plus.util.SharedPuzzle;
+import net.mathdoku.plus.sharedpuzzle.SharedPuzzle;
 
 import java.util.List;
 

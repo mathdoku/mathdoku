@@ -1,4 +1,4 @@
-package net.mathdoku.plus.util;
+package net.mathdoku.plus.sharedpuzzle;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,6 +14,8 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.archive.ui.ArchiveFragment;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
+import net.mathdoku.plus.util.Screendump;
+import net.mathdoku.plus.util.Util;
 import net.mathdoku.plus.util.fileprovider.AvoidableMovesChartFileType;
 import net.mathdoku.plus.util.fileprovider.CheatsChartFileType;
 import net.mathdoku.plus.util.fileprovider.FileProvider;
@@ -25,23 +27,19 @@ public class SharedPuzzle {
     @SuppressWarnings("unused")
     private static final String TAG = SharedPuzzle.class.getName();
 
-    // Context in which the SharedPuzzle is created.
-    private final Context mContext;
+    private static final String SHARE_URI_VERSION_MATHDOKU_PLUS = "2";
+    private static final String SHARE_URI_VERSION_MATHDOKU_ORIGINAL = "2";
 
-    // List of uri which have to be enclosed as attachments in the share email.
+    private final Context mContext;
     private List<Uri> mUris;
 
-    // Elements of the share url for Mathdoku Plus
     private final String mSharedPuzzleSchemeMathdokuPlus;
     private final String mSharedPuzzleHostMathdokuPlus;
     private String mSharedPuzzlePathPrefixMathdokuPlus;
-    private final String SHARE_URI_VERSION_MATHDOKU_PLUS = "2";
 
-    // Elements of the share url for Mathdoku Original
     private final String mSharedPuzzleSchemeMathdokuOriginal;
     private final String mSharedPuzzleHostMathdokuOriginal;
     private String mSharedPuzzlePathPrefixMathdokuOriginal;
-    private final String SHARE_URI_VERSION_MATHDOKU_ORIGINAL = "2";
 
     /**
      * Creates new instance of {@see SharedPuzzle}.

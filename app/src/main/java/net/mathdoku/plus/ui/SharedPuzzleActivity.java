@@ -22,7 +22,7 @@ import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.GridRow;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
-import net.mathdoku.plus.util.SharedPuzzle;
+import net.mathdoku.plus.sharedpuzzle.SharedPuzzle;
 
 public class SharedPuzzleActivity extends AppFragmentActivity {
 
