@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Parcelable;
@@ -314,11 +313,12 @@ public class FeedbackEmail {
             return false;
         }
 
-        final Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("message/rfc822");
-        List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return packageManager.queryIntentActivities(getSendEmailIntent(), PackageManager.MATCH_DEFAULT_ONLY)
+                .isEmpty();
+    }
 
-        return list.size() <= 0;
+    private static Intent getSendEmailIntent() {
+        return new Intent(Intent.ACTION_SEND).setType("message/rfc822");
     }
 
     private boolean copyDatabase(String filename) {
