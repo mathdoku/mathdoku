@@ -40,10 +40,9 @@ public class FeedbackEmail {
     @SuppressWarnings("unused")
     private static final String TAG = FeedbackEmail.class.getName();
 
-    // Delimiters used in files to separate objects, fields and value
-    private static final String EOL_DELIMITER = "\n"; // Separate objects
-    private static final String FIELD_DELIMITER_LEVEL1 = "|"; // Separate fields
-    private static final String FIELD_DELIMITER_LEVEL2 = "="; // Separate values
+    private static final String EOL_DELIMITER = "\n";
+    private static final String FIELD_DELIMITER_LEVEL1 = "|";
+    private static final String FIELD_DELIMITER_LEVEL2 = "=";
 
     // Date format for log file
     private final DateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
