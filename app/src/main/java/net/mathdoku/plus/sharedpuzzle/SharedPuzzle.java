@@ -88,7 +88,7 @@ public class SharedPuzzle {
             intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(bodyText));
 
             // Store attachments uris
-            if (mUris != null && mUris.size() > 0) {
+            if (Util.isListNotNullOrEmpty(mUris)) {
                 intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, (ArrayList<? extends Parcelable>) mUris);
             }
 

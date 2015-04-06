@@ -44,6 +44,10 @@ public class Util {
         return list == null || list.isEmpty();
     }
 
+    public static <T> boolean isListNotNullOrEmpty(List<T> list) {
+        return !isListNullOrEmpty(list);
+    }
+
     public static boolean isArrayNullOrEmpty(int[] array) {
         return array == null || array.length == 0;
     }
