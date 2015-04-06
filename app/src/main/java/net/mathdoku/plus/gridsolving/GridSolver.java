@@ -72,7 +72,8 @@ public class GridSolver {
             // - One cage constraint
             // - One row constraint per cell in the cage
             // - One column constraint per cell in the cage
-            totalNumberOfPermutations += cage.getPossibleCombos().size() * (1 + cage.getNumberOfCells() * 2);
+            totalNumberOfPermutations += cage.getPossibleCombos()
+                    .size() * (1 + cage.getNumberOfCells() * 2);
         }
         return totalNumberOfPermutations;
     }
@@ -90,10 +91,8 @@ public class GridSolver {
     }
 
     private void initialize(boolean uncoverSolution) {
-        // Reorder cages based on the number of possible moves for the cage
-        // because this has a major impact on the time it will take to find a
-        // solution. Cage should be ordered on increasing number of possible
-        // moves.
+        // Reorder cages based on the number of possible moves for the cage because this has a major impact on the
+        // time it will take to find a solution. Cage should be ordered on increasing number of possible moves.
         List<Cage> sortedCages = new ArrayList<Cage>(mCages);
         Collections.sort(sortedCages, new SortCagesOnNumberOfMoves());
         if (DEBUG) {
@@ -103,9 +102,8 @@ public class GridSolver {
             }
         }
 
-        // In case the solution has to be uncovered, which is needed in case
-        // puzzle are shared, register details of all moves. Maybe all relevant
-        // data is already stored but I can't find out how.
+        // In case the solution has to be uncovered, which is needed in case puzzle are shared,
+        // register details of all moves. Maybe all relevant data is already stored but I can't find out how.
         if (uncoverSolution) {
             mMoves = new ArrayList<Move>();
         } else {
@@ -194,12 +192,11 @@ public class GridSolver {
                     .size() - cage2.getPossibleCombos()
                     .size();
             if (difference == 0) {
-                // Both cages have the same number of possible permutation. Next
-                // compare the number of cells in the cage.
+                // Both cages have the same number of possible permutation. Next compare the number of cells in the
+                // cage.
                 difference = cage1.getNumberOfCells() - cage2.getNumberOfCells();
                 if (difference == 0) {
-                    // Also the number of cells is equal. Finally compare the
-                    // id's.
+                    // Also the number of cells is equal. Finally compare the id's.
                     difference = cage1.getId() - cage2.getId();
                 }
             }
