@@ -2,7 +2,6 @@ package net.mathdoku.plus.sharedpuzzle;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcelable;
@@ -103,12 +102,7 @@ public class SharedPuzzle {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(R.string.dialog_no_email_client_found_title)
                         .setMessage(R.string.dialog_sharing_puzzles_is_not_possible_body)
-                        .setNeutralButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
-                                              @Override
-                                              public void onClick(DialogInterface dialog, int id) {
-                                                  // Do nothing
-                                              }
-                                          })
+                        .setNeutralButton(R.string.dialog_general_button_close, null)
                         .create()
                         .show();
             }
