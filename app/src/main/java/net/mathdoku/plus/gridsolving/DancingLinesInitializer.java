@@ -17,7 +17,7 @@ public class DancingLinesInitializer {
 
     // Replace Config.disabledAlways() on following line with Config.enabledInDevelopmentModeOnly()
     // to show debug information when running in development mode.
-    private static final boolean DEBUG = Config.enabledInDevelopmentModeOnly();//disabledAlways();
+    private static final boolean DEBUG = Config.disabledAlways();
 
     private final int mGridSize;
     private final List<Cage> mCages;
