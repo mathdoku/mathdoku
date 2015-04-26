@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ComboGenerator {
+    private Cage cage;
     private int mResult;
     private CageOperator mCageOperator;
     private boolean mHideOperator;
@@ -30,6 +31,7 @@ public class ComboGenerator {
      * found.
      */
     public List<int[]> getPossibleCombos(Cage cage, List<Cell> cells) {
+        this.cage = cage;
         mResult = cage.getResult();
         mCageOperator = cage.getOperator();
         mHideOperator = cage.isOperatorHidden();
@@ -75,8 +77,8 @@ public class ComboGenerator {
 
         // Cages of size two and above can only contain an add or a multiply
         // operation
-        resultCombos = getAllAddCombos(mGridSize, mResult, mCageCells.size());
-        List<int[]> multiplyCombos = getAllMultiplyCombos(mGridSize, mResult, mCageCells.size());
+        resultCombos = convertToOldStyle(new AddCageComboGenerator(this).getCombosForCage(cage));
+        List<int[]> multiplyCombos = convertToOldStyle(new MultiplyCageComboGenerator(this).getCombosForCage(cage));
 
         // Combine Add & Multiply result sets
         for (int[] multiplyCombo : multiplyCombos) {
@@ -136,100 +138,37 @@ public class ComboGenerator {
                 }
                 break;
             case ADD:
-                AllResults = getAllAddCombos(mGridSize, mResult, mCageCells.size());
+                AllResults = convertToOldStyle(new AddCageComboGenerator(this).getCombosForCage(cage));
                 break;
             case MULTIPLY:
-                AllResults = getAllMultiplyCombos(mGridSize, mResult, mCageCells.size());
+                AllResults = convertToOldStyle(new MultiplyCageComboGenerator(this).getCombosForCage(cage));
                 break;
         }
         return AllResults;
     }
 
-    // The following two variables are required by the recursive methods below.
-    // They could be passed as parameters of the recursive methods, but this
-    // reduces performance.
-    private int[] getAllCombos_Numbers;
-    private List<int[]> getAllCombos_ResultSet;
-
-    private List<int[]> getAllAddCombos(int max_val, int target_sum, int n_cells) {
-        getAllCombos_Numbers = new int[n_cells];
-        getAllCombos_ResultSet = new ArrayList<int[]>();
-        getAddCombos(max_val, target_sum, n_cells);
-        return getAllCombos_ResultSet;
-    }
-
-    /*
-     * Recursive method to calculate all combinations of digits which add up to
-     * target
-     *
-     * @param max_val maximum permitted value of digit (= dimension of grid)
-     *
-     * @param target_sum the value which all the digits should add up to
-     *
-     * @param n_cells number of digits still to select
+    /**
+     * Method is to be removed when refactor of CageCombo is complete throughout whole app.
      */
-    private void getAddCombos(int max_val, int target_sum, int n_cells) {
-        for (int n = 1; n <= max_val; n++) {
-            if (n_cells == 1) {
-                if (n == target_sum) {
-                    getAllCombos_Numbers[0] = n;
-                    if (satisfiesConstraints(getAllCombos_Numbers)) {
-                        getAllCombos_ResultSet.add(getAllCombos_Numbers.clone());
-                    }
-                }
-            } else {
-                getAllCombos_Numbers[n_cells - 1] = n;
-                getAddCombos(max_val, target_sum - n, n_cells - 1);
+    @Deprecated
+    private static List<int[]> convertToOldStyle(List<CageCombo> cageCombos) {
+        List<int []> oldCageCombos = new ArrayList<int[]>();
+        for (CageCombo cageCombo : cageCombos) {
+            List<Integer> cellValues = cageCombo.getCellValues();
+            int[] oldCageCombo = new int[cellValues.size()];
+            int index = 0;
+            for (Integer cellValue : cellValues) {
+                oldCageCombo[index] = cellValue;
             }
         }
-    }
-
-    private List<int[]> getAllMultiplyCombos(int max_val, int target_sum, int n_cells) {
-        getAllCombos_Numbers = new int[n_cells];
-        getAllCombos_ResultSet = new ArrayList<int[]>();
-        getMultiplyCombos(max_val, target_sum, n_cells);
-
-        return getAllCombos_ResultSet;
-    }
-
-    /*
-     * Recursive method to calculate all combinations of digits which multiply
-     * up to target
-     *
-     * @param max_val maximum permitted value of digit (= dimension of grid)
-     *
-     * @param target_sum the value which all the digits should multiply up to
-     *
-     * @param n_cells number of digits still to select
-     */
-    private void getMultiplyCombos(int max_val, int target_sum, int n_cells) {
-        for (int n = 1; n <= max_val; n++) {
-            if (target_sum % n != 0) {
-                continue;
-            }
-
-            if (n_cells == 1) {
-                if (n == target_sum) {
-                    getAllCombos_Numbers[0] = n;
-                    if (satisfiesConstraints(getAllCombos_Numbers)) {
-                        getAllCombos_ResultSet.add(getAllCombos_Numbers.clone());
-                    }
-                }
-            } else {
-                getAllCombos_Numbers[n_cells - 1] = n;
-                getMultiplyCombos(max_val, target_sum / n, n_cells - 1);
-            }
-        }
+        return oldCageCombos;
     }
 
     /**
      * Checks if the given permutation can be filled in in the cells of the cages without violating the rule that a
      * digit can be used only once on each row and each column.
-     *
-     * @param possibles
-     *         The permutation which has to be checked.
      */
-    private boolean satisfiesConstraints(int[] possibles) {
+    boolean satisfiesConstraints(CageCombo cageCombo) {
         // The first dimension for rowConstraints holds the different rows of
         // the grid. The second dimension indicates whether digit (columnIndex +
         // 1) is used in this row.
@@ -255,7 +194,7 @@ public class ComboGenerator {
 
             // The value of the i-th position of the permutation determines the
             // second dimension for both constraint arrays.
-            constraintsDimension2 = possibles[i] - 1;
+            constraintsDimension2 = cageCombo.getCellValue(i) - 1;
 
             if (rowConstraints[rowConstraintsDimension1][constraintsDimension2]) {
                 // The value is already used on this row of the grid
@@ -273,5 +212,21 @@ public class ComboGenerator {
         // This permutation can be used to fill the cells of the cage without
         // violation the rules.
         return true;
+    }
+
+    /**
+     * @deprecated Use {@link #satisfiesConstraints(CageCombo)} when refactor of this class is complete.
+     */
+    @Deprecated
+    boolean satisfiesConstraints(int[] values) {
+        CageCombo cageCombo = new CageCombo();
+        for (int value : values) {
+            cageCombo.append(value);
+        }
+        return satisfiesConstraints(cageCombo);
+    }
+
+    public int getGridSize() {
+        return mGridSize;
     }
 }
