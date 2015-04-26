@@ -2,7 +2,7 @@ package net.mathdoku.plus.gridgenerating;
 
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.gridsolving.ComboGenerator;
+import net.mathdoku.plus.gridsolving.combogenerator.ComboGenerator;
 
 /**
  * Immutable grid generating parameters.

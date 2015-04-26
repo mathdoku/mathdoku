@@ -3,6 +3,7 @@ package net.mathdoku.plus.gridsolving;
 import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.gridsolving.combogenerator.ComboGenerator;
 import net.mathdoku.plus.gridsolving.dancinglinesx.DancingLinesX;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;

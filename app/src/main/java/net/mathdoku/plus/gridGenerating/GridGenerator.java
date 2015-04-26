@@ -7,7 +7,7 @@ import net.mathdoku.plus.griddefinition.GridDefinitionCreator;
 import net.mathdoku.plus.gridgenerating.cellcoordinates.CellCoordinates;
 import net.mathdoku.plus.gridgenerating.iface.GridGeneratorIface;
 import net.mathdoku.plus.gridgenerating.iface.GridGeneratorListenerIface;
-import net.mathdoku.plus.gridsolving.ComboGenerator;
+import net.mathdoku.plus.gridsolving.combogenerator.ComboGenerator;
 import net.mathdoku.plus.gridsolving.GridSolver;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
