@@ -4,6 +4,7 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.gridsolving.dancinglinesx.DancingLinesX;
+import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class GridSolver {
     /**
      * Determines the unique solution for this grid.
      *
-     * @return The solution of the grid if and only if the grid has exactly one unique solution. NULL otherwise.
+     * @return The solution of the grid if and only if the grid has exactly one unique solution.
      */
     public int[][] getSolutionGrid() {
         DancingLinesInitializer dancingLinesInitializer = new DancingLinesInitializer(mGridSize, mCages).setUncoverSolution().initialize();
@@ -56,7 +57,7 @@ public class GridSolver {
 
         // Check if a single unique solution can be determined.
         if (gridSolverMoves == null || dancingLinesX.solve(DancingLinesX.SolveType.MULTIPLE) != 1) {
-            return null;
+            throw new InvalidGridException("Grid does not have a unique solution.");
         }
 
         int[][] solutionGrid = getSolutionGrid(gridSolverMoves, dancingLinesX.getLastSolutionFound());

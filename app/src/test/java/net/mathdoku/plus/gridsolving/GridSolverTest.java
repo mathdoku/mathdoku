@@ -3,6 +3,7 @@ package net.mathdoku.plus.gridsolving;
 import junit.framework.Assert;
 
 import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.grid.Grid;
 
 import org.junit.After;
@@ -12,9 +13,11 @@ import org.junit.runner.RunWith;
 
 import robolectric.RobolectricGradleTestRunner;
 import robolectric.TestRunnerHelper;
+import testhelper.gridcreator.GridCreator2x2NoUniqueSolution;
 import testhelper.gridcreator.GridCreator4x4;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -33,12 +36,7 @@ public class GridSolverTest {
     }
 
     @Test
-    public void hasUniqueSolution() throws Exception {
-
-    }
-
-    @Test
-    public void getSolutionGrid() throws Exception {
+    public void getSolutionGrid_GridWithAUniqueSolution_SolutionIsFound() throws Exception {
         Grid grid = GridCreator4x4.createEmptyGrid();
         GridSolver gridSolver = new GridSolver(4, grid.getCages());
         assertThatGridSolutionEquals(gridSolver.getSolutionGrid(), grid);
@@ -58,5 +56,12 @@ public class GridSolverTest {
                 assertThat(solutionGrid[row][column], is(grid.getCellAt(row, column).getCorrectValue()));
             }
         }
+    }
+
+    @Test(expected = InvalidGridException.class)
+    public void getSolutionGrid_GridWithoutUniqueSolution_InvalidGridExceptionIsThrown() throws Exception {
+        Grid grid = GridCreator2x2NoUniqueSolution.createEmptyGrid();
+        GridSolver gridSolver = new GridSolver(2, grid.getCages());
+        assertThat(gridSolver.getSolutionGrid(), is(nullValue()));
     }
 }
