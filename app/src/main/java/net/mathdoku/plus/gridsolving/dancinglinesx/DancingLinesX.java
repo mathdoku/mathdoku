@@ -63,7 +63,11 @@ public class DancingLinesX {
     }
 
     public int getSolutionRow(int row) {
-        return lastSolutionFound.get(row - 1);
+        return lastSolutionFound.get(row);
+    }
+
+    public List<Integer> getLastSolutionFound() {
+        return lastSolutionFound;
     }
 
     public void addPermutation(int permutationIndex, int constraintIndex) {

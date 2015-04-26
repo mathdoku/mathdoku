@@ -73,8 +73,8 @@ public class Cage {
     private void validateNumberOfCellsThrowsExceptionOnError() {
         if (Util.isArrayNullOrEmpty(mCells)) {
             throw new InvalidGridException(
-                    "Cannot create a cage without a list of cell id's. mCells = " + (mCells == null ? "null" : "empty" +
-                            " list"));
+                    "Cannot create a cage without a list of cell id's. mCells = " + (mCells == null ? "null" :
+                            "empty" + " list"));
         }
         if (hasInvalidNumberOfCellsForOperator()) {
             throw new InvalidGridException("Cage has an invalid number of cells (" + mCells.length + ") for operator " +
@@ -346,5 +346,9 @@ public class Cage {
 
     public boolean isSingleCellCage() {
         return mCells != null && mCells.length == 1;
+    }
+
+    public int getNumberOfPossibleCombos() {
+        return mPossibleCombos == null ? 0 : mPossibleCombos.size();
     }
 }
