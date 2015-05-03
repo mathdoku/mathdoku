@@ -4,7 +4,7 @@ import android.util.Log;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.gridgenerating.cellcoordinates.CellCoordinates;
-import net.mathdoku.plus.matrix.Matrix;
+import net.mathdoku.plus.matrix.SquareMatrix;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
@@ -16,8 +16,8 @@ public class CandidateCageCreator {
     private static final String TAG = CandidateCageCreator.class.getName();
 
     private final GridGeneratingParameters gridGeneratingParameters;
-    private final Matrix<Integer> correctValueMatrix;
-    private final Matrix<Integer> cageIdMatrix;
+    private final SquareMatrix<Integer> correctValueSquareMatrix;
+    private final SquareMatrix<Integer> cageIdSquareMatrix;
     private CellCoordinates[] cellCoordinatesOfAllCellsInCage;
     private boolean debugLogging;
     private final OverlappingSubsetChecker overlappingSubsetChecker;
@@ -26,18 +26,18 @@ public class CandidateCageCreator {
     public CandidateCageCreator(CandidateCageCreatorParameters candidateCageCreatorParameters) {
         this.candidateCageCreatorParameters = candidateCageCreatorParameters;
         gridGeneratingParameters = candidateCageCreatorParameters.getGridGeneratingParameters();
-        correctValueMatrix = candidateCageCreatorParameters.getCorrectValueMatrix();
-        cageIdMatrix = candidateCageCreatorParameters.getCageIdMatrix();
+        correctValueSquareMatrix = candidateCageCreatorParameters.getCorrectValueSquareMatrix();
+        cageIdSquareMatrix = candidateCageCreatorParameters.getCageIdSquareMatrix();
         overlappingSubsetChecker = candidateCageCreatorParameters.getOverlappingSubsetChecker();
     }
 
     public boolean cageTypeDoesNotFitAtCellCoordinates(CageType cageType, CellCoordinates originCell) {
         cellCoordinatesOfAllCellsInCage = cageType.getCellCoordinatesOfAllCellsInCage(originCell);
-        if (cageIdMatrix.containsInvalidCellCoordinates(cellCoordinatesOfAllCellsInCage)) {
+        if (cageIdSquareMatrix.containsInvalidCellCoordinates(cellCoordinatesOfAllCellsInCage)) {
             return true;
         }
         // noinspection SimplifiableIfStatement
-        if (cageIdMatrix.containsNonEmptyCell(cellCoordinatesOfAllCellsInCage)) {
+        if (cageIdSquareMatrix.containsNonEmptyCell(cellCoordinatesOfAllCellsInCage)) {
             return true;
         }
 
@@ -45,15 +45,15 @@ public class CandidateCageCreator {
     }
 
     private boolean hasOverlappingSubsetOfValues(CellCoordinates[] cellCoordinatesOfAllCellsInCage) {
-        Matrix<Boolean> usedCellsForNewCageMatrix = new Matrix<Boolean>(correctValueMatrix.size(), false);
-        usedCellsForNewCageMatrix.setValueToAllCellCoordinates(true, cellCoordinatesOfAllCellsInCage);
+        SquareMatrix<Boolean> usedCellsForNewCageSquareMatrix = new SquareMatrix<Boolean>(correctValueSquareMatrix.size(), false);
+        usedCellsForNewCageSquareMatrix.setValueToAllCellCoordinates(true, cellCoordinatesOfAllCellsInCage);
 
         if (debugLogging) {
             // Print solution, cage matrix and maskNewCage
-            printCageCreationDebugInformation(usedCellsForNewCageMatrix);
+            printCageCreationDebugInformation(usedCellsForNewCageSquareMatrix);
         }
 
-        return overlappingSubsetChecker.hasOverlap(cageIdMatrix, usedCellsForNewCageMatrix);
+        return overlappingSubsetChecker.hasOverlap(cageIdSquareMatrix, usedCellsForNewCageSquareMatrix);
     }
 
     public CellCoordinates[] getCellsCoordinates() {
@@ -72,20 +72,20 @@ public class CandidateCageCreator {
      * @param maskNewCage
      *         Mask of cage type which is currently processed.
      */
-    private void printCageCreationDebugInformation(Matrix<Boolean> maskNewCage) {
+    private void printCageCreationDebugInformation(SquareMatrix<Boolean> maskNewCage) {
         Log.d(TAG, "   Checking candidate cage");
         String emptyCell = "  .";
         String usedCell = "  X";
-        int gridSizeValue = correctValueMatrix.size();
+        int gridSizeValue = correctValueSquareMatrix.size();
         for (int row = 0; row < gridSizeValue; row++) {
             String line = "      ";
             for (int col = 0; col < gridSizeValue; col++) {
-                line += " " + correctValueMatrix.get(row, col);
+                line += " " + correctValueSquareMatrix.get(row, col);
             }
             line += "   ";
             for (int col = 0; col < gridSizeValue; col++) {
-                line += " " + (cageIdMatrix.isEmpty(row, col) ? emptyCell : String.format("%03d",
-                                                                                          cageIdMatrix.get(row, col)));
+                line += " " + (cageIdSquareMatrix.isEmpty(row, col) ? emptyCell : String.format("%03d",
+                                                                                          cageIdSquareMatrix.get(row, col)));
             }
             if (maskNewCage != null) {
                 line += "   ";

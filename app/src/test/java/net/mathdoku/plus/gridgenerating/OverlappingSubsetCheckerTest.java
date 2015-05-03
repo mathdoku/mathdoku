@@ -1,6 +1,6 @@
 package net.mathdoku.plus.gridgenerating;
 
-import net.mathdoku.plus.matrix.Matrix;
+import net.mathdoku.plus.matrix.SquareMatrix;
 
 import org.hamcrest.Matcher;
 import org.junit.Test;
@@ -78,30 +78,31 @@ public class OverlappingSubsetCheckerTest {
         int size = 4;
         assertThat(size * size, is(correctValuesPerCell.length));
 
-        Matrix<Integer> correctValuesMatrix = toIntegerMatrix(correctValuesPerCell, size);
-        Matrix<Integer> cageIdMatrix = toIntegerMatrix(cageIds, size);
-        Matrix<Boolean> newCageMatrix = toBooleanMatrix(usedForNewCage, 4);
-        assertThat(new OverlappingSubsetChecker(correctValuesMatrix).hasOverlap(cageIdMatrix, newCageMatrix),
+        SquareMatrix<Integer> correctValuesSquareMatrix = toIntegerMatrix(correctValuesPerCell, size);
+        SquareMatrix<Integer> cageIdSquareMatrix = toIntegerMatrix(cageIds, size);
+        SquareMatrix<Boolean> newCageSquareMatrix = toBooleanMatrix(usedForNewCage, 4);
+        assertThat(new OverlappingSubsetChecker(correctValuesSquareMatrix).hasOverlap(cageIdSquareMatrix,
+                                                                                      newCageSquareMatrix),
                    overlapMatcher);
     }
 
-    private Matrix<Integer> toIntegerMatrix(Integer[] array, int size) {
-        Matrix<Integer> integerMatrix = new Matrix<Integer>(size, -1);
+    private SquareMatrix<Integer> toIntegerMatrix(Integer[] array, int size) {
+        SquareMatrix<Integer> integerSquareMatrix = new SquareMatrix<Integer>(size, -1);
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                integerMatrix.setValueToRowColumn(array[row * size + col], row, col);
+                integerSquareMatrix.setValueToRowColumn(array[row * size + col], row, col);
             }
         }
-        return integerMatrix;
+        return integerSquareMatrix;
     }
 
-    private Matrix<Boolean> toBooleanMatrix(Boolean[] array, int size) {
-        Matrix<Boolean> booleanMatrix = new Matrix<Boolean>(size, false);
+    private SquareMatrix<Boolean> toBooleanMatrix(Boolean[] array, int size) {
+        SquareMatrix<Boolean> booleanSquareMatrix = new SquareMatrix<Boolean>(size, false);
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                booleanMatrix.setValueToRowColumn(array[row * size + col], row, col);
+                booleanSquareMatrix.setValueToRowColumn(array[row * size + col], row, col);
             }
         }
-        return booleanMatrix;
+        return booleanSquareMatrix;
     }
 }

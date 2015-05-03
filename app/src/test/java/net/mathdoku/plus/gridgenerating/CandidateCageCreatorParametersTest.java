@@ -1,6 +1,6 @@
 package net.mathdoku.plus.gridgenerating;
 
-import net.mathdoku.plus.matrix.Matrix;
+import net.mathdoku.plus.matrix.SquareMatrix;
 
 import org.junit.Test;
 
@@ -12,12 +12,12 @@ import static org.junit.Assert.assertThat;
 public class CandidateCageCreatorParametersTest {
     @Test
     public void setCorrectValueMatrix() throws Exception {
-        Matrix<Integer> matrix = new Matrix<Integer>(2, -1);
+        SquareMatrix<Integer> squareMatrix = new SquareMatrix<Integer>(2, -1);
 
         CandidateCageCreatorParameters candidateCageCreatorParameters = new CandidateCageCreatorParameters();
 
         assertThat(candidateCageCreatorParameters.getOverlappingSubsetChecker(), is(nullValue()));
-        candidateCageCreatorParameters.setCorrectValueMatrix(matrix);
+        candidateCageCreatorParameters.setCorrectValueSquareMatrix(squareMatrix);
         assertThat(candidateCageCreatorParameters.getOverlappingSubsetChecker(), is(notNullValue()));
     }
 }

@@ -1,14 +1,14 @@
 package net.mathdoku.plus.gridgenerating;
 
-import net.mathdoku.plus.matrix.Matrix;
+import net.mathdoku.plus.matrix.SquareMatrix;
 
 import java.util.Random;
 
 public class CandidateCageCreatorParameters {
     private GridGeneratingParameters gridGeneratingParameters;
     private Random random;
-    private Matrix<Integer> correctValueMatrix;
-    private Matrix<Integer> cageIdMatrix;
+    private SquareMatrix<Integer> correctValueSquareMatrix;
+    private SquareMatrix<Integer> cageIdSquareMatrix;
     private OverlappingSubsetChecker overlappingSubsetChecker;
 
     public CandidateCageCreatorParameters setGridGeneratingParameters(GridGeneratingParameters
@@ -22,14 +22,14 @@ public class CandidateCageCreatorParameters {
         return this;
     }
 
-    public CandidateCageCreatorParameters setCorrectValueMatrix(Matrix<Integer> correctValueMatrix) {
-        this.correctValueMatrix = correctValueMatrix;
-        overlappingSubsetChecker = new OverlappingSubsetChecker(correctValueMatrix);
+    public CandidateCageCreatorParameters setCorrectValueSquareMatrix(SquareMatrix<Integer> correctValueSquareMatrix) {
+        this.correctValueSquareMatrix = correctValueSquareMatrix;
+        overlappingSubsetChecker = new OverlappingSubsetChecker(correctValueSquareMatrix);
         return this;
     }
 
-    public CandidateCageCreatorParameters setCageIdMatrix(Matrix<Integer> cageIdMatrix) {
-        this.cageIdMatrix = cageIdMatrix;
+    public CandidateCageCreatorParameters setCageIdSquareMatrix(SquareMatrix<Integer> cageIdSquareMatrix) {
+        this.cageIdSquareMatrix = cageIdSquareMatrix;
         return this;
     }
 
@@ -37,12 +37,12 @@ public class CandidateCageCreatorParameters {
         return gridGeneratingParameters;
     }
 
-    public Matrix<Integer> getCorrectValueMatrix() {
-        return correctValueMatrix;
+    public SquareMatrix<Integer> getCorrectValueSquareMatrix() {
+        return correctValueSquareMatrix;
     }
 
-    public Matrix<Integer> getCageIdMatrix() {
-        return cageIdMatrix;
+    public SquareMatrix<Integer> getCageIdSquareMatrix() {
+        return cageIdSquareMatrix;
     }
 
     public OverlappingSubsetChecker getOverlappingSubsetChecker() {

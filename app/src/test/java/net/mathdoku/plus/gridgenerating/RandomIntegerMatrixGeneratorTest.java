@@ -1,6 +1,6 @@
 package net.mathdoku.plus.gridgenerating;
 
-import net.mathdoku.plus.matrix.Matrix;
+import net.mathdoku.plus.matrix.SquareMatrix;
 
 import org.junit.Test;
 
@@ -26,28 +26,28 @@ public class RandomIntegerMatrixGeneratorTest {
         int size = 3;
         randomIntegerMatrixGenerator = new RandomIntegerMatrixGenerator(size, random);
 
-        Matrix<Integer> expectedIntegerMatrix = createIntegerMatrixFromValues(new int[][]{
+        SquareMatrix<Integer> expectedIntegerSquareMatrix = createIntegerMatrixFromValues(new int[][]{
                 // row 1
                 {1, 3, 2},
                 // row 2
                 {2, 1, 3},
                 // row 3
                 {3, 2, 1}});
-        assertThat(randomIntegerMatrixGenerator.getMatrix(), is(expectedIntegerMatrix));
+        assertThat(randomIntegerMatrixGenerator.getMatrix(), is(expectedIntegerSquareMatrix));
     }
 
-    private Matrix<Integer> createIntegerMatrixFromValues(int[][] values) {
-        Matrix<Integer> integerMatrix = new Matrix<Integer>(values.length,
+    private SquareMatrix<Integer> createIntegerMatrixFromValues(int[][] values) {
+        SquareMatrix<Integer> integerSquareMatrix = new SquareMatrix<Integer>(values.length,
                                                             RandomIntegerMatrixGenerator.CORRECT_VALUE_NOT_SET);
         for (int row = 0; row < values.length; row++) {
             if (values[row].length != values.length) {
                 throw new IllegalStateException("Matrix should be square.");
             }
             for (int col = 0; col < values.length; col++) {
-                integerMatrix.setValueToRowColumn(values[row][col], row, col);
+                integerSquareMatrix.setValueToRowColumn(values[row][col], row, col);
             }
         }
-        return integerMatrix;
+        return integerSquareMatrix;
     }
 
     @Test

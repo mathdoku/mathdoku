@@ -1,6 +1,6 @@
 package net.mathdoku.plus.gridgenerating;
 
-import net.mathdoku.plus.matrix.Matrix;
+import net.mathdoku.plus.matrix.SquareMatrix;
 
 import java.util.Random;
 
@@ -18,13 +18,13 @@ public class RandomIntegerMatrixGenerator {
 
     private final int size;
     private final Random random;
-    Matrix<Integer> integerMatrix;
+    SquareMatrix<Integer> integerSquareMatrix;
 
     public RandomIntegerMatrixGenerator(int size, Random random) {
         this.size = size;
         this.random = random;
 
-        integerMatrix = new Matrix<Integer>(size, CORRECT_VALUE_NOT_SET);
+        integerSquareMatrix = new SquareMatrix<Integer>(size, CORRECT_VALUE_NOT_SET);
         randomizeIntegerMatrix();
     }
 
@@ -47,12 +47,12 @@ public class RandomIntegerMatrixGenerator {
         for (int row = 0; row < size; row++) {
             int column = getRandomEligibleColumnOnRowForValue(row, value);
             if (column >= 0) {
-                integerMatrix.setValueToRowColumn(value, row, column);
+                integerSquareMatrix.setValueToRowColumn(value, row, column);
             } else {
                 // Can not put this value in any empty column on this row.
                 // Clear the value from all positions in the solution matrix
                 // and try to place this value again.
-                integerMatrix.clearValue(value);
+                integerSquareMatrix.clearValue(value);
                 return false;
             }
         }
@@ -71,7 +71,7 @@ public class RandomIntegerMatrixGenerator {
         // bottleneck.
         for (int attempts = 1; attempts <= MAX_ATTEMPTS_TO_GET_AN_ELIGIBLE_COLUMN_FOR_A_ROW; attempts++) {
             int column = random.nextInt(size);
-            if (integerMatrix.isEmpty(row, column) && !integerMatrix.getColumn(column)
+            if (integerSquareMatrix.isEmpty(row, column) && !integerSquareMatrix.getColumn(column)
                     .contains(value)) {
                 return column;
             }
@@ -79,7 +79,7 @@ public class RandomIntegerMatrixGenerator {
         return -1;
     }
 
-    public Matrix<Integer> getMatrix() {
-        return integerMatrix;
+    public SquareMatrix<Integer> getMatrix() {
+        return integerSquareMatrix;
     }
 }

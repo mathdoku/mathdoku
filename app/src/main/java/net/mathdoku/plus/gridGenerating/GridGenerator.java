@@ -9,7 +9,7 @@ import net.mathdoku.plus.gridgenerating.iface.GridGeneratorIface;
 import net.mathdoku.plus.gridgenerating.iface.GridGeneratorListenerIface;
 import net.mathdoku.plus.gridsolving.combogenerator.ComboGenerator;
 import net.mathdoku.plus.gridsolving.GridSolver;
-import net.mathdoku.plus.matrix.Matrix;
+import net.mathdoku.plus.matrix.SquareMatrix;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
@@ -40,8 +40,8 @@ public class GridGenerator implements GridGeneratorIface {
     private int gridSizeValue;
     private List<Cell> mCells;
     private List<Cage> mCages;
-    private Matrix<Integer> correctValueMatrix;
-    private Matrix<Integer> cageIdMatrix;
+    private SquareMatrix<Integer> correctValueSquareMatrix;
+    private SquareMatrix<Integer> cageIdSquareMatrix;
     private Random mRandom;
     private CageTypeGenerator mCageTypeGenerator;
     private long mTimeStarted;
@@ -175,7 +175,7 @@ public class GridGenerator implements GridGeneratorIface {
             for (int row = 0; row < gridSizeValue; row++) {
                 Cell cell = new CellBuilder().setGridSize(gridSizeValue)
                         .setId(cellNumber++)
-                        .setCorrectValue(correctValueMatrix.get(row, column))
+                        .setCorrectValue(correctValueSquareMatrix.get(row, column))
                         .setSkipCheckCageReferenceOnBuild()
                         .build();
                 mCells.add(cell);
@@ -217,7 +217,7 @@ public class GridGenerator implements GridGeneratorIface {
         if (developmentMode) {
             gridGeneratorListener.updateProgressDetailLevel("Randomize grid.");
         }
-        correctValueMatrix = new RandomIntegerMatrixGenerator(gridSizeValue, mRandom).getMatrix();
+        correctValueSquareMatrix = new RandomIntegerMatrixGenerator(gridSizeValue, mRandom).getMatrix();
     }
 
     /**
@@ -247,7 +247,7 @@ public class GridGenerator implements GridGeneratorIface {
     }
 
     private boolean attemptToFillGridWithCages() {
-        cageIdMatrix = new Matrix<Integer>(gridSizeValue, Cage.CAGE_ID_NOT_SET);
+        cageIdSquareMatrix = new SquareMatrix<Integer>(gridSizeValue, Cage.CAGE_ID_NOT_SET);
         mCages.clear();
 
         if (gridGeneratingParameters.getMaxCageSize() >= CageTypeGenerator.MAX_SIZE_STANDARD_CAGE_TYPE) {
@@ -259,7 +259,7 @@ public class GridGenerator implements GridGeneratorIface {
         }
 
         // Fill remainder of grid
-        CellCoordinates coordinatesCellNotInAnyCage = cageIdMatrix.getCellCoordinatesForFirstEmptyCell();
+        CellCoordinates coordinatesCellNotInAnyCage = cageIdSquareMatrix.getCellCoordinatesForFirstEmptyCell();
         while (coordinatesCellNotInAnyCage.isNotNull()) {
             cancelOnSlowGridGeneration();
             if (gridGeneratorListener.isCancelled()) {
@@ -270,7 +270,7 @@ public class GridGenerator implements GridGeneratorIface {
                 return false;
             }
 
-            coordinatesCellNotInAnyCage = cageIdMatrix.getCellCoordinatesForFirstEmptyCell();
+            coordinatesCellNotInAnyCage = cageIdSquareMatrix.getCellCoordinatesForFirstEmptyCell();
         }
 
         return gridHasUniqueGridDefinition();
@@ -433,8 +433,8 @@ public class GridGenerator implements GridGeneratorIface {
         candidateCageCreatorParameters = new CandidateCageCreatorParameters().setGridGeneratingParameters(
                 gridGeneratingParameters)
                 .setRandom(mRandom)
-                .setCorrectValueMatrix(correctValueMatrix)
-                .setCageIdMatrix(cageIdMatrix);
+                .setCorrectValueSquareMatrix(correctValueSquareMatrix)
+                .setCageIdSquareMatrix(cageIdSquareMatrix);
         return new CandidateCageCreator(candidateCageCreatorParameters).enableLogging(DEBUG_FULL);
     }
 
@@ -448,7 +448,7 @@ public class GridGenerator implements GridGeneratorIface {
 
         // Update the cage matrix
         for (Cell cell : cells) {
-            cageIdMatrix.setValueToRowColumn(cage.getId(), cell.getRow(), cell.getColumn());
+            cageIdSquareMatrix.setValueToRowColumn(cage.getId(), cell.getRow(), cell.getColumn());
         }
     }
 

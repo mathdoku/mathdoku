@@ -11,13 +11,13 @@ import java.util.List;
  *
  * @param <T>
  */
-public class Matrix<T> {
+public class SquareMatrix<T> {
     private final T[][] cellValue;
     private final int size;
     private final T emptyValue;
     private final boolean transposedFromOriginal;
 
-    private Matrix(int size, T emptyValue, boolean transposed) {
+    private SquareMatrix(int size, T emptyValue, boolean transposed) {
         this.size = size;
         this.emptyValue = emptyValue;
         transposedFromOriginal = transposed;
@@ -25,7 +25,7 @@ public class Matrix<T> {
         cellValue = (T[][]) new Object[size][size];
     }
 
-    public Matrix(int size, T emptyValue) {
+    public SquareMatrix(int size, T emptyValue) {
         this(size, emptyValue, false);
         initializeMatrix();
     }
@@ -38,14 +38,14 @@ public class Matrix<T> {
         }
     }
 
-    public Matrix<T> createTransposedMatrix() {
-        Matrix<T> transposedMatrix = new Matrix<T>(size, emptyValue, !isTransposed());
+    public SquareMatrix<T> createTransposedMatrix() {
+        SquareMatrix<T> transposedSquareMatrix = new SquareMatrix<T>(size, emptyValue, !isTransposed());
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
-                transposedMatrix.cellValue[row][column] = this.cellValue[column][row];
+                transposedSquareMatrix.cellValue[row][column] = this.cellValue[column][row];
             }
         }
-        return transposedMatrix;
+        return transposedSquareMatrix;
     }
 
     public T get(int row, int column) {
@@ -194,24 +194,24 @@ public class Matrix<T> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Matrix)) {
+        if (!(o instanceof SquareMatrix)) {
             return false;
         }
 
-        Matrix matrix = (Matrix) o;
+        SquareMatrix squareMatrix = (SquareMatrix) o;
 
-        if (size != matrix.size) {
+        if (size != squareMatrix.size) {
             return false;
         }
-        if (transposedFromOriginal != matrix.transposedFromOriginal) {
+        if (transposedFromOriginal != squareMatrix.transposedFromOriginal) {
             return false;
         }
-        if (emptyValue != null ? !emptyValue.equals(matrix.emptyValue) : matrix.emptyValue != null) {
+        if (emptyValue != null ? !emptyValue.equals(squareMatrix.emptyValue) : squareMatrix.emptyValue != null) {
             return false;
         }
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
-                if (!this.cellValue[row][column].equals(matrix.get(row, column))) {
+                if (!this.cellValue[row][column].equals(squareMatrix.get(row, column))) {
                     return false;
                 }
             }

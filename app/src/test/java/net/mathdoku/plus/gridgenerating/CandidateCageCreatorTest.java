@@ -3,7 +3,7 @@ package net.mathdoku.plus.gridgenerating;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.gridgenerating.cellcoordinates.CellCoordinates;
-import net.mathdoku.plus.matrix.Matrix;
+import net.mathdoku.plus.matrix.SquareMatrix;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
 
@@ -28,8 +28,8 @@ public class CandidateCageCreatorTest {
     private CandidateCageCreator candidateCageCreator;
     private GridGeneratingParameters gridGeneratingParametersMock = mock(GridGeneratingParameters.class);
     private Random randomMock = mock(Random.class);
-    private Matrix<Integer> correctValueMatrix;
-    private Matrix<Integer> cageIdMatrix;
+    private SquareMatrix<Integer> correctValueSquareMatrix;
+    private SquareMatrix<Integer> cageIdSquareMatrix;
     private OverlappingSubsetChecker overlappingSubsetCheckerMock = mock(OverlappingSubsetChecker.class);
     private CageOperatorGenerator cageOperatorGeneratorMock = mock(CageOperatorGenerator.class);
     private CellCoordinates[] arrayOfCellCoordinates;
@@ -53,15 +53,15 @@ public class CandidateCageCreatorTest {
 
     @Before
     public void setup() {
-        correctValueMatrix = new Matrix<Integer>(sizeOfMatrix, Cell.NO_ENTERED_VALUE);
-        cageIdMatrix = new Matrix<Integer>(sizeOfMatrix, Cage.CAGE_ID_NOT_SET);
+        correctValueSquareMatrix = new SquareMatrix<Integer>(sizeOfMatrix, Cell.NO_ENTERED_VALUE);
+        cageIdSquareMatrix = new SquareMatrix<Integer>(sizeOfMatrix, Cage.CAGE_ID_NOT_SET);
 
         CandidateCageCreatorParameters candidateCageCreatorParametersStub;
         candidateCageCreatorParametersStub = new CandidateCageCreatorParametersStub().setGridGeneratingParameters(
                 gridGeneratingParametersMock)
                 .setRandom(randomMock)
-                .setCorrectValueMatrix(correctValueMatrix)
-                .setCageIdMatrix(cageIdMatrix);
+                .setCorrectValueSquareMatrix(correctValueSquareMatrix)
+                .setCageIdSquareMatrix(cageIdSquareMatrix);
         candidateCageCreator = new CandidateCageCreator(candidateCageCreatorParametersStub);
     }
 
@@ -99,7 +99,7 @@ public class CandidateCageCreatorTest {
     private void setOneCellCoordinatesToNotEmpty() {
         setValidCellCoordinates();
         CellCoordinates lastCellCoordinates = arrayOfCellCoordinates[arrayOfCellCoordinates.length - 1];
-        cageIdMatrix.setValueToCellCoordinates(2, lastCellCoordinates);
+        cageIdSquareMatrix.setValueToCellCoordinates(2, lastCellCoordinates);
     }
 
     private void setValidCellCoordinates() {
@@ -116,7 +116,7 @@ public class CandidateCageCreatorTest {
     }
 
     private void newCageHasOverlappingSubsetsOfValuesWithExistingCages() {
-        when(overlappingSubsetCheckerMock.hasOverlap(any(Matrix.class), any(Matrix.class))).thenReturn(true);
+        when(overlappingSubsetCheckerMock.hasOverlap(any(SquareMatrix.class), any(SquareMatrix.class))).thenReturn(true);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class CandidateCageCreatorTest {
     }
 
     private void newCageHasNoOverlappingSubsetsOfValuesWithExistingCages() {
-        when(overlappingSubsetCheckerMock.hasOverlap(any(Matrix.class), any(Matrix.class))).thenReturn(false);
+        when(overlappingSubsetCheckerMock.hasOverlap(any(SquareMatrix.class), any(SquareMatrix.class))).thenReturn(false);
     }
 
     @Test
