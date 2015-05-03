@@ -13,14 +13,18 @@ package net.mathdoku.plus.gridsolving.combogenerator;
             // Invalid combo
             return;
         }
-        if (numberOfCellsRemaining == 1 && targetValue <= gridSize) {
+        if (numberOfCellsRemaining == 1 && targetValue > gridSize) {
+            // Unreachable targetValue
+            return;
+        }
+        if (numberOfCellsRemaining == 1) {
             cageCombo.append(targetValue);
             if (comboGenerator.satisfiesConstraints(cageCombo)) {
                 // Clone the current cage combination as this instance will be manipulated in order to find other
                 // combo's.
                 add(cageCombo.clone());
-                cageCombo.removeLastValue();
             }
+            cageCombo.removeLastValue();
         } else {
             for (int cellValue = 1; cellValue <= gridSize; cellValue++) {
                 if (targetValue % cellValue == 0) {

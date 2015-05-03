@@ -159,7 +159,9 @@ public class ComboGenerator {
             int index = 0;
             for (Integer cellValue : cellValues) {
                 oldCageCombo[index] = cellValue;
+                index++;
             }
+           oldCageCombos.add(oldCageCombo);
         }
         return oldCageCombos;
     }
@@ -212,18 +214,6 @@ public class ComboGenerator {
         // This permutation can be used to fill the cells of the cage without
         // violation the rules.
         return true;
-    }
-
-    /**
-     * @deprecated Use {@link #satisfiesConstraints(CageCombo)} when refactor of this class is complete.
-     */
-    @Deprecated
-    boolean satisfiesConstraints(int[] values) {
-        CageCombo cageCombo = new CageCombo();
-        for (int value : values) {
-            cageCombo.append(value);
-        }
-        return satisfiesConstraints(cageCombo);
     }
 
     public int getGridSize() {
