@@ -2,6 +2,8 @@ package net.mathdoku.plus.gridgenerating;
 
 import android.util.Log;
 
+import net.mathdoku.plus.matrix.Matrix;
+
 import java.util.ArrayList;
 import java.util.List;
 

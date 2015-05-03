@@ -1,5 +1,7 @@
 package net.mathdoku.plus.gridgenerating;
 
+import net.mathdoku.plus.matrix.Matrix;
+
 import org.junit.Test;
 
 import java.util.Random;

@@ -1,4 +1,4 @@
-package net.mathdoku.plus.gridgenerating;
+package net.mathdoku.plus.matrix;
 
 import net.mathdoku.plus.gridgenerating.cellcoordinates.CellCoordinates;
 
