@@ -8,6 +8,10 @@ import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.griddefinition.GridDefinitionCreator;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
+import net.mathdoku.plus.gridgenerating.cellcoordinates.CellCoordinates;
+import net.mathdoku.plus.matrix.Matrix;
+import net.mathdoku.plus.matrix.SquareMatrix;
+import net.mathdoku.plus.matrix.UniqueValuePerRowAndColumnChecker;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
@@ -919,75 +923,21 @@ public class Grid {
      * @return True in case a duplicate value is found. False otherwise.
      */
     public boolean markDuplicateValues() {
-        boolean duplicateValueFound = false;
-
-        // The first dimension for digitUsedInRow holds the different rows of
-        // the grid. The second dimension indicates whether digit (columnIndex +
-        // 1) is used in this row. The value stored refers to the first cell
-        // containing the digit.
-        Cell[][] digitUsedInRow = new Cell[mGridSize][mGridSize];
-
-        // The first dimension for digitUsedInColumn holds the different columns
-        // of the grid. The second dimension indicates whether digit
-        // (columnIndex + 1) is used in this column. The value stored refers to
-        // the first cell containing the digit.
-        Cell[][] digitUsedInColumn = new Cell[mGridSize][mGridSize];
-
-        // The user values of all cells are to the digitUsedInRow and
-        // digitUserInColumn matrices.
-        int rowConstraintsDimension1;
-        int columnConstraintsDimension1;
-        int constraintsDimension2;
-        boolean cellHasDuplicateEnteredValue;
+        Matrix<Integer> matrixEnteredValues = getMatrixWithEnteredValues();
+        List<CellCoordinates> duplicateValueCellCoordinates = UniqueValuePerRowAndColumnChecker.create
+                (matrixEnteredValues).findCellCoordinatesWithDuplicateValues();
         for (Cell cell : mCells) {
-            rowConstraintsDimension1 = cell.getRow();
-            columnConstraintsDimension1 = cell.getColumn();
-
-            cellHasDuplicateEnteredValue = false;
-            if (cell.hasEnteredValue()) {
-                // The user value of cell determines the second dimension for
-                // both constraint arrays.
-                constraintsDimension2 = cell.getEnteredValue() - 1;
-
-                if (digitUsedInRow[rowConstraintsDimension1][constraintsDimension2] == null) {
-                    // The current cell is the first cell on the row using the
-                    // user value.
-                    digitUsedInRow[rowConstraintsDimension1][constraintsDimension2] = cell;
-                } else {
-                    // This user value is also used by another cell on this row.
-                    // Mark both the value of that cell and the current cell as
-                    // duplicate value. Note: in case the same value is used
-                    // more than twice in the same row, the first cell will be
-                    // marked multiple times as duplicate.
-                    markCellAsDuplicate(digitUsedInRow[rowConstraintsDimension1][constraintsDimension2]);
-                    cellHasDuplicateEnteredValue = true;
-                    duplicateValueFound = true;
-                }
-
-                if (digitUsedInColumn[columnConstraintsDimension1][constraintsDimension2] == null) {
-                    // The current cell is the first cell on the row using the
-                    // user value.
-                    digitUsedInColumn[columnConstraintsDimension1][constraintsDimension2] = cell;
-                } else {
-                    // This user value is also used by another cell on this row.
-                    // Mark both the value of that cell and the current cell as
-                    // duplicate value. Note: in case the same value is used
-                    // more than twice in the same row, the first cell will be
-                    // marked multiple times as duplicate.
-                    markCellAsDuplicate(digitUsedInColumn[columnConstraintsDimension1][constraintsDimension2]);
-                    cellHasDuplicateEnteredValue = true;
-                    duplicateValueFound = true;
-                }
-            }
-            cell.setDuplicateHighlight(cellHasDuplicateEnteredValue);
+            cell.setDuplicateHighlight(duplicateValueCellCoordinates.contains(new CellCoordinates(cell.getRow(),
+                                                                                                  cell.getColumn())));
         }
-
-        return duplicateValueFound;
+        return !duplicateValueCellCoordinates.isEmpty();
     }
 
-    private void markCellAsDuplicate(Cell cell) {
-        if (!cell.isDuplicateValueHighlighted()) {
-            cell.setDuplicateHighlight(true);
+    private Matrix<Integer> getMatrixWithEnteredValues() {
+        Matrix<Integer> matrix = new SquareMatrix<Integer>(mGridSize, Cell.NO_ENTERED_VALUE);
+        for (Cell cell : mCells) {
+            matrix.setValueToRowColumn(cell.getEnteredValue(), cell.getRow(), cell.getColumn());
         }
+        return matrix;
     }
 }

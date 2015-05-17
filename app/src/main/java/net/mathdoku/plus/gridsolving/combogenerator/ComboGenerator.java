@@ -1,6 +1,8 @@
 package net.mathdoku.plus.gridsolving.combogenerator;
 
 import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.matrix.Matrix;
+import net.mathdoku.plus.matrix.UniqueValuePerRowAndColumnChecker;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
 
@@ -13,8 +15,12 @@ public class ComboGenerator {
     private int mResult;
     private CageOperator mCageOperator;
     private boolean mHideOperator;
-    private List<Cell> mCageCells;
+    private List<Cell> cells;
     private int mGridSize;
+    private int minRow;
+    private int maxRow;
+    private int minColumn;
+    private int maxColumn;
 
     public ComboGenerator(int gridSize) {
         mGridSize = gridSize;
@@ -32,16 +38,53 @@ public class ComboGenerator {
      */
     public List<int[]> getPossibleCombos(Cage cage, List<Cell> cells) {
         this.cage = cage;
+        this.cells = cells;
         mResult = cage.getResult();
         mCageOperator = cage.getOperator();
         mHideOperator = cage.isOperatorHidden();
-        mCageCells = cells;
+
+        minRow = getMinRow(this.cells);
+        maxRow = getMaxRow(this.cells);
+        minColumn = getMinColumn(this.cells);
+        maxColumn = getMaxColumn(this.cells);
 
         if (mHideOperator) {
             return getPossibleCombosHiddenOperator();
         } else {
             return getPossibleCombosVisibleOperator();
         }
+    }
+
+    private int getMinRow(List<Cell> cells) {
+        int minRow = Integer.MAX_VALUE;
+        for (Cell cell : cells) {
+            minRow = Math.min(minRow, cell.getRow());
+        }
+        return minRow;
+    }
+
+    private int getMaxRow(List<Cell> cells) {
+        int maxRow = Integer.MIN_VALUE;
+        for (Cell cell : cells) {
+            maxRow = Math.max(maxRow, cell.getRow());
+        }
+        return maxRow;
+    }
+
+    private int getMinColumn(List<Cell> cells) {
+        int minColumn = Integer.MAX_VALUE;
+        for (Cell cell : cells) {
+            minColumn = Math.min(minColumn, cell.getColumn());
+        }
+        return minColumn;
+    }
+
+    private int getMaxColumn(List<Cell> cells) {
+        int maxColumn = Integer.MIN_VALUE;
+        for (Cell cell : cells) {
+            maxColumn = Math.max(maxColumn, cell.getColumn());
+        }
+        return maxColumn;
     }
 
     /**
@@ -53,14 +96,14 @@ public class ComboGenerator {
         List<int[]> resultCombos = new ArrayList<int[]>();
 
         // Single cell cages can only contain the value of the single cell.
-        if (mCageCells.size() == 1) {
+        if (cells.size() == 1) {
             int[] number = {mResult};
             resultCombos.add(number);
             return resultCombos;
         }
 
         // Cages of size two can contain any operation
-        if (mCageCells.size() == 2) {
+        if (cells.size() == 2) {
             for (int i1 = 1; i1 <= mGridSize; i1++) {
                 for (int i2 = i1 + 1; i2 <= mGridSize; i2++) {
                     if (i2 - i1 == mResult || i1 - i2 == mResult || mResult * i1 == i2 || mResult * i2 == i1 || i1 +
@@ -107,12 +150,12 @@ public class ComboGenerator {
 
         switch (mCageOperator) {
             case NONE:
-                assert mCageCells.size() == 1;
+                assert cells.size() == 1;
                 int[] number = {mResult};
                 AllResults.add(number);
                 break;
             case SUBTRACT:
-                assert mCageCells.size() == 2;
+                assert cells.size() == 2;
                 for (int i1 = 1; i1 <= mGridSize; i1++) {
                     for (int i2 = i1 + 1; i2 <= mGridSize; i2++) {
                         if (i2 - i1 == mResult || i1 - i2 == mResult) {
@@ -125,7 +168,7 @@ public class ComboGenerator {
                 }
                 break;
             case DIVIDE:
-                assert mCageCells.size() == 2;
+                assert cells.size() == 2;
                 for (int i1 = 1; i1 <= mGridSize; i1++) {
                     for (int i2 = i1 + 1; i2 <= mGridSize; i2++) {
                         if (mResult * i1 == i2 || mResult * i2 == i1) {
@@ -148,7 +191,7 @@ public class ComboGenerator {
     }
 
     /**
-     * Method is to be removed when refactor of CageCombo is complete throughout whole app.
+     * TODO: Method is to be removed when refactor of CageCombo is complete throughout whole app.
      */
     @Deprecated
     private static List<int[]> convertToOldStyle(List<CageCombo> cageCombos) {
@@ -166,54 +209,24 @@ public class ComboGenerator {
         return oldCageCombos;
     }
 
-    /**
-     * Checks if the given permutation can be filled in in the cells of the cages without violating the rule that a
-     * digit can be used only once on each row and each column.
-     */
     boolean satisfiesConstraints(CageCombo cageCombo) {
-        // The first dimension for rowConstraints holds the different rows of
-        // the grid. The second dimension indicates whether digit (columnIndex +
-        // 1) is used in this row.
-        boolean[][] rowConstraints = new boolean[mGridSize][mGridSize];
+        Matrix<Integer> cageComboMatrix = mapCageComboToValueMatrix(cageCombo);
+        return UniqueValuePerRowAndColumnChecker.create(cageComboMatrix).hasNoDuplicateValues();
+    }
 
-        // The first dimension for columnConstraints holds the different columns
-        // of the grid. The second dimension indicates whether digit
-        // (columnIndex + 1) is used in this column.
-        boolean[][] columnConstraints = new boolean[mGridSize][mGridSize];
+    private Matrix<Integer> mapCageComboToValueMatrix(CageCombo cageCombo) {
+        Matrix<Integer> matrix = new Matrix<Integer>(maxRow - minRow + 1, maxColumn - minColumn + 1,
+                                                     Cell.NO_ENTERED_VALUE);
 
-        // The values of the given permutation are copied in the specified order
-        // to the cells of the cages.
-        int rowConstraintsDimension1;
-        int columnConstraintsDimension1;
-        int constraintsDimension2;
-        for (int i = 0; i < this.mCageCells.size(); i++) {
-            // The actual position of i-th cell in the grid determines the first
-            // dimension of the constraint arrays.
-            rowConstraintsDimension1 = mCageCells.get(i)
-                    .getRow();
-            columnConstraintsDimension1 = mCageCells.get(i)
-                    .getColumn();
-
-            // The value of the i-th position of the permutation determines the
-            // second dimension for both constraint arrays.
-            constraintsDimension2 = cageCombo.getCellValue(i) - 1;
-
-            if (rowConstraints[rowConstraintsDimension1][constraintsDimension2]) {
-                // The value is already used on this row of the grid
-                return false;
-            }
-            rowConstraints[rowConstraintsDimension1][constraintsDimension2] = true;
-
-            if (columnConstraints[columnConstraintsDimension1][constraintsDimension2]) {
-                // The value is already used on this column of the grid.
-                return false;
-            }
-            columnConstraints[columnConstraintsDimension1][constraintsDimension2] = true;
+        if (cageCombo.getCellValues().size() != cells.size()) {
+            throw new IllegalArgumentException("Size of combo is not equal to size of cage.");
+        }
+        for (int index = 0; index < cells.size(); index++) {
+            matrix.setValueToRowColumn(cageCombo.getCellValue(index), cells.get(index).getRow() - minRow,
+                                       cells.get(index).getColumn() - minColumn);
         }
 
-        // This permutation can be used to fill the cells of the cage without
-        // violation the rules.
-        return true;
+        return matrix;
     }
 
     public int getGridSize() {

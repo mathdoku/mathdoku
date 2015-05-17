@@ -48,14 +48,21 @@ public class CellChange {
      * Restores the entered value and maybe values of a Cell using the undo information.
      */
     public void restore() {
+        restoreRelatedCellChanges();
+        mCell.setEnteredValue(mPreviousEnteredValue);
+        restorePossibles();
+    }
+
+    private void restoreRelatedCellChanges() {
         if (this.mRelatedCellChanges != null) {
-            // First Undo all related moves.
             for (CellChange relatedMove : this.mRelatedCellChanges) {
                 relatedMove.restore();
             }
         }
-        // Always restore the entered value as value 0 indicates an empty cell.
-        mCell.setEnteredValue(mPreviousEnteredValue);
+    }
+
+    private void restorePossibles() {
+        mCell.clearPossibles();
         if (mPreviousPossibleValues != null) {
             for (int possible : mPreviousPossibleValues) {
                 mCell.addPossible(possible);

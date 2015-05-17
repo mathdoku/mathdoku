@@ -34,7 +34,6 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
@@ -317,19 +316,15 @@ public class GridTest {
 
     @Test
     public void clearCells_GridWithMultipleCellsCleared_GridStatisticsUpdated() throws Exception {
-        mGridBuilderStub.useSameMockForAllCells()
-                .setupDefaultWhichDoesNotThrowErrorsOnBuild();
-        when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue()).thenReturn(0, 1, 2, 0);
-        Grid grid = mGridBuilderStub.build();
+        Grid grid = GridCreator4x4.create().setCorrectEnteredValueToAllCells().getGrid();
 
         grid.clearCells();
 
-        // Clearing a second time won't change the statistics as no cells are
-        // left to be cleared
-        when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue()).thenReturn(0, 0, 0, 0);
+        // Clearing a second time won't change the statistics as no cells are left to be cleared ...
         grid.clearCells();
 
-        verify(mGridStatisticsMock).increaseCounter(GridStatistics.StatisticsCounterType.ACTION_CLEAR_GRID);
+        // so we expect the clear grid counter to be raised only once.
+        assertThat(grid.getGridStatistics().mActionClearGrid, is(1));
     }
 
     @Test
@@ -625,80 +620,48 @@ public class GridTest {
     }
 
     @Test
-    public void undoLastMove_RestoreCellAndCellChangeAreEmptyOrContainMaybes_MoveIsRestored() throws Exception {
+    public void undoLastMove_RestoreCellContainingAMaybeValue_MoveIsRestored() throws Exception {
         // This test simulates following situations:
-        // 1) Before undo the cell is empty. After undo the cell is filled with
-        // one or more maybe values.
-        // 2) Before undo the cell contains one or more maybe values. After undo
-        // the cell contains another set of maybe values (including 0 maybe
-        // values).
-        // In both cases the user value equals 0 before and after the actual
-        // undo, indicating that the cell does not contain a user value.
-        int value_before_actual_undo = 0;
-        int value_after_actual_undo = 0;
-        when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue()).thenReturn(value_before_actual_undo,
-                                                                                       value_after_actual_undo);
-        when(mCellChangeMock.getCell()).thenReturn(mGridBuilderStub.mAnyCellMockOfDefaultSetup);
-        mGridBuilderStub.setCellChangesInitializedWith(mCellChangeMock);
-        int numberOfMovesBeforeUndo = mGridBuilderStub.mCellChanges.size();
-        Grid grid = mGridBuilderStub.build();
-        assertThat(grid.countMoves(), is(numberOfMovesBeforeUndo));
+        // 1) Before undo the cell is empty. After undo the cell is filled with one or more maybe values.
+        // 2) Before undo the cell contains one or more maybe values. After undo the cell contains another set of
+        // maybe values (including 0 maybe values).
+        // In both cases the user value equals 0 before and after the actual undo, indicating that the cell does not
+        // contain a user value.
+        int cellId = 6;
+        Grid grid = GridCreator4x4.createEmpty().setMaybeValueInCell(3, cellId).getGrid();
+        assertThat(grid.countMoves(), is(1));
+        List<Integer> previousMaybeValues = grid.getCellChanges().get(0).getPreviousPossibleValues();
+        grid.setSelectedCell(grid.getCell(cellId + 1));
 
         grid.undoLastMove();
 
-        verify(mCellChangeMock).restore();
-        assertThat(grid.countMoves(), is(numberOfMovesBeforeUndo - 1));
-        verify(mGridStatisticsMock).increaseCounter(GridStatistics.StatisticsCounterType.ACTION_UNDO_MOVE);
-        assertThat("Selected cell", grid.getSelectedCell(),
-                   is(sameInstance(mGridBuilderStub.mAnyCellMockOfDefaultSetup)));
+        assertThat(grid.getCell(cellId)
+                           .getPossibles(), is(previousMaybeValues));
+        assertThat(grid.countMoves(), is(0));
+        assertThat(grid.getSelectedCell()
+                           .getCellId(), is(cellId));
+        assertThat(grid.getGridStatistics().mActionUndoMove, is(1));
     }
 
     @Test
-    public void undoLastMove_RestoreCellOrCellChangeAreEmptyOrContainEnteredValue_MoveIsRestored() throws Exception {
+    public void undoLastMove_RestoreCellContainingAnEnteredValue_MoveIsRestored() throws Exception {
         // This test simulates following:
-        // 1) Before undo the cell is empty. After undo the cell is filled with
-        // a user value.
-        // 2) Before undo the cell is filled with a user value. After undo the
-        // cell is filled with another user value.
-        // 3) Before undo the cell is filled with a user value. After undo the
-        // cell does not contain a user value; the cell can contain a maybe
-        // value.
-        when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue()).thenReturn( //
-                                                                                        0 /* value before actual undo
-                                                                                         */,
-                                                                                        //
-                                                                                        1 /* value after actual undo
-                                                                                        */);
-        // This unit test checks whether UndoLastMove correctly calls methods
-        // markDuplicateValuesInSameRowAndColumn and checkMathOnEnteredValues.
-        // Both those
-        // methods are called when instantiating the new grid via the
-        // GridBuilder.build().
-        int cageIdAffectedCellInCellChange = 2;
-        when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getCageId()).thenReturn(cageIdAffectedCellInCellChange);
-        when(mCellChangeMock.getCell()).thenReturn(mGridBuilderStub.mAnyCellMockOfDefaultSetup);
-        mGridBuilderStub.setCellChangesInitializedWith(mCellChangeMock);
-        // Check if setup is correct
-        int numberOfMovesBeforeUndo = mGridBuilderStub.mCellChanges.size();
-        Grid grid = mGridBuilderStub.build();
-        assertThat(grid.countMoves(), is(numberOfMovesBeforeUndo));
-        // Check if setDuplicateHighlight and checkMathOnEnteredValues are
-        // called during build
-        verify(mGridBuilderStub.mAnyCellMockOfDefaultSetup).setDuplicateHighlight(anyBoolean());
-        verify(mGridBuilderStub.mCageMockOfDefaultSetup[cageIdAffectedCellInCellChange]).checkMathOnEnteredValues();
+        // 1) Before undo the cell is empty. After undo the cell is filled with a user value.
+        // 2) Before undo the cell is filled with a user value. After undo the cell is filled with another user value.
+        // 3) Before undo the cell is filled with a user value. After undo the cell does not contain a user value;
+        // the cell can contain a maybe value.
+        int cellId = 6;
+        Grid grid = GridCreator4x4.createEmpty().setEnteredValueInCell(3, cellId).getGrid();
+        assertThat(grid.countMoves(), is(1));
+        int previousEnteredValue = grid.getCellChanges().get(0).getPreviousEnteredValue();
+        grid.setSelectedCell(grid.getCell(cellId + 1));
 
         grid.undoLastMove();
 
-        verify(mCellChangeMock).restore();
-        assertThat(grid.countMoves(), is(numberOfMovesBeforeUndo - 1));
-        verify(mGridStatisticsMock).increaseCounter(GridStatistics.StatisticsCounterType.ACTION_UNDO_MOVE);
-        assertThat("Selected cell", grid.getSelectedCell(),
-                   is(sameInstance(mGridBuilderStub.mAnyCellMockOfDefaultSetup)));
-        // Check if setDuplicateHighlight and checkMathOnEnteredValues are
-        // called as second time
-        verify(mGridBuilderStub.mAnyCellMockOfDefaultSetup, times(2)).setDuplicateHighlight(anyBoolean());
-        verify(mGridBuilderStub.mCageMockOfDefaultSetup[cageIdAffectedCellInCellChange],
-               times(2)).checkMathOnEnteredValues();
+        assertThat(grid.getCell(cellId).getEnteredValue(), is(previousEnteredValue));
+        assertThat(grid.countMoves(), is(0));
+        assertThat(grid.getSelectedCell().getCellId(), is(cellId));
+        assertThat(grid.getGridStatistics().mActionUndoMove, is(1));
     }
 
     @Test

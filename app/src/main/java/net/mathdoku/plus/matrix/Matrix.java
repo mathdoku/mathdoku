@@ -118,6 +118,17 @@ public class Matrix<T> {
         return false;
     }
 
+    public boolean isEmpty() {
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (isNotEmpty(row, column)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public boolean isEmpty(int row, int column) {
         if (isInvalidPosition(row, column)) {
             throw indexOutOfBoundsException(row, column);
@@ -142,5 +153,13 @@ public class Matrix<T> {
 
     public T getEmptyValue() {
         return emptyValue;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public int getColumns() {
+        return columns;
     }
 }

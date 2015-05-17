@@ -9,6 +9,7 @@ import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
+import net.mathdoku.plus.puzzle.cellchange.CellChange;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridBuilder;
 import net.mathdoku.plus.puzzle.grid.UnexpectedMethodInvocationException;
@@ -175,19 +176,38 @@ public abstract class GridCreator {
 
     public GridCreator setCorrectEnteredValueInCell(int cellId) {
         Cell cell = mGrid.getCell(cellId);
-        int correctValue = cell.getCorrectValue();
-        cell.setEnteredValue(correctValue);
 
-        return this;
+        return setEnteredValueInCell(cell.getCorrectValue(), cellId);
     }
 
     public GridCreator setIncorrectEnteredValueInCell(int cellId) {
         Cell cell = mGrid.getCell(cellId);
-        int correctValue = cell.getCorrectValue();
-        cell.setEnteredValue(correctValue == 1 ? getGridType().getGridSize() : 1);
+        int incorrectEnteredValue = cell.getCorrectValue() == 1 ? getGridType().getGridSize() : 1;
+
+        return setEnteredValueInCell(incorrectEnteredValue, cellId);
+    }
+
+    public GridCreator setEnteredValueInCell(int value, int cellId) {
+        Cell cell = mGrid.getCell(cellId);
+        CellChange cellChange = new CellChange(cell);
+        cell.setEnteredValue(value);
+        cell.clearPossibles();
+        mGrid.addMove(cellChange);
 
         return this;
     }
+
+    public GridCreator setMaybeValueInCell(int maybeValue, int cellId) {
+        Cell cell = mGrid.getCell(cellId);
+        CellChange cellChange = new CellChange(cell);
+        cell.clearValue();
+        cell.addPossible(maybeValue);
+        mGrid.addMove(cellChange);
+
+        return this;
+    }
+
+
 
     public int getCageIdOfCell(int cellId) {
         return getCageIdPerCell()[cellId];

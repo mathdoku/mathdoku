@@ -118,7 +118,7 @@ public class MatrixTest {
         CellCoordinates validCellCoordinates2 = new CellCoordinates(MATRIX_ROWS - 1, MATRIX_COLUMNS - 1);
         CellCoordinates invalidCellCoordinates = new CellCoordinates(MATRIX_ROWS, MATRIX_COLUMNS);
         assertThat(matrix.containsInvalidCellCoordinates(validCellCoordinates1, validCellCoordinates2,
-                                                               invalidCellCoordinates), is(true));
+                                                         invalidCellCoordinates), is(true));
     }
 
     @Test
@@ -330,5 +330,16 @@ public class MatrixTest {
         CellCoordinates expectedCellCoordinatesFirstCellEmpty = new CellCoordinates(MATRIX_ROWS - 1,
                                                                                     MATRIX_COLUMNS - 1);
         assertThat(matrix.getCellCoordinatesForFirstEmptyCell(), is(expectedCellCoordinatesFirstCellEmpty));
+    }
+
+    @Test
+    public void isEmpty_EmptyMatrix_IsTrue() throws Exception {
+        matrix = new Matrix<Item>(MATRIX_ROWS, MATRIX_COLUMNS, emptyItem);
+        assertThat(matrix.isEmpty(), is(true));
+    }
+
+    @Test
+    public void isEmpty_NonEmptyMatrix_IsFalse() throws Exception {
+        assertThat(matrix.isEmpty(), is(false));
     }
 }
