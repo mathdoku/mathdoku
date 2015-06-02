@@ -18,6 +18,9 @@ public abstract class CageComboGenerator {
     public static CageComboGenerator create(ComboGenerator comboGenerator, Cage cage) {
         CageComboGenerator cageComboGenerator = null;
         switch (cage.getOperator()) {
+            case NONE:
+                cageComboGenerator = new SingleCellCageComboGenerator(comboGenerator, cage);
+                break;
             case ADD:
                 cageComboGenerator = new AddCageComboGenerator(comboGenerator, cage);
                 break;
