@@ -2,13 +2,13 @@ package net.mathdoku.plus.gridsolving.combogenerator;
 
 import net.mathdoku.plus.puzzle.cage.Cage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class CageComboGenerator {
     private final ComboGenerator comboGenerator;
     private final int gridSize;
-    private List<CageCombo> allCageCombos;
+    private Set<CageCombo> allCageCombos;
     private final Cage cage;
     private final CageCombo cageCombo = new CageCombo();
 
@@ -51,8 +51,8 @@ public abstract class CageComboGenerator {
         this.cage = cage;
     }
 
-    public List<CageCombo> getCombos() {
-        allCageCombos = new ArrayList<CageCombo>();
+    public Set<CageCombo> getCombos() {
+        allCageCombos = new HashSet<CageCombo>();
 
         expandCageComboWithNextValue();
 

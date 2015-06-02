@@ -8,6 +8,7 @@ import net.mathdoku.plus.puzzle.cell.Cell;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class ComboGenerator {
     private Cage cage;
@@ -150,7 +151,7 @@ public class ComboGenerator {
      * TODO: Method is to be removed when refactor of CageCombo is complete throughout whole app.
      */
     @Deprecated
-    private static List<int[]> convertToOldStyle(List<CageCombo> cageCombos) {
+    private static List<int[]> convertToOldStyle(Set<CageCombo> cageCombos) {
         List<int []> oldCageCombos = new ArrayList<int[]>();
         for (CageCombo cageCombo : cageCombos) {
             List<Integer> cellValues = cageCombo.getCellValues();

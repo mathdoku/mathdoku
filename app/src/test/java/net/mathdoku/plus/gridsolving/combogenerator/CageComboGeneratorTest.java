@@ -4,12 +4,10 @@ import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CageComboGeneratorTest {
-    protected Cage twoCellCage;
-
     public static Cage createTwoCellCage(CageOperator cageOperator) {
         int cageSize = 2;
         CageBuilder cageBuilder = new CageBuilder().setCageOperator(CageOperator.DIVIDE)
@@ -19,8 +17,8 @@ public class CageComboGeneratorTest {
         return new Cage(cageBuilder);
     }
 
-    public static List<CageCombo> getExpectedCageCombos(int[][] combos) {
-        List<CageCombo> cageCombos = new ArrayList<CageCombo>();
+    public static Set<CageCombo> getExpectedCageCombos(int[][] combos) {
+        Set<CageCombo> cageCombos = new HashSet<CageCombo>();
         for (int[] combo : combos) {
             CageCombo cageCombo = new CageCombo();
             for (int value : combo) {
