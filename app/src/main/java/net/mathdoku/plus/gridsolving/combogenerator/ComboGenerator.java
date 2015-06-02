@@ -1,6 +1,5 @@
 package net.mathdoku.plus.gridsolving.combogenerator;
 
-import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.matrix.Matrix;
 import net.mathdoku.plus.matrix.UniqueValuePerRowAndColumnChecker;
 import net.mathdoku.plus.puzzle.cage.Cage;
@@ -13,7 +12,6 @@ import java.util.List;
 public class ComboGenerator {
     private Cage cage;
     private int mResult;
-    private CageOperator mCageOperator;
     private boolean mHideOperator;
     private List<Cell> cells;
     private int mGridSize;
@@ -40,7 +38,6 @@ public class ComboGenerator {
         this.cage = cage;
         this.cells = cells;
         mResult = cage.getResult();
-        mCageOperator = cage.getOperator();
         mHideOperator = cage.isOperatorHidden();
 
         minRow = getMinRow(this.cells);
@@ -146,48 +143,7 @@ public class ComboGenerator {
      * column/row
      */
     private List<int[]> getPossibleCombosVisibleOperator() {
-        List<int[]> AllResults = new ArrayList<int[]>();
-
-        switch (mCageOperator) {
-            case NONE:
-                assert cells.size() == 1;
-                int[] number = {mResult};
-                AllResults.add(number);
-                break;
-            case SUBTRACT:
-                assert cells.size() == 2;
-                for (int i1 = 1; i1 <= mGridSize; i1++) {
-                    for (int i2 = i1 + 1; i2 <= mGridSize; i2++) {
-                        if (i2 - i1 == mResult || i1 - i2 == mResult) {
-                            int[] numbers = {i1, i2};
-                            AllResults.add(numbers);
-                            numbers = new int[]{i2, i1};
-                            AllResults.add(numbers);
-                        }
-                    }
-                }
-                break;
-            case DIVIDE:
-                assert cells.size() == 2;
-                for (int i1 = 1; i1 <= mGridSize; i1++) {
-                    for (int i2 = i1 + 1; i2 <= mGridSize; i2++) {
-                        if (mResult * i1 == i2 || mResult * i2 == i1) {
-                            int[] numbers = {i1, i2};
-                            AllResults.add(numbers);
-                            numbers = new int[]{i2, i1};
-                            AllResults.add(numbers);
-                        }
-                    }
-                }
-                break;
-            case ADD:
-                AllResults = convertToOldStyle(CageComboGenerator.create(this, cage).getCombos());
-                break;
-            case MULTIPLY:
-                AllResults = convertToOldStyle(CageComboGenerator.create(this, cage).getCombos());
-                break;
-        }
-        return AllResults;
+        return convertToOldStyle(CageComboGenerator.create(this, cage).getCombos());
     }
 
     /**
