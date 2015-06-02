@@ -30,6 +30,9 @@ public abstract class CageComboGenerator {
             case MULTIPLY:
                 cageComboGenerator = new MultiplyCageComboGenerator(comboGenerator, cage);
                 break;
+            case DIVIDE:
+                cageComboGenerator = new DivideCageComboGenerator(comboGenerator, cage);
+                break;
         }
         if (!cageComboGenerator.hasValidNumberOfCells(cage.getNumberOfCells())) {
             throw new InvalidNumberOfCells();
