@@ -68,4 +68,28 @@ public class CageCombo {
     public int hashCode() {
         return cellValues.hashCode();
     }
+
+    public int size() {
+        return cellValues.size();
+    }
+
+    public boolean isEmpty() {
+        return cellValues.isEmpty();
+    }
+
+    public int getMaxValue() {
+        int max = Integer.MIN_VALUE;
+        for (Integer cellValue : cellValues) {
+            max = Math.max(max, cellValue);
+        }
+        return max;
+    }
+
+    public int getMinValue() {
+        int min = Integer.MAX_VALUE;
+        for (Integer cellValue : cellValues) {
+            min = Math.min(min, cellValue);
+        }
+        return min;
+    }
 }

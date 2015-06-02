@@ -9,62 +9,78 @@ public abstract class CageComboGenerator {
     private final ComboGenerator comboGenerator;
     private final int gridSize;
     private List<CageCombo> allCageCombos;
-    private CageCombo cageCombo = new CageCombo();
+    private final Cage cage;
+    private final CageCombo cageCombo = new CageCombo();
 
+    private static class InvalidNumberOfCells extends RuntimeException {
+    }
 
-    public CageComboGenerator(ComboGenerator comboGenerator) {
+    public static CageComboGenerator create(ComboGenerator comboGenerator, Cage cage) {
+        CageComboGenerator cageComboGenerator = null;
+        switch (cage.getOperator()) {
+            case ADD:
+                cageComboGenerator = new AddCageComboGenerator(comboGenerator, cage);
+                break;
+            case MULTIPLY:
+                cageComboGenerator = new MultiplyCageComboGenerator(comboGenerator, cage);
+                break;
+        }
+        if (!cageComboGenerator.hasValidNumberOfCells(cage.getNumberOfCells())) {
+            throw new InvalidNumberOfCells();
+        }
+        return cageComboGenerator;
+    }
+
+    protected abstract boolean hasValidNumberOfCells(int numberOfCells);
+
+    public CageComboGenerator(ComboGenerator comboGenerator, Cage cage) {
         if (comboGenerator == null) {
             throw new IllegalArgumentException("ComboGenerator should not be null");
         }
         gridSize = comboGenerator.getGridSize();
         this.comboGenerator = comboGenerator;
+        this.cage = cage;
     }
 
-    public List<CageCombo> getCombosForCage(Cage cage) {
+    public List<CageCombo> getCombos() {
         allCageCombos = new ArrayList<CageCombo>();
 
-        getCombosRecursively(cage.getResult(), cage.getNumberOfCells());
+        expandCageComboWithNextValue();
 
         return allCageCombos;
     }
 
-    private void getCombosRecursively(int targetValue, int numberOfCellsRemaining) {
-        if (targetValue <= 0 || numberOfCellsRemaining <= 0) {
-            // Invalid combo
-            return;
-        }
-        if (numberOfCellsRemaining == 1 && targetValue > gridSize) {
-            // Unreachable targetValue
-            return;
-        }
-        if (numberOfCellsRemaining == 1) {
-            tryToAddTargetValueToCageCombo(targetValue);
-        } else {
-            expandCageComboWithNextValue(targetValue, numberOfCellsRemaining);
-        }
-    }
-
-    private void tryToAddTargetValueToCageCombo(int targetValue) {
-        cageCombo.append(targetValue);
-        if (comboGenerator.satisfiesConstraints(cageCombo)) {
-            // Clone the current cage combination as this instance will be manipulated in order to find other
-            // combo's.
-            allCageCombos.add(cageCombo.clone());
-        }
-        cageCombo.removeLastValue();
-    }
-
-    private void expandCageComboWithNextValue(int targetValue, int numberOfCellsRemaining) {
+    private void expandCageComboWithNextValue() {
         for (int cellValue = 1; cellValue <= gridSize; cellValue++) {
-            if (canExpandWithValue(targetValue, cellValue)) {
-                cageCombo.append(cellValue);
-                getCombosRecursively(getNextTargetValue(targetValue, cellValue), numberOfCellsRemaining - 1);
-                cageCombo.removeLastValue();
+            if (canExpandWithValue(cageCombo, cellValue)) {
+                expandWithValue(cellValue);
             }
         }
     }
 
-    protected abstract boolean canExpandWithValue(int targetValue, int cellValue);
+    protected abstract boolean canExpandWithValue(CageCombo cageCombo, int cellValue);
 
-    protected abstract int getNextTargetValue(int targetValue, int cellValue);
+    private void expandWithValue(int cellValue) {
+        cageCombo.append(cellValue);
+        if (isCageComboComplete()) {
+            if (isValidCageCombo()) {
+                // Clone the current cage combination as this instance will be manipulated in order to find other
+                // combo's.
+                allCageCombos.add(cageCombo.clone());
+            }
+        } else {
+            expandCageComboWithNextValue();
+        }
+        cageCombo.removeLastValue();
+    }
+
+    private boolean isCageComboComplete() {
+        return cageCombo.size() == cage.getNumberOfCells();
+    }
+
+    private boolean isValidCageCombo() {
+        return matchesTargetValue(cageCombo) && comboGenerator.satisfiesConstraints(cageCombo);
+    }
+
+    protected abstract boolean matchesTargetValue(CageCombo cageCombo);
 }

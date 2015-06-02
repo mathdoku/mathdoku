@@ -1,19 +1,34 @@
 package net.mathdoku.plus.gridsolving.combogenerator;
 
+import net.mathdoku.plus.puzzle.cage.Cage;
+
 /* package private */ class AddCageComboGenerator extends CageComboGenerator {
+    private final int targetValue;
 
-    public AddCageComboGenerator(ComboGenerator comboGenerator) {
-        super(comboGenerator);
+    public AddCageComboGenerator(ComboGenerator comboGenerator, Cage cage) {
+        super(comboGenerator, cage);
+        targetValue = cage.getResult();
     }
 
     @Override
-    protected boolean canExpandWithValue(int targetValue, int cellValue) {
-        return cellValue <= targetValue;
+    protected boolean hasValidNumberOfCells(int numberOfCells) {
+        return numberOfCells >= 2;
     }
 
     @Override
-    protected int getNextTargetValue(int targetValue, int cellValue) {
-        return targetValue - cellValue;
+    protected boolean canExpandWithValue(CageCombo cageCombo, int cellValue) {
+        return addValuesInCageCombo(cageCombo) + cellValue <= targetValue;
     }
 
+    private int addValuesInCageCombo(CageCombo cageCombo) {
+        int cageComboTotal = 0;
+        for (int valueInCageCombo : cageCombo.getCellValues()) {
+            cageComboTotal += valueInCageCombo;
+        }
+        return cageComboTotal;
+    }
+
+    protected boolean matchesTargetValue(CageCombo cageCombo) {
+        return addValuesInCageCombo(cageCombo) == targetValue;
+    }
 }

@@ -120,8 +120,8 @@ public class ComboGenerator {
 
         // Cages of size two and above can only contain an add or a multiply
         // operation
-        resultCombos = convertToOldStyle(new AddCageComboGenerator(this).getCombosForCage(cage));
-        List<int[]> multiplyCombos = convertToOldStyle(new MultiplyCageComboGenerator(this).getCombosForCage(cage));
+        resultCombos = convertToOldStyle(new AddCageComboGenerator(this, cage).getCombos());
+        List<int[]> multiplyCombos = convertToOldStyle(new MultiplyCageComboGenerator(this, cage).getCombos());
 
         // Combine Add & Multiply result sets
         for (int[] multiplyCombo : multiplyCombos) {
@@ -181,10 +181,10 @@ public class ComboGenerator {
                 }
                 break;
             case ADD:
-                AllResults = convertToOldStyle(new AddCageComboGenerator(this).getCombosForCage(cage));
+                AllResults = convertToOldStyle(CageComboGenerator.create(this, cage).getCombos());
                 break;
             case MULTIPLY:
-                AllResults = convertToOldStyle(new MultiplyCageComboGenerator(this).getCombosForCage(cage));
+                AllResults = convertToOldStyle(CageComboGenerator.create(this, cage).getCombos());
                 break;
         }
         return AllResults;
