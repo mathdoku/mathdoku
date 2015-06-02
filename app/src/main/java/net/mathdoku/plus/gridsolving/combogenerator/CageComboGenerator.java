@@ -24,6 +24,9 @@ public abstract class CageComboGenerator {
             case ADD:
                 cageComboGenerator = new AddCageComboGenerator(comboGenerator, cage);
                 break;
+            case SUBTRACT:
+                cageComboGenerator = new SubtractCageComboGenerator(comboGenerator, cage);
+                break;
             case MULTIPLY:
                 cageComboGenerator = new MultiplyCageComboGenerator(comboGenerator, cage);
                 break;
